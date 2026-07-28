@@ -1,0 +1,10 @@
+node_modules/
+.next/
+out/
+.env.local
+playwright-report/
+test-results/
+coverage/
+*.tsbuildinfo
+*.log
+.DS_Store

@@ -1,0 +1,312 @@
+{
+  "version": 1,
+  "license": "CC0-1.0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "packs": {
+    "kenney-furniture-kit": "https://kenney.nl/assets/furniture-kit",
+    "kenney-nature-kit": "https://kenney.nl/assets/nature-kit",
+    "kenney-food-kit": "https://kenney.nl/assets/food-kit",
+    "kenney-mini-characters": "https://kenney.nl/assets/mini-characters",
+    "kenney-cube-pets": "https://kenney.nl/assets/cube-pets",
+    "quaternius-ultimate-animated-character": "https://quaternius.com/packs/ultimatedanimatedcharacter.html",
+    "quaternius-modular-sushi": "https://quaternius.com/packs/sushirestaurantkit.html",
+    "cgtrader-cute-bunny": "https://www.cgtrader.com/free-3d-models/animal/mammal/cute-bunny-772af610-f9f8-47c2-a8b8-7adcca89dc48",
+    "ambientcg-wood-floor-051": "https://ambientcg.com/view?id=WoodFloor051",
+    "ambientcg-plaster-001": "https://ambientcg.com/view?id=Plaster001"
+  },
+  "assets": [
+    {
+      "path": "kenney-furniture-kit/benchCushion.glb",
+      "category": "seating"
+    },
+    {
+      "path": "kenney-furniture-kit/bookcaseClosedDoors.glb",
+      "category": "storage"
+    },
+    {
+      "path": "kenney-furniture-kit/bookcaseOpen.glb",
+      "category": "storage"
+    },
+    {
+      "path": "kenney-furniture-kit/bookcaseOpenLow.glb",
+      "category": "storage"
+    },
+    {
+      "path": "kenney-furniture-kit/books.glb",
+      "category": "decor"
+    },
+    {
+      "path": "kenney-furniture-kit/chairCushion.glb",
+      "category": "seating"
+    },
+    {
+      "path": "kenney-furniture-kit/chairRounded.glb",
+      "category": "seating"
+    },
+    {
+      "path": "kenney-furniture-kit/coatRackStanding.glb",
+      "category": "decor"
+    },
+    {
+      "path": "kenney-furniture-kit/desk.glb",
+      "category": "tables"
+    },
+    {
+      "path": "kenney-furniture-kit/doorwayOpen.glb",
+      "category": "architecture"
+    },
+    {
+      "path": "kenney-furniture-kit/lampRoundFloor.glb",
+      "category": "lighting"
+    },
+    {
+      "path": "kenney-furniture-kit/lampRoundTable.glb",
+      "category": "lighting"
+    },
+    {
+      "path": "kenney-furniture-kit/lampWall.glb",
+      "category": "lighting"
+    },
+    {
+      "path": "kenney-furniture-kit/loungeChairRelax.glb",
+      "category": "seating"
+    },
+    {
+      "path": "kenney-furniture-kit/loungeSofa.glb",
+      "category": "seating"
+    },
+    {
+      "path": "kenney-furniture-kit/paneling.glb",
+      "category": "architecture"
+    },
+    {
+      "path": "kenney-furniture-kit/pillow.glb",
+      "category": "decor"
+    },
+    {
+      "path": "kenney-furniture-kit/plantSmall1.glb",
+      "category": "plants"
+    },
+    {
+      "path": "kenney-furniture-kit/pottedPlant.glb",
+      "category": "plants"
+    },
+    {
+      "path": "kenney-furniture-kit/rugRound.glb",
+      "category": "rugs"
+    },
+    {
+      "path": "kenney-furniture-kit/rugRounded.glb",
+      "category": "rugs"
+    },
+    {
+      "path": "kenney-furniture-kit/sideTable.glb",
+      "category": "tables"
+    },
+    {
+      "path": "kenney-furniture-kit/tableCoffee.glb",
+      "category": "tables"
+    },
+    {
+      "path": "kenney-furniture-kit/tableRound.glb",
+      "category": "tables"
+    },
+    {
+      "path": "kenney-nature-kit/crops_bambooStageB.glb",
+      "category": "plants"
+    },
+    {
+      "path": "kenney-nature-kit/flower_yellowA.glb",
+      "category": "plants"
+    },
+    {
+      "path": "kenney-nature-kit/plant_bushSmall.glb",
+      "category": "plants"
+    },
+    {
+      "path": "kenney-nature-kit/plant_flatTall.glb",
+      "category": "plants"
+    },
+    {
+      "path": "kenney-nature-kit/pot_small.glb",
+      "category": "planters"
+    },
+    {
+      "path": "kenney-nature-kit/rock_smallFlatA.glb",
+      "category": "garden"
+    },
+    {
+      "path": "kenney-food-kit/cookie.glb",
+      "category": "food"
+    },
+    {
+      "path": "kenney-food-kit/cup-saucer.glb",
+      "category": "tableware"
+    },
+    {
+      "path": "kenney-food-kit/cup-tea.glb",
+      "category": "tableware"
+    },
+    {
+      "path": "kenney-food-kit/mug.glb",
+      "category": "tableware"
+    },
+    {
+      "path": "kenney-food-kit/plate.glb",
+      "category": "tableware"
+    },
+    {
+      "path": "kenney-food-kit/Textures/colormap.png",
+      "category": "texture"
+    },
+    {
+      "path": "../textures/interior/wood-floor-color.jpg",
+      "category": "surface"
+    },
+    {
+      "path": "../textures/interior/wood-floor-normal.jpg",
+      "category": "surface"
+    },
+    {
+      "path": "../textures/interior/wood-floor-roughness.jpg",
+      "category": "surface"
+    },
+    {
+      "path": "../textures/interior/plaster-color.jpg",
+      "category": "surface"
+    },
+    {
+      "path": "../textures/interior/plaster-normal.jpg",
+      "category": "surface"
+    },
+    {
+      "path": "../textures/interior/plaster-roughness.jpg",
+      "category": "surface"
+    },
+    {
+      "path": "characters/kenney-mini-characters/character-male-f.glb",
+      "category": "character",
+      "role": "playable"
+    },
+    {
+      "path": "characters/kenney-mini-characters/character-female-e.glb",
+      "category": "character",
+      "role": "playable"
+    },
+    {
+      "path": "characters/kenney-mini-characters/character-female-b.glb",
+      "category": "character",
+      "role": "playable"
+    },
+    {
+      "path": "characters/kenney-mini-characters/Textures/colormap.png",
+      "category": "texture"
+    },
+    {
+      "path": "characters/kenney-cube-pets/animal-bunny.glb",
+      "category": "character",
+      "role": "playable"
+    },
+    {
+      "path": "characters/kenney-cube-pets/animal-cat.glb",
+      "category": "character",
+      "role": "playable"
+    },
+    {
+      "path": "characters/kenney-cube-pets/animal-fox.glb",
+      "category": "character",
+      "role": "playable"
+    },
+    {
+      "path": "characters/kenney-cube-pets/animal-deer.glb",
+      "category": "character",
+      "role": "playable"
+    },
+    {
+      "path": "characters/kenney-cube-pets/animal-koala.glb",
+      "category": "character",
+      "role": "playable"
+    },
+    {
+      "path": "characters/kenney-cube-pets/animal-penguin.glb",
+      "category": "character",
+      "role": "playable"
+    },
+    {
+      "path": "characters/kenney-cube-pets/animal-monkey.glb",
+      "category": "character",
+      "role": "playable"
+    },
+    {
+      "path": "characters/kenney-cube-pets/animal-panda.glb",
+      "category": "character",
+      "role": "legacy-unused"
+    },
+    {
+      "path": "characters/kenney-cube-pets/Textures/colormap.png",
+      "category": "texture"
+    },
+    {
+      "path": "characters/quaternius-ultimate-animated-character/Casual_Female.gltf",
+      "category": "character",
+      "role": "playable"
+    },
+    {
+      "path": "characters/quaternius-ultimate-animated-character/Pug.gltf",
+      "category": "character",
+      "role": "playable"
+    },
+    {
+      "path": "characters/quaternius-modular-sushi/Panda.glb",
+      "category": "character",
+      "role": "legacy-unused"
+    },
+    {
+      "path": "characters/cgtrader-cute-bunny/cute-bunny.glb",
+      "category": "character",
+      "role": "playable",
+      "license": "CGTrader-Royalty-Free-No-AI",
+      "licenseUrl": "https://www.cgtrader.com/pages/terms-and-conditions"
+    },
+    {
+      "path": "../images/characters/character-male-f.png",
+      "category": "character-preview"
+    },
+    {
+      "path": "../images/characters/character-female-e.png",
+      "category": "character-preview"
+    },
+    {
+      "path": "../images/characters/character-female-b.png",
+      "category": "character-preview"
+    },
+    {
+      "path": "../images/characters/animal-bunny.png",
+      "category": "character-preview"
+    },
+    {
+      "path": "../images/characters/animal-cat.png",
+      "category": "character-preview"
+    },
+    {
+      "path": "../images/characters/animal-fox.png",
+      "category": "character-preview"
+    },
+    {
+      "path": "../images/characters/animal-deer.png",
+      "category": "character-preview"
+    },
+    {
+      "path": "../images/characters/animal-koala.png",
+      "category": "character-preview"
+    },
+    {
+      "path": "../images/characters/animal-penguin.png",
+      "category": "character-preview"
+    },
+    {
+      "path": "../images/characters/animal-monkey.png",
+      "category": "character-preview"
+    }
+  ]
+}

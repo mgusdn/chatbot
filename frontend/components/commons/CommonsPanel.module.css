@@ -1,0 +1,384 @@
+.panel {
+  width: min(440px, calc(100vw - 28px));
+  max-height: min(760px, calc(100vh - 32px));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: #3f332c;
+  background: rgba(255, 251, 242, 0.97);
+  border: 1px solid rgba(109, 79, 57, 0.2);
+  border-radius: 24px;
+  box-shadow: 0 22px 70px rgba(63, 43, 31, 0.24);
+  backdrop-filter: blur(16px);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 20px 14px;
+  border-bottom: 1px solid rgba(109, 79, 57, 0.12);
+}
+
+.headerActions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 7px;
+}
+
+.closeButton {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  place-items: center;
+  color: #6a5c52;
+  background: #f4eee4;
+  border: 0;
+  border-radius: 11px;
+  font: inherit;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  color: #6d8060;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+}
+
+.title {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.25;
+}
+
+.subtitle {
+  margin: 6px 0 0;
+  color: #776a61;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.refreshButton,
+.secondaryButton,
+.actionButton,
+.modeButton,
+.objectButton,
+.submitButton,
+.categoryButton {
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.refreshButton {
+  flex: 0 0 auto;
+  padding: 9px 11px;
+  color: #5f6f53;
+  background: #edf1e7;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.refreshButton:disabled,
+.actionButton:disabled,
+.submitButton:disabled,
+.categoryButton:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.counts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 12px 20px;
+  background: rgba(246, 239, 226, 0.72);
+}
+
+.countItem {
+  text-align: center;
+}
+
+.countValue {
+  display: block;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.countLabel {
+  display: block;
+  margin-top: 2px;
+  color: #85776d;
+  font-size: 11px;
+}
+
+.body {
+  min-height: 190px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 14px 20px 18px;
+}
+
+.statusCard {
+  display: grid;
+  place-items: center;
+  min-height: 170px;
+  padding: 24px;
+  text-align: center;
+  color: #76685f;
+  background: #faf5eb;
+  border: 1px dashed rgba(109, 79, 57, 0.22);
+  border-radius: 18px;
+}
+
+.statusCard strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #4f4037;
+}
+
+.secondaryButton {
+  margin-top: 12px;
+  padding: 8px 12px;
+  color: #fff;
+  background: #6f815f;
+  border-radius: 10px;
+  font-weight: 800;
+}
+
+.notice {
+  margin: 0 0 10px;
+  padding: 9px 11px;
+  color: #8a4d3c;
+  background: #fff0e9;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+.list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.traceCard {
+  padding: 13px 14px;
+  background: #fffdf8;
+  border: 1px solid rgba(109, 79, 57, 0.13);
+  border-radius: 15px;
+}
+
+.traceMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: #8a7b70;
+  font-size: 11px;
+}
+
+.traceAlias {
+  color: #647454;
+  font-weight: 900;
+}
+
+.traceMessage {
+  margin: 9px 0 11px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.objectBadge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  padding: 2px 7px;
+  color: #6c604f;
+  background: #f2ead9;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+}
+
+.actionButton {
+  padding: 6px 9px;
+  color: #6a5c52;
+  background: #f4eee4;
+  border-radius: 9px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.actionButtonActive {
+  color: #895447;
+  background: #f8e5de;
+}
+
+.confirmRow,
+.reportChoices {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 4px;
+  font-size: 11px;
+}
+
+.categoryButton {
+  padding: 6px 8px;
+  color: #694f47;
+  background: #f9e9e4;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.composer {
+  padding: 16px 20px 20px;
+  background: #f5eee2;
+  border-top: 1px solid rgba(109, 79, 57, 0.12);
+}
+
+.modeTabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 11px;
+  padding: 4px;
+  background: rgba(111, 90, 73, 0.09);
+  border-radius: 12px;
+}
+
+.modeButton {
+  padding: 8px;
+  color: #7a6d63;
+  background: transparent;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.modeButtonActive {
+  color: #4b3c34;
+  background: #fffdf8;
+  box-shadow: 0 2px 8px rgba(66, 45, 32, 0.08);
+}
+
+.objectPicker {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.objectButton {
+  display: grid;
+  gap: 3px;
+  place-items: center;
+  padding: 8px 4px;
+  color: #74675e;
+  background: rgba(255, 253, 248, 0.72);
+  border: 1px solid transparent;
+  border-radius: 11px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.objectButtonActive {
+  color: #4f6145;
+  background: #f2f6ed;
+  border-color: #93a887;
+}
+
+.textareaWrap {
+  position: relative;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 74px;
+  resize: vertical;
+  box-sizing: border-box;
+  padding: 11px 12px 24px;
+  color: #40342d;
+  background: #fffdf9;
+  border: 1px solid rgba(105, 79, 60, 0.2);
+  border-radius: 12px;
+  outline: none;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.textarea:focus {
+  border-color: #849978;
+  box-shadow: 0 0 0 3px rgba(132, 153, 120, 0.15);
+}
+
+.counter {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  color: #978980;
+  font-size: 10px;
+}
+
+.composerFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 9px;
+}
+
+.formError {
+  margin: 0;
+  color: #9b4e3b;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.submitButton {
+  flex: 0 0 auto;
+  padding: 9px 13px;
+  color: #fff;
+  background: #647754;
+  border-radius: 11px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+@media (max-width: 540px) {
+  .panel {
+    width: calc(100vw - 16px);
+    max-height: calc(100vh - 16px);
+    border-radius: 20px;
+  }
+
+  .header,
+  .body,
+  .composer {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}

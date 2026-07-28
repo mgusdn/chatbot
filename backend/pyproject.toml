@@ -1,0 +1,10 @@
+[project]
+name = "pume-counseling-api"
+version = "0.1.0"
+description = "FastAPI and LangGraph counseling backend for Pume Counseling Village"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-q"

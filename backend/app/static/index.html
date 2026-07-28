@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>프메를 평화롭게 · Model A/B Lab</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">PUME COUNSELING EXPERIMENT</p>
+          <h1>같은 Gemini, 다른 상담 파이프라인</h1>
+          <p class="hero-copy">
+            최신 juminsuh/chatbot의 동적 공감을 먼저 보여주는 흐름과 병렬 최적화 로직을 같은 Gemini로 비교합니다.
+          </p>
+        </div>
+        <div class="hero-actions">
+          <button id="probeButton" class="button button-ghost" type="button">연결 다시 확인</button>
+          <button id="resetButton" class="button button-dark" type="button">새 실험</button>
+        </div>
+      </header>
+
+      <section class="notice" aria-label="사용 안내">
+        <span class="notice-icon">i</span>
+        <p>
+          연구용 비교 화면이며 진단 또는 응급 대응 서비스가 아닙니다. API 키는 브라우저로 전달되지 않습니다.
+          현재 단계는 텍스트 LLM 비교이고, STT·GPT-SoVITS는 다음 연결 단계입니다.
+        </p>
+      </section>
+
+      <section class="control-panel" aria-label="실험 설정">
+        <div class="control-copy">
+          <span class="label">실행 방식</span>
+          <strong id="modeDescription">동일 입력을 두 Gemini 파이프라인에 동시에 보냅니다.</strong>
+        </div>
+        <label class="nickname-field" for="nicknameInput">
+          <span>상담 닉네임</span>
+          <input id="nicknameInput" type="text" value="사용자" maxlength="40" autocomplete="nickname" />
+        </label>
+        <div class="segmented" role="group" aria-label="파이프라인 실행 방식">
+          <button class="segment" data-mode="baseline" type="button">기존만</button>
+          <button class="segment" data-mode="optimized" type="button">개선만</button>
+          <button class="segment is-active" data-mode="both" type="button">A/B 동시 비교</button>
+        </div>
+        <div class="experiment-meta">
+          <span>실험 ID</span>
+          <code id="experimentId">생성 중…</code>
+        </div>
+      </section>
+
+      <main class="comparison-grid">
+        <article class="model-card" data-arm-card="baseline">
+          <header class="model-header">
+            <div>
+              <span id="baselineArmTag" class="arm-tag arm-a">A · 공감 + 원리 · 혼합 판단</span>
+              <h2 id="baselineArmLabel">A · 공감 minimal · 로컬 원리 · 혼합 판단</h2>
+              <p id="baselineModelName">gemini-3.5-flash</p>
+            </div>
+            <span id="baselineStatus" class="status-chip is-pending"><i></i>확인 중</span>
+          </header>
+
+          <div id="baselineConversation" class="conversation" aria-live="polite"></div>
+
+          <section class="metric-grid" aria-label="Gemini 성능">
+            <div><span>브라우저 첫 표시</span><strong id="baselineFirst">—</strong></div>
+            <div><span>서버 전체</span><strong id="baselineTotal">—</strong></div>
+            <div><span>모델 호출 합계</span><strong id="baselineModelMs">—</strong></div>
+            <div><span>모델 호출</span><strong id="baselineCalls">—</strong></div>
+            <div><span>재시도</span><strong id="baselineRetries">—</strong></div>
+          </section>
+
+          <div id="baselineState" class="state-row"></div>
+          <details class="call-details">
+            <summary>노드별 호출 기록</summary>
+            <div id="baselineCallList" class="call-list"><p>아직 실행 기록이 없습니다.</p></div>
+          </details>
+          <div id="baselineRating" class="rating" hidden>
+            <span>이번 답변 평가</span>
+            <div class="rating-buttons" role="group" aria-label="Gemini 답변 점수"></div>
+          </div>
+        </article>
+
+        <article class="model-card" data-arm-card="optimized">
+          <header class="model-header">
+            <div>
+              <span id="optimizedArmTag" class="arm-tag arm-b">B · MINIMAL · 판단 API 공유</span>
+              <h2 id="optimizedArmLabel">개선 Gemini · minimal · 판단 API 공유</h2>
+              <p id="optimizedModelName">gemini-3.5-flash</p>
+            </div>
+            <span id="optimizedStatus" class="status-chip is-pending"><i></i>확인 중</span>
+          </header>
+
+          <div id="optimizedConversation" class="conversation" aria-live="polite"></div>
+
+          <section class="metric-grid" aria-label="개선 파이프라인 성능">
+            <div><span>브라우저 첫 표시</span><strong id="optimizedFirst">—</strong></div>
+            <div><span>서버 전체</span><strong id="optimizedTotal">—</strong></div>
+            <div><span>모델 호출 합계</span><strong id="optimizedModelMs">—</strong></div>
+            <div><span>모델 호출</span><strong id="optimizedCalls">—</strong></div>
+            <div><span>재시도</span><strong id="optimizedRetries">—</strong></div>
+          </section>
+
+          <div id="optimizedState" class="state-row"></div>
+          <details class="call-details">
+            <summary>노드별 호출 기록</summary>
+            <div id="optimizedCallList" class="call-list"><p>아직 실행 기록이 없습니다.</p></div>
+          </details>
+          <div id="optimizedRating" class="rating" hidden>
+            <span>이번 답변 평가</span>
+            <div class="rating-buttons" role="group" aria-label="개선 Gemini 답변 점수"></div>
+          </div>
+        </article>
+      </main>
+
+      <section id="comparisonSummary" class="comparison-summary" hidden aria-live="polite"></section>
+
+      <section class="composer" aria-label="상담 메시지 입력">
+        <label for="messageInput">두 파이프라인에 전달할 동일한 사용자 발화</label>
+        <div id="valuesGridContainer" class="values-grid-container" hidden></div>
+        <textarea
+          id="messageInput"
+          rows="3"
+          maxlength="4000"
+          placeholder="예: 요즘 해야 할 일이 많은데 자꾸 미루게 돼서 답답해요."
+        ></textarea>
+        <div class="composer-footer">
+          <div class="example-list" aria-label="예시 질문">
+            <button type="button" data-example="요즘 해야 할 일이 많은데 자꾸 미루게 돼서 답답해요.">미루는 습관</button>
+            <button type="button" data-example="사람들을 만나고 나면 제가 이상하게 말한 것 같아서 계속 걱정돼요.">관계 걱정</button>
+            <button type="button" data-example="밤에 생각이 많아져서 잠들기가 어렵고 다음 날 너무 피곤해요.">수면 고민</button>
+          </div>
+          <button id="sendButton" class="button button-primary" type="button">
+            <span id="sendLabel">두 파이프라인 비교하기</span>
+            <span class="send-arrow">→</span>
+          </button>
+        </div>
+        <p id="formStatus" class="form-status" role="status"></p>
+      </section>
+    </div>
+    <script src="/static/app.js?v=20260723-3" defer></script>
+  </body>
+</html>

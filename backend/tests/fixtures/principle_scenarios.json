@@ -1,0 +1,705 @@
+{
+  "schema_version": "1.0",
+  "description": "A 분기의 원리 검색·선택·말투·조립을 고정 검증하는 시나리오 모음. 실시간 문장 재작성 없이 principle_bank의 검수된 utterance를 그대로 사용하는 경로를 전제로 한다.",
+  "runtime_contract": {
+    "enabled_delivery_modes": [
+      "named_pattern",
+      "social_context"
+    ],
+    "disabled_delivery_modes": [
+      "reference"
+    ],
+    "retrieval_candidate_limit": 3,
+    "cooldown_turns": 3,
+    "live_rewrite_enabled": false,
+    "bank_utterance_must_be_verbatim": true,
+    "turn_llm_call_delta": 0,
+    "memory_retrieval_p95_ms_max": 20,
+    "render_p95_ms_max": 5,
+    "late_or_empty_result_behavior": "skip"
+  },
+  "automatic_validation": {
+    "retrieval": {
+      "use_case_pass_condition": "returned candidate_ids와 expected.candidate_ids_any_of의 교집합이 하나 이상이고 preferred_principle_id가 반환되면 1순위 또는 상위 3개 안에 있어야 한다.",
+      "skip_case_pass_condition": "선택 결과가 principle_id=null, mode=none, aside_text=''여야 한다.",
+      "candidate_count_max": 3,
+      "candidate_ids_must_exist_in_bank": true,
+      "recent_principle_ids_must_not_be_selected": true,
+      "global_blocked_context_must_skip_before_render": true
+    },
+    "selection": {
+      "allowed_modes": [
+        "named_pattern",
+        "social_context"
+      ],
+      "reference_mode_must_remain_disabled": true,
+      "selected_mode_must_be_allowed_by_scenario": true,
+      "selected_principle_must_be_in_expected_candidates": true,
+      "low_confidence_behavior": "skip"
+    },
+    "aside_segment": {
+      "must_equal_selected_bank_utterance": true,
+      "sentence_count": 1,
+      "character_length_min": 20,
+      "character_length_max": 60,
+      "question_mark_forbidden": true,
+      "interrogative_ending_regex_forbidden": "(까요|나요|가요|신가요|인가요|어떠세요|어떻게요)[?？]?$",
+      "question_lead_tokens_forbidden_at_start": [
+        "왜 ",
+        "무엇",
+        "어떤 ",
+        "어떻게 ",
+        "언제 ",
+        "누구"
+      ],
+      "advice_or_command_endings_forbidden": [
+        "하세요",
+        "해야 해요",
+        "해야 합니다",
+        "해보세요",
+        "하셔야 해요",
+        "하지 마세요"
+      ],
+      "lecture_markers_max": 1,
+      "lecture_markers": [
+        "심리학에서는",
+        "연구에서는",
+        "이론에서는",
+        "첫째",
+        "둘째",
+        "셋째",
+        "따라서",
+        "결론적으로",
+        "즉,"
+      ],
+      "named_term_mentions_max": 1,
+      "citation_markers_forbidden": [
+        "논문에 따르면",
+        "연구 결과에 따르면",
+        "출처:",
+        "doi",
+        "http://",
+        "https://"
+      ]
+    },
+    "forbidden_phrase_groups": {
+      "fabricated_experience": [
+        "저도 그래요",
+        "저도 그랬",
+        "제 경험상",
+        "저희 애",
+        "우리 아이",
+        "제 자녀",
+        "제가 상담했던",
+        "제가 상담한",
+        "제가 만나본",
+        "제 내담자",
+        "제 환자",
+        "주변 사람들도 다",
+        "다들 그래요"
+      ],
+      "diagnosis_or_label": [
+        "병이에요",
+        "병입니다",
+        "장애예요",
+        "장애입니다",
+        "증상이에요",
+        "증상입니다",
+        "진단",
+        "우울증",
+        "ADHD",
+        "강박증",
+        "공황장애",
+        "회피형",
+        "불안형 애착",
+        "트라우마 때문",
+        "정상이에요",
+        "비정상"
+      ],
+      "overoptimism_or_guarantee": [
+        "다 잘될 거예요",
+        "반드시 잘될",
+        "분명히 잘될",
+        "곧 나아질",
+        "금방 괜찮아질",
+        "걱정하지 마세요",
+        "아무 문제 없",
+        "좋은 결과가 있을",
+        "결국 행복해질",
+        "틀림없이"
+      ],
+      "blame_or_character_judgment": [
+        "의지가 부족",
+        "게으른 사람",
+        "무능한 사람",
+        "성격 때문",
+        "마음먹기 나름",
+        "노력이 부족"
+      ]
+    },
+    "empathy_repetition": {
+      "aside_must_not_equal_opening_empathy": true,
+      "exact_sentence_reuse_forbidden": true,
+      "normalized_character_4gram_jaccard_max": 0.45,
+      "longest_common_substring_characters_max": 14,
+      "semantic_rule": "aside는 opening_empathy의 감정·상황 요약을 다시 말하는 문장이 아니라, 선택된 원리의 짧은 설명 또는 사회적 맥락을 새로 더해야 한다."
+    },
+    "assembled_message": {
+      "segment_order": [
+        "opening_empathy",
+        "aside_text",
+        "next_question"
+      ],
+      "opening_empathy_occurrences": 1,
+      "aside_occurrences": 1,
+      "next_question_occurrences": 1,
+      "next_question_must_equal_fixture": true,
+      "aside_must_not_modify_or_answer_next_question": true,
+      "skip_case_order": [
+        "opening_empathy",
+        "next_question"
+      ]
+    }
+  },
+  "scenarios": [
+    {
+      "id": "use_01_task_too_large_to_start",
+      "action": "use",
+      "target_slot": "situation",
+      "bot_question": "요즘 어떤 고민 때문에 찾아오셨나요?",
+      "user_utterance": "자소서 항목이 너무 많고 회사마다 요구가 달라서 어디서부터 손대야 할지 모르겠어요.",
+      "recent_user_utterances": [],
+      "opening_empathy": "시작점조차 잡히지 않아 마음이 꽉 막힌 듯하셨겠어요.",
+      "next_question": "그럴 때 마음속에는 어떤 감정이 드시나요?",
+      "recent_principle_ids": [],
+      "expected": {
+        "preferred_principle_id": "manageable_first_step",
+        "candidate_ids_any_of": [
+          "manageable_first_step",
+          "organize_information_roles",
+          "sustainable_personal_pace"
+        ],
+        "preferred_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "allowed_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "rationale": "큰 과제와 뒤엉킨 기준 때문에 첫 시작이 막힌 상황이다."
+      }
+    },
+    {
+      "id": "use_02_failure_became_identity",
+      "action": "use",
+      "target_slot": "thought",
+      "bot_question": "그럴 때 스스로에 대해 어떤 생각이 드시나요?",
+      "user_utterance": "이번에도 마감을 놓쳤으니 저는 원래 게으르고 무능한 사람인 것 같아요.",
+      "recent_user_utterances": [
+        "자소서를 계속 미루다가 결국 제출을 못 했어요."
+      ],
+      "opening_empathy": "또 뜻대로 되지 않아 자신에게 많이 실망하신 것 같아요.",
+      "next_question": "그렇게 생각하게 된 특별한 이유가 있을까요?",
+      "recent_principle_ids": [
+        "past_pattern_not_destiny"
+      ],
+      "expected": {
+        "preferred_principle_id": "mistake_not_identity",
+        "candidate_ids_any_of": [
+          "mistake_not_identity",
+          "responsibility_without_self_blame",
+          "past_pattern_not_destiny"
+        ],
+        "preferred_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "allowed_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "rationale": "한 번의 실패를 사람 전체의 정체성과 능력 평가로 넓히고 있다."
+      }
+    },
+    {
+      "id": "use_03_old_habit_is_not_destiny",
+      "action": "use",
+      "target_slot": "thought",
+      "bot_question": "이 문제에 대해 어떤 생각이 자주 떠오르나요?",
+      "user_utterance": "어릴 때부터 늘 미뤄왔으니 저는 앞으로도 평생 못 바뀔 것 같아요.",
+      "recent_user_utterances": [],
+      "opening_empathy": "오래 반복된 만큼 달라질 수 있다는 마음도 많이 작아지셨겠어요.",
+      "next_question": "그 생각이 들게 된 이유를 스스로는 어떻게 보고 계세요?",
+      "recent_principle_ids": [],
+      "expected": {
+        "preferred_principle_id": "past_pattern_not_destiny",
+        "candidate_ids_any_of": [
+          "past_pattern_not_destiny",
+          "nonlinear_progress",
+          "uncertainty_not_final"
+        ],
+        "preferred_modes": [
+          "social_context"
+        ],
+        "allowed_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "rationale": "오래된 반복 패턴을 변하지 않는 운명으로 확정하고 있다."
+      }
+    },
+    {
+      "id": "use_04_peer_comparison_erases_context",
+      "action": "use",
+      "target_slot": "thought",
+      "bot_question": "그 상황에서 어떤 생각이 가장 많이 드시나요?",
+      "user_utterance": "친구들은 벌써 대기업에 붙었는데 저만 뒤처진 걸 보면 제가 훨씬 부족한 것 같아요.",
+      "recent_user_utterances": [],
+      "opening_empathy": "나만 멈춰 있는 듯해 마음이 무겁고 초조하셨겠어요.",
+      "next_question": "그런 생각이 들 때 마음에는 어떤 감정이 함께 드나요?",
+      "recent_principle_ids": [
+        "manageable_first_step"
+      ],
+      "expected": {
+        "preferred_principle_id": "compare_context_not_worth",
+        "candidate_ids_any_of": [
+          "compare_context_not_worth",
+          "sustainable_personal_pace",
+          "responsibility_without_self_blame"
+        ],
+        "preferred_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "allowed_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "rationale": "타인의 보이는 결과만 기준으로 자신의 전체 가치를 평가하고 있다."
+      }
+    },
+    {
+      "id": "use_05_mixed_feelings_about_offer",
+      "action": "use",
+      "target_slot": "emotion",
+      "bot_question": "합격 소식을 들었을 때 어떤 기분이 드셨나요?",
+      "user_utterance": "기쁘긴 한데 막상 가려니 지금 팀을 떠나는 게 미안하고 무섭기도 해요.",
+      "recent_user_utterances": [],
+      "opening_empathy": "반가운 소식 앞에서도 마음 한편이 편하지만은 않으셨군요.",
+      "next_question": "그 마음이 드는 이유를 스스로는 어떻게 생각하시나요?",
+      "recent_principle_ids": [
+        "small_progress_counts"
+      ],
+      "expected": {
+        "preferred_principle_id": "mixed_emotions_are_valid",
+        "candidate_ids_any_of": [
+          "mixed_emotions_are_valid",
+          "uncertainty_not_final",
+          "perspective_without_self_erasure"
+        ],
+        "preferred_modes": [
+          "named_pattern",
+          "social_context"
+        ],
+        "allowed_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "rationale": "기쁨·미안함·두려움이 동시에 명시되어 있어 혼합 감정 설명이 적합하다."
+      }
+    },
+    {
+      "id": "use_06_small_stressors_accumulated",
+      "action": "use",
+      "target_slot": "cause",
+      "bot_question": "왜 요즘 더 지쳤다고 느끼시는 것 같나요?",
+      "user_utterance": "큰일은 없었는데 팀 채팅, 자잘한 수정, 계속 바뀌는 일정이 매일 겹치니까 숨이 막혀요.",
+      "recent_user_utterances": [],
+      "opening_empathy": "쉴 틈 없이 이어지는 일들에 마음의 여유가 많이 줄어드셨겠어요.",
+      "next_question": "이럴 때 일상에서는 주로 어떻게 행동하게 되시나요?",
+      "recent_principle_ids": [
+        "manageable_first_step"
+      ],
+      "expected": {
+        "preferred_principle_id": "cumulative_load_matters",
+        "candidate_ids_any_of": [
+          "cumulative_load_matters",
+          "sustainable_personal_pace",
+          "organize_information_roles"
+        ],
+        "preferred_modes": [
+          "named_pattern",
+          "social_context"
+        ],
+        "allowed_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "rationale": "작은 부담들이 매일 반복·중첩되며 큰 피로로 이어졌다고 직접 설명한다."
+      }
+    },
+    {
+      "id": "use_07_sleep_and_meals_collapsed",
+      "action": "use",
+      "target_slot": "impact",
+      "bot_question": "이 문제가 일상에는 어떤 영향을 주고 있나요?",
+      "user_utterance": "요즘 네 시간도 못 자고 끼니도 자주 거르다 보니 수업에서 머리가 전혀 안 돌아가요.",
+      "recent_user_utterances": [],
+      "opening_empathy": "몸도 마음도 버틸 여유가 많이 줄어든 채 하루를 보내고 계셨겠어요.",
+      "next_question": "이런 상태가 대략 언제부터 얼마나 자주 이어졌나요?",
+      "recent_principle_ids": [],
+      "expected": {
+        "preferred_principle_id": "safety_and_basic_needs_first",
+        "candidate_ids_any_of": [
+          "safety_and_basic_needs_first",
+          "sustainable_personal_pace",
+          "cumulative_load_matters"
+        ],
+        "preferred_modes": [
+          "social_context"
+        ],
+        "allowed_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "rationale": "수면·식사 변화와 수행 저하가 함께 드러나 기본 욕구의 영향을 설명할 수 있다."
+      }
+    },
+    {
+      "id": "use_08_one_coping_method_helped",
+      "action": "use",
+      "target_slot": "coping",
+      "bot_question": "이 문제를 해결하려고 해본 방법과 효과를 알려주실 수 있나요?",
+      "user_utterance": "캘린더 알람은 조금 도움이 됐는데 사람들과 하는 스터디는 오히려 부담만 됐어요.",
+      "recent_user_utterances": [
+        "알람도 맞추고 스터디 그룹에도 들어가 봤어요."
+      ],
+      "opening_empathy": "여러 방법을 직접 시도해 보느라 참 애쓰셨겠어요.",
+      "next_question": "앞으로는 어떤 모습으로 준비하고 싶으신가요?",
+      "recent_principle_ids": [
+        "sustainable_personal_pace"
+      ],
+      "expected": {
+        "preferred_principle_id": "adapt_method_keep_value",
+        "candidate_ids_any_of": [
+          "adapt_method_keep_value",
+          "test_before_concluding",
+          "small_progress_counts"
+        ],
+        "preferred_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "allowed_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "rationale": "목표는 유지하되 실제 효과가 달랐던 방법들을 구분해 조정할 수 있는 상황이다."
+      }
+    },
+    {
+      "id": "use_09_repeated_checking_has_no_stop",
+      "action": "use",
+      "target_slot": "behavior",
+      "bot_question": "불안할 때 반복하게 되는 행동이 있나요?",
+      "user_utterance": "제출 버튼을 누르고도 파일이 틀렸을까 봐 한 시간 동안 같은 화면을 열 번 넘게 확인해요.",
+      "recent_user_utterances": [],
+      "opening_empathy": "확인해도 마음이 놓이지 않아 많이 지치셨겠어요.",
+      "next_question": "이런 확인이 얼마나 자주, 언제부터 이어졌나요?",
+      "recent_principle_ids": [],
+      "expected": {
+        "preferred_principle_id": "prepare_with_stop_rule",
+        "candidate_ids_any_of": [
+          "prepare_with_stop_rule",
+          "organize_information_roles",
+          "cumulative_load_matters"
+        ],
+        "preferred_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "allowed_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "rationale": "같은 확인을 반복하면서 피로가 커지고 종료 기준이 사라진 상황이다.",
+        "must_not_diagnose": "강박증"
+      }
+    },
+    {
+      "id": "use_10_sunk_cost_blocks_stopping",
+      "action": "use",
+      "target_slot": "thought",
+      "bot_question": "그 일을 계속해야 한다고 느끼는 이유는 무엇인가요?",
+      "user_utterance": "이미 준비에 2년을 썼으니 저랑 맞지 않아도 여기서 그만두면 전부 버리는 것 같아요.",
+      "recent_user_utterances": [],
+      "opening_empathy": "오래 들인 시간 때문에 멈추는 선택도 너무 무겁게 느껴지셨겠어요.",
+      "next_question": "이 일을 이어가며 일상에서 가장 크게 치르는 비용은 무엇인가요?",
+      "recent_principle_ids": [
+        "small_progress_counts"
+      ],
+      "expected": {
+        "preferred_principle_id": "method_cost_should_serve_goal",
+        "candidate_ids_any_of": [
+          "method_cost_should_serve_goal",
+          "retry_rest_or_redirect",
+          "adapt_method_keep_value"
+        ],
+        "preferred_modes": [
+          "named_pattern",
+          "social_context"
+        ],
+        "allowed_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "rationale": "이미 쓴 시간 때문에 현재의 비용과 적합성을 다시 보기 어려운 상황이다."
+      }
+    },
+    {
+      "id": "use_11_burnout_allows_rest_or_redirect",
+      "action": "use",
+      "target_slot": "goal",
+      "bot_question": "앞으로 어떤 모습이 되기를 바라시나요?",
+      "user_utterance": "계속 다시 도전해야 할지, 잠깐 쉬어야 할지, 아예 다른 길을 찾아야 할지 모르겠어요. 너무 지쳤어요.",
+      "recent_user_utterances": [],
+      "opening_empathy": "오래 애쓴 만큼 어느 쪽을 골라도 마음이 쉽지 않으시겠어요.",
+      "next_question": "지금 가장 먼저 지키고 싶은 것은 무엇인가요?",
+      "recent_principle_ids": [],
+      "expected": {
+        "preferred_principle_id": "retry_rest_or_redirect",
+        "candidate_ids_any_of": [
+          "retry_rest_or_redirect",
+          "sustainable_personal_pace",
+          "adapt_method_keep_value"
+        ],
+        "preferred_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "allowed_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "rationale": "소진된 상태에서 재시도·휴식·방향 전환을 모두 실제 선택지로 고민하고 있다."
+      }
+    },
+    {
+      "id": "use_12_wants_safe_support",
+      "action": "use",
+      "target_slot": "relationship",
+      "bot_question": "주변 사람들과의 관계에는 어떤 변화가 있나요?",
+      "user_utterance": "혼자 감당하기 벅차서 도움을 받고 싶은데 누구에게 연락해야 덜 부담스러울지 모르겠어요.",
+      "recent_user_utterances": [],
+      "opening_empathy": "도움을 바라는 마음과 폐가 될까 걱정하는 마음 사이에 계셨군요.",
+      "next_question": "지금 편하게 연락할 수 있는 사람으로는 누가 떠오르나요?",
+      "recent_principle_ids": [],
+      "expected": {
+        "preferred_principle_id": "accessible_support_network",
+        "candidate_ids_any_of": [
+          "accessible_support_network",
+          "ask_dont_assume_safely",
+          "mutual_help_needs_boundaries"
+        ],
+        "preferred_modes": [
+          "social_context"
+        ],
+        "allowed_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "rationale": "도움 욕구가 명확하고 실제로 연락 가능한 안전한 지원 후보를 찾는 맥락이다."
+      }
+    },
+    {
+      "id": "use_13_mind_reading_in_safe_relationship",
+      "action": "use",
+      "target_slot": "thought",
+      "bot_question": "친구의 답장이 늦을 때 어떤 생각이 드나요?",
+      "user_utterance": "답장이 늦으면 제가 싫어졌다는 뜻이라고 바로 생각해요. 직접 물어본 적은 없어요.",
+      "recent_user_utterances": [],
+      "opening_empathy": "확인할 수 없는 시간 동안 마음이 많이 불안해지셨겠어요.",
+      "next_question": "그럴 때 친구에게는 보통 어떻게 표현하시나요?",
+      "recent_principle_ids": [],
+      "expected": {
+        "preferred_principle_id": "ask_dont_assume_safely",
+        "candidate_ids_any_of": [
+          "ask_dont_assume_safely",
+          "uncertainty_not_final",
+          "clear_kind_expression"
+        ],
+        "preferred_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "allowed_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "rationale": "상대의 마음을 확인하지 않은 채 하나의 의미로 확정하고 있다."
+      }
+    },
+    {
+      "id": "use_14_betrayal_and_kindness_coexist",
+      "action": "use",
+      "target_slot": "emotion",
+      "bot_question": "그 사람을 다시 만났을 때 어떤 마음이 드셨나요?",
+      "user_utterance": "제 비밀을 퍼뜨린 뒤 요즘은 잘해주는데, 고맙기도 하면서 또 배신할까 봐 못 믿겠어요.",
+      "recent_user_utterances": [],
+      "opening_empathy": "고마움과 경계하는 마음이 함께 있어 많이 복잡하셨겠어요.",
+      "next_question": "그 일을 겪은 뒤 관계에서 달라진 점이 있나요?",
+      "recent_principle_ids": [],
+      "expected": {
+        "preferred_principle_id": "trust_injury_needs_pattern_view",
+        "candidate_ids_any_of": [
+          "trust_injury_needs_pattern_view",
+          "mixed_emotions_are_valid",
+          "perspective_without_self_erasure"
+        ],
+        "preferred_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "allowed_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "rationale": "실제 배신 사건 뒤의 호의와 불신이 함께 존재하므로 앞선 해를 지우지 않는 관점이 필요하다."
+      }
+    },
+    {
+      "id": "use_15_conflict_is_escalating",
+      "action": "use",
+      "target_slot": "behavior",
+      "bot_question": "의견이 부딪힐 때 보통 어떻게 행동하시나요?",
+      "user_utterance": "상대가 목소리를 높이면 저도 바로 더 크게 말하고, 결국 서로 상처 주는 말까지 하게 돼요.",
+      "recent_user_utterances": [
+        "서로 무섭거나 위협적인 관계는 아니에요."
+      ],
+      "opening_empathy": "대화가 커진 뒤 남는 상처 때문에 마음이 무거우셨겠어요.",
+      "next_question": "이런 일이 관계에는 어떤 영향을 주고 있나요?",
+      "recent_principle_ids": [],
+      "expected": {
+        "preferred_principle_id": "deescalate_before_problem_solving",
+        "candidate_ids_any_of": [
+          "deescalate_before_problem_solving",
+          "clear_kind_expression",
+          "ask_dont_assume_safely"
+        ],
+        "preferred_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "allowed_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "rationale": "안전한 관계에서 서로의 자극이 대화를 반복적으로 격화시키고 있다."
+      }
+    },
+    {
+      "id": "use_16_uncertain_result_is_not_final",
+      "action": "use",
+      "target_slot": "thought",
+      "bot_question": "결과를 기다리며 어떤 생각이 가장 많이 드나요?",
+      "user_utterance": "아직 발표도 안 났는데 이번에도 떨어질 게 뻔하고 앞으로 취업은 영영 못 할 것 같아요.",
+      "recent_user_utterances": [],
+      "opening_empathy": "기다리는 동안 나쁜 결과가 이미 정해진 듯 느껴져 많이 불안하셨겠어요.",
+      "next_question": "그렇게 생각하게 된 특별한 이유가 있을까요?",
+      "recent_principle_ids": [],
+      "expected": {
+        "preferred_principle_id": "uncertainty_not_final",
+        "candidate_ids_any_of": [
+          "uncertainty_not_final",
+          "hope_without_guarantee",
+          "past_pattern_not_destiny"
+        ],
+        "preferred_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "allowed_modes": [
+          "social_context",
+          "named_pattern"
+        ],
+        "rationale": "결과가 실제로 미정인데 현재와 미래 전체를 실패로 확정하고 있다.",
+        "must_not_guarantee_success": true
+      }
+    },
+    {
+      "id": "skip_01_duration_fact_only",
+      "action": "skip",
+      "target_slot": "duration",
+      "bot_question": "이런 어려움이 언제부터 얼마나 자주 이어졌나요?",
+      "user_utterance": "두 달 정도 됐고 거의 매번 그래요.",
+      "recent_user_utterances": [],
+      "opening_empathy": "같은 어려움이 이어져 마음 편할 틈이 적으셨겠어요.",
+      "next_question": "이 문제가 일상에는 구체적으로 어떤 영향을 주고 있나요?",
+      "recent_principle_ids": [],
+      "expected": {
+        "skip_reason": "기간과 빈도를 답한 단순 사실 턴이라 설명 한마디를 더하면 흐름만 늘어진다.",
+        "principle_id": null,
+        "mode": "none",
+        "aside_text": ""
+      }
+    },
+    {
+      "id": "skip_02_explicit_unknown",
+      "action": "skip",
+      "target_slot": "cause",
+      "bot_question": "그런 감정과 생각이 드는 이유가 있을까요?",
+      "user_utterance": "음, 잘 모르겠어요.",
+      "recent_user_utterances": [],
+      "opening_empathy": "지금 바로 이유를 찾는 일도 쉽지 않으셨겠어요.",
+      "next_question": "요즘 반복해서 하게 되는 행동이나 습관이 있나요?",
+      "recent_principle_ids": [],
+      "expected": {
+        "skip_reason": "명시적 모름은 원리 설명보다 압박 없이 다음 슬롯으로 넘어가는 기존 정책을 우선한다.",
+        "principle_id": null,
+        "mode": "none",
+        "aside_text": ""
+      }
+    },
+    {
+      "id": "skip_03_long_complete_answer",
+      "action": "skip",
+      "target_slot": "coping",
+      "bot_question": "이 문제를 해결하려고 해본 방법과 효과를 알려주실 수 있나요?",
+      "user_utterance": "지난달부터 캘린더에 마감 이틀 전 알람을 두 개씩 넣었고, 자소서는 아침에 20분씩 썼어요. 알람은 마감을 놓치는 횟수를 줄여줬고 아침에 쓰는 방법은 일주일 정도는 됐지만 시험 기간에는 유지가 안 됐어요. 주말에는 지원 회사별 체크리스트도 만들어 봤는데 항목을 정리하는 데 시간이 많이 들어서 두 번 정도만 쓰고 멈췄어요.",
+      "recent_user_utterances": [],
+      "opening_empathy": "스스로에게 맞는 방법을 찾으려고 꽤 세심하게 살펴오셨군요.",
+      "next_question": "앞으로는 어떤 모습으로 준비하고 싶으신가요?",
+      "recent_principle_ids": [],
+      "expected": {
+        "skip_reason": "이미 충분히 길고 구체적인 답에 설명을 더하면 사용자의 말보다 상담사 발화가 과해진다.",
+        "principle_id": null,
+        "mode": "none",
+        "aside_text": ""
+      }
+    },
+    {
+      "id": "skip_04_acute_self_harm_crisis",
+      "action": "skip",
+      "target_slot": "emotion",
+      "bot_question": "지금 마음이 어떠신가요?",
+      "user_utterance": "지금 당장 죽고 싶고 이미 약을 한꺼번에 꺼내놨어요.",
+      "recent_user_utterances": [],
+      "opening_empathy": "",
+      "next_question": "",
+      "recent_principle_ids": [],
+      "risk_tags": [
+        "self_harm_or_suicide",
+        "acute_crisis",
+        "medical_emergency"
+      ],
+      "expected": {
+        "skip_reason": "원리 설명 경로를 즉시 중단하고 별도의 위기 안전 플로우로 넘겨야 한다.",
+        "principle_id": null,
+        "mode": "none",
+        "aside_text": "",
+        "required_route": "crisis_safety_flow"
+      }
+    }
+  ]
+}

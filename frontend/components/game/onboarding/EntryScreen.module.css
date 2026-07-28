@@ -1,0 +1,432 @@
+@font-face {
+  font-family: "Bagel Fat One";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/BagelFatOne-Regular.woff2") format("woff2");
+}
+
+.screen {
+  position: absolute;
+  z-index: 20;
+  inset: 0;
+  min-height: 100dvh;
+  overflow: hidden;
+  color: #234631;
+  background: #a9cfa0;
+  isolation: isolate;
+}
+
+.scene,
+.canvasFallback,
+.haze {
+  position: absolute;
+  inset: 0;
+}
+
+.scene canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.canvasFallback {
+  background:
+    radial-gradient(circle at 50% 68%, rgba(255, 239, 174, 0.38), transparent 20%),
+    linear-gradient(180deg, #b7d6a6 0%, #82b469 66%, #6f9c5b 100%);
+}
+
+.haze {
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255, 250, 220, 0.2) 0%, transparent 28%),
+    radial-gradient(circle at 50% 18%, rgba(255, 247, 193, 0.17), transparent 29%),
+    linear-gradient(90deg, rgba(37, 76, 45, 0.1), transparent 16%, transparent 84%, rgba(37, 76, 45, 0.09)),
+    linear-gradient(0deg, rgba(28, 61, 36, 0.08), transparent 24%);
+}
+
+.titleBlock {
+  position: absolute;
+  z-index: 3;
+  top: max(3.5vh, calc(env(safe-area-inset-top) + 14px));
+  right: 0;
+  left: 0;
+  width: min(42vw, 600px);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.titleBlock h1 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  font-family: "Bagel Fat One", "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.titleTop {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(3px, 0.45vw, 7px);
+  align-items: end;
+  width: 68%;
+  margin: 0 auto;
+}
+
+.titleBottom {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr 0.92fr 1.28fr;
+  gap: clamp(4px, 0.5vw, 8px);
+  align-items: end;
+  width: 100%;
+  margin-top: clamp(7px, 1vh, 13px);
+}
+
+.titleGlyph {
+  position: relative;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+  paint-order: stroke fill;
+}
+
+.titleTop .titleGlyph {
+  height: clamp(64px, 7.8vw, 112px);
+  padding-bottom: 0.04em;
+  color: #f7dd54;
+  font-size: clamp(38px, 4.8vw, 70px);
+  -webkit-text-stroke: 0.6px rgba(244, 224, 102, 0.72);
+  text-shadow:
+    0 3px 0 #275d3d,
+    0 5px 10px rgba(24, 64, 37, 0.24);
+}
+
+.topGlyph1 {
+  border-radius: 46% 54% 43% 57% / 52% 43% 57% 48%;
+  background: #2f7a4c;
+  box-shadow: 0 7px 0 #235f3b, 0 11px 18px rgba(27, 66, 38, 0.18);
+  transform: rotate(-6deg) translateY(5px);
+}
+
+.topGlyph2 {
+  border-radius: 52% 48% 55% 45% / 44% 58% 42% 56%;
+  background: #34875b;
+  box-shadow: 0 7px 0 #286a47, 0 11px 18px rgba(27, 66, 38, 0.18);
+  transform: rotate(3deg) translateY(-2px);
+}
+
+.topGlyph3 {
+  border-radius: 43% 57% 48% 52% / 58% 43% 57% 42%;
+  background: #438e4c;
+  box-shadow: 0 7px 0 #327139, 0 11px 18px rgba(27, 66, 38, 0.18);
+  transform: rotate(-2deg) translateY(2px);
+}
+
+.topGlyph4 {
+  border-radius: 56% 44% 53% 47% / 45% 55% 44% 56%;
+  background: #2d8352;
+  box-shadow: 0 7px 0 #226941, 0 11px 18px rgba(27, 66, 38, 0.18);
+  transform: rotate(5deg) translateY(3px);
+}
+
+.topGlyph4::before,
+.topGlyph4::after {
+  position: absolute;
+  z-index: -1;
+  top: -18%;
+  width: 27%;
+  height: 31%;
+  border-radius: 80% 12% 80% 18%;
+  background: #286f48;
+  content: "";
+}
+
+.topGlyph4::before {
+  right: 20%;
+  transform: rotate(21deg);
+}
+
+.topGlyph4::after {
+  right: 2%;
+  transform: rotate(76deg) scale(0.78);
+}
+
+.titleBottom .titleGlyph {
+  height: clamp(86px, 11.5vw, 166px);
+  padding-bottom: 0.035em;
+  color: #fff7d7;
+  font-size: clamp(52px, 6.8vw, 98px);
+  -webkit-text-stroke: 0.8px rgba(255, 251, 224, 0.86);
+  text-shadow:
+    0 4px 0 rgba(33, 69, 45, 0.42),
+    0 8px 16px rgba(31, 67, 42, 0.22);
+}
+
+.bottomGlyph1 {
+  border-radius: 22% 14% 23% 15% / 17% 23% 14% 21%;
+  background: #e66f76;
+  box-shadow: 0 8px 0 #bd555e, 0 13px 22px rgba(35, 69, 42, 0.18);
+  transform: rotate(-2.5deg);
+}
+
+.bottomGlyph2 {
+  border-radius: 15% 21% 15% 23% / 22% 15% 23% 16%;
+  background: #4a9fc4;
+  box-shadow: 0 8px 0 #397fa0, 0 13px 22px rgba(35, 69, 42, 0.18);
+  transform: rotate(1.8deg) translateY(1px);
+}
+
+.bottomGlyph3 {
+  border-radius: 19% 15% 21% 16% / 15% 23% 14% 22%;
+  background: #e5a43a;
+  box-shadow: 0 8px 0 #bc8129, 0 13px 22px rgba(35, 69, 42, 0.18);
+  transform: rotate(-1.4deg) translateY(-1px);
+}
+
+.bottomGlyph4 {
+  height: clamp(96px, 12.8vw, 184px) !important;
+  margin-left: -3%;
+  border-radius: 55% 45% 52% 48% / 44% 56% 46% 54%;
+  background: #27874f;
+  box-shadow: 0 9px 0 #1f6d3f, 0 14px 23px rgba(35, 69, 42, 0.2);
+  transform: rotate(4deg) translateY(1px);
+}
+
+.bottomGlyph4::before,
+.bottomGlyph4::after {
+  position: absolute;
+  z-index: -1;
+  width: 27%;
+  height: 29%;
+  border-radius: 85% 10% 85% 15%;
+  background: #257a49;
+  content: "";
+}
+
+.bottomGlyph4::before {
+  top: -13%;
+  right: 16%;
+  transform: rotate(18deg);
+}
+
+.bottomGlyph4::after {
+  top: 3%;
+  right: -10%;
+  transform: rotate(74deg) scale(0.8);
+}
+
+.titleRibbon {
+  position: absolute;
+  z-index: 5;
+  top: 39%;
+  left: 4%;
+  padding: 0.48em 0.76em 0.55em;
+  border: 2px solid rgba(128, 76, 46, 0.34);
+  border-radius: 46% 54% 43% 57% / 54% 43% 57% 46%;
+  color: #fff9db;
+  background: #ed9661;
+  box-shadow: 0 5px 0 rgba(132, 79, 45, 0.34), 0 9px 15px rgba(43, 73, 43, 0.16);
+  font-family: "Bagel Fat One", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  font-size: clamp(11px, 1.35vw, 18px);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1;
+  white-space: nowrap;
+  transform: rotate(-7deg);
+}
+
+.startArea {
+  position: absolute;
+  z-index: 4;
+  right: 0;
+  bottom: max(6.5vh, calc(env(safe-area-inset-bottom) + 18px));
+  left: 0;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.startButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-width: 180px;
+  min-height: 44px;
+  padding: 5px 12px;
+  border: 0;
+  border-radius: 999px;
+  color: #fffbe1;
+  background: transparent;
+  text-shadow: 0 2px 4px rgba(25, 55, 35, 0.72);
+  font: inherit;
+  font-size: clamp(14px, 1.15vw, 17px);
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+
+.startButton kbd {
+  display: inline-grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  place-items: center;
+  border: 2px solid rgba(255, 255, 240, 0.94);
+  border-radius: 50%;
+  color: #39744c;
+  background: #fffbe2;
+  box-shadow: 0 2px 0 rgba(36, 75, 45, 0.5), 0 5px 10px rgba(32, 64, 39, 0.18);
+  text-shadow: none;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.startButton:hover {
+  opacity: 0.96;
+  transform: translateY(-2px) scale(1.035);
+}
+
+.startButton:focus-visible {
+  outline: 4px solid rgba(255, 226, 104, 0.92);
+  outline-offset: 4px;
+  background: rgba(39, 94, 57, 0.18);
+}
+
+.cornerMark {
+  position: absolute;
+  z-index: 3;
+  top: max(18px, calc(env(safe-area-inset-top) + 10px));
+  right: max(22px, 2.4vw);
+  color: rgba(35, 75, 44, 0.5);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-shadow: 0 1px rgba(255, 255, 234, 0.72);
+}
+
+@media (max-width: 800px) and (orientation: portrait) {
+  .titleBlock {
+    top: max(2.8vh, calc(env(safe-area-inset-top) + 16px));
+    width: min(88vw, 400px);
+  }
+
+  .titleTop { gap: 4px; }
+  .titleBottom { gap: 5px; margin-top: 8px; }
+
+  .titleTop .titleGlyph {
+    height: clamp(58px, 18vw, 78px);
+    font-size: clamp(35px, 11vw, 47px);
+    box-shadow: 0 5px 0 #286442, 0 9px 14px rgba(27, 66, 38, 0.17);
+  }
+
+  .titleBottom .titleGlyph {
+    height: clamp(76px, 24vw, 103px);
+    font-size: clamp(46px, 14vw, 60px);
+  }
+
+  .bottomGlyph4 {
+    height: clamp(84px, 27vw, 116px) !important;
+  }
+
+  .titleRibbon {
+    top: 38%;
+    left: 1%;
+    padding: 0.48em 0.7em 0.54em;
+    border-width: 1.5px;
+    font-size: clamp(9px, 2.8vw, 11px);
+  }
+
+  .startArea {
+    bottom: max(2.5vh, calc(env(safe-area-inset-bottom) + 16px));
+  }
+
+  .startButton {
+    width: min(280px, calc(100vw - 40px));
+    min-height: 54px;
+    border: 2px solid rgba(255, 255, 239, 0.9);
+    color: #2d5d40;
+    background: rgba(255, 248, 218, 0.9);
+    box-shadow: 0 8px 22px rgba(33, 71, 42, 0.2), 0 3px 0 rgba(67, 112, 69, 0.46);
+    text-shadow: none;
+    backdrop-filter: blur(8px);
+  }
+
+  .startButton kbd { display: none; }
+  .cornerMark { display: none; }
+}
+
+@media (max-width: 360px) and (orientation: portrait) {
+  .titleBlock { width: calc(100vw - 24px); }
+  .titleTop .titleGlyph { height: 58px; font-size: 34px; }
+  .titleBottom .titleGlyph { height: 73px; font-size: 43px; }
+  .bottomGlyph4 { height: 82px !important; }
+  .titleRibbon { left: 0; font-size: 9px; }
+}
+
+@media (max-height: 650px) and (orientation: landscape) {
+  .titleBlock {
+    top: max(8px, calc(env(safe-area-inset-top) + 5px));
+    width: min(42vw, 430px);
+  }
+
+  .titleTop .titleGlyph {
+    height: clamp(52px, 13.5vh, 72px);
+    font-size: clamp(31px, 8.5vh, 45px);
+  }
+
+  .titleBottom {
+    gap: 4px;
+    margin-top: 5px;
+  }
+
+  .titleBottom .titleGlyph {
+    height: clamp(67px, 20.5vh, 96px);
+    font-size: clamp(41px, 13.5vh, 60px);
+  }
+
+  .bottomGlyph4 {
+    height: clamp(74px, 22.5vh, 106px) !important;
+  }
+
+  .titleRibbon {
+    top: 38%;
+    left: 0;
+    padding: 5px 8px 6px;
+    font-size: clamp(8px, 2.3vh, 10px);
+  }
+
+  .startArea {
+    bottom: max(8px, calc(env(safe-area-inset-bottom) + 6px));
+  }
+
+  .startButton {
+    min-width: 190px;
+    min-height: 42px;
+    font-size: 13px;
+  }
+
+  .startButton kbd {
+    width: 27px;
+    height: 27px;
+    flex-basis: 27px;
+    font-size: 15px;
+  }
+
+  .cornerMark { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .startButton { transition: none; }
+}

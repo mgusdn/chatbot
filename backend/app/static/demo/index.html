@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta
+      name="description"
+      content="Gemini 기존·개선 파이프라인을 비교하는 프바오 판다 상담 데모"
+    />
+    <title>프바오 마음상담 · Local AI Demo</title>
+    <link rel="stylesheet" href="/static/demo/demo.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="/demo" aria-label="프바오 마음상담 홈">
+          <span class="brand-mark" aria-hidden="true"><i></i></span>
+          <span>
+            <strong>프바오 마음상담</strong>
+            <small>천천히 말해도 괜찮아요</small>
+          </span>
+        </a>
+        <nav class="top-actions" aria-label="페이지 메뉴">
+          <a class="text-link" href="/">A/B 실험실</a>
+          <button id="resetButton" class="soft-button" type="button">새 상담</button>
+        </nav>
+      </header>
+
+      <section class="service-bar" aria-label="상담 모델 연결 상태">
+        <div class="connection-copy">
+          <span id="connectionChip" class="connection-chip is-pending"><i></i>연결 확인 중</span>
+          <p id="connectionDetail">로컬 상담 서비스를 준비하고 있어요.</p>
+        </div>
+        <div class="model-picker" role="radiogroup" aria-label="상담 모델 선택">
+          <button
+            class="model-option"
+            type="button"
+            data-arm="optimized"
+            role="radio"
+            aria-checked="false"
+          >
+            <span id="optimizedArmTag">B · 판단 API 공유</span>
+            <strong id="optimizedArmLabel">개선 Gemini · minimal</strong>
+          </button>
+          <button
+            class="model-option is-active"
+            type="button"
+            data-arm="baseline"
+            role="radio"
+            aria-checked="true"
+          >
+            <span id="baselineArmTag">A · 공감 + 원리</span>
+            <strong id="baselineArmLabel">공감 먼저 · 로컬 원리 · 필요한 판단만 Gemini</strong>
+          </button>
+        </div>
+      </section>
+
+      <main class="demo-grid">
+        <section class="counsel-card" aria-labelledby="counselTitle">
+          <h1 id="counselTitle" class="sr-only">프바오와 나누는 상담</h1>
+          <div
+            id="pandaStage"
+            class="stage-visual"
+            data-state="booting"
+            role="img"
+            aria-label="따뜻한 상담실 책상에 앉아 이야기를 듣는 귀여운 판다 상담사 프바오"
+          >
+            <img
+              class="room-image"
+              src="/static/demo/assets/panda-room-v2.png"
+              alt=""
+            />
+            <div class="panda-body-layer" aria-hidden="true">
+              <img class="panda-body-sprite" src="/static/demo/assets/panda-body-noscarf-v3.png" alt="" />
+            </div>
+            <div class="panda-head-layer" aria-hidden="true">
+              <img class="panda-head-sprite" src="/static/demo/assets/panda-head-centered-noscarf-v4.png" alt="" />
+            </div>
+            <div class="panda-collar-layer" aria-hidden="true">
+              <img class="panda-body-sprite panda-collar-sprite" src="/static/demo/assets/panda-body-noscarf-v3.png" alt="" />
+            </div>
+            <div class="stage-vignette" aria-hidden="true"></div>
+
+            <div class="presence-pill" aria-live="polite">
+              <span class="presence-dot"></span>
+              <strong id="pandaMood">상담 준비 중</strong>
+            </div>
+
+            <div class="speech-area">
+              <span class="name-tag"><i aria-hidden="true"></i>프바오</span>
+              <div class="speech-bubble">
+                <p id="responseText" aria-live="polite">
+                  잠시만요. 편안하게 이야기할 자리를 준비하고 있어요.
+                </p>
+                <span class="bubble-tail" aria-hidden="true"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stage-meta" aria-label="현재 상담 정보">
+            <span><i class="meta-dot"></i><b id="activeModelLabel">A · 공감 minimal · 로컬 원리 · 혼합 판단</b>로 상담 중</span>
+            <span id="latencyLabel">응답 시간 —</span>
+            <span id="turnLabel">0번째 이야기</span>
+          </div>
+        </section>
+
+        <aside class="mind-card" aria-labelledby="mindMapTitle">
+          <header class="mind-header">
+            <div>
+              <span class="section-kicker">LIVE MIND MAP</span>
+              <h2 id="mindMapTitle">내 마음의 연결</h2>
+              <p>대화에서 발견된 단서가 차례로 이어져요.</p>
+            </div>
+            <div id="mindProgress" class="progress-orb" style="--progress: 0deg">
+              <strong>0</strong><span>/ 6</span>
+            </div>
+          </header>
+
+          <div id="mindMap" class="mind-map" aria-live="polite">
+            <article class="mind-node node-situation" data-slot="situation">
+              <span>상황</span>
+              <p>어떤 일이 있었나요?</p>
+            </article>
+            <article class="mind-node node-thought" data-slot="thought">
+              <span>생각</span>
+              <p>무슨 생각이 들었나요?</p>
+            </article>
+            <div class="mind-center" aria-hidden="true">
+              <i></i>
+              <strong>지금의<br />마음</strong>
+            </div>
+            <article class="mind-node node-emotion" data-slot="emotion">
+              <span>감정</span>
+              <p>어떤 감정이었나요?</p>
+            </article>
+            <article class="mind-node node-behavior" data-slot="behavior">
+              <span>행동</span>
+              <p>어떻게 반응했나요?</p>
+            </article>
+            <article class="mind-node node-coping" data-slot="coping">
+              <span>대처</span>
+              <p>무엇을 해보았나요?</p>
+            </article>
+            <article class="mind-node node-goal" data-slot="goal">
+              <span>바람</span>
+              <p>어떻게 달라지고 싶나요?</p>
+            </article>
+          </div>
+
+          <div class="mind-legend">
+            <span><i></i>대화에서 발견됨</span>
+            <span id="nextClue">첫 이야기를 기다리고 있어요</span>
+          </div>
+
+          <details class="transcript-panel">
+            <summary>대화 기록 보기 <span id="transcriptCount">1</span></summary>
+            <div id="transcriptList" class="transcript-list"></div>
+          </details>
+        </aside>
+      </main>
+
+      <section class="composer-card" aria-labelledby="composerTitle">
+        <div class="composer-heading">
+          <div>
+            <span class="section-kicker">TELL ME YOUR STORY</span>
+            <h2 id="composerTitle">지금 마음에 걸리는 일을 말해 주세요</h2>
+          </div>
+          <p>Enter로 전송 · Shift + Enter로 줄바꿈</p>
+        </div>
+        <div id="valuesGridContainer" class="values-grid-container" hidden></div>
+        <div class="input-shell">
+          <textarea
+            id="messageInput"
+            rows="3"
+            maxlength="4000"
+            placeholder="예: 해야 할 일이 많은데 자꾸 미루게 돼서 스스로에게 답답해요."
+            aria-describedby="formStatus"
+          ></textarea>
+          <button id="sendButton" class="send-button" type="button">
+            <span id="sendLabel">프바오에게 말하기</span>
+            <i aria-hidden="true">↗</i>
+          </button>
+        </div>
+        <div class="composer-footer">
+          <div class="prompt-chips" aria-label="상담 예시">
+            <button type="button" data-example="요즘 해야 할 일이 많은데 자꾸 미루게 돼서 스스로에게 답답해요.">미루는 습관</button>
+            <button type="button" data-example="사람들을 만나고 나면 제가 이상하게 말한 것 같아서 계속 걱정돼요.">관계 걱정</button>
+            <button type="button" data-example="밤에 생각이 많아져서 잠들기가 어렵고 다음 날 너무 피곤해요.">잠들기 어려움</button>
+          </div>
+          <p id="formStatus" class="form-status" role="status">상담 세션을 만드는 중이에요.</p>
+        </div>
+      </section>
+
+      <footer class="safety-note">
+        <span>연구·시연용 AI 상담 도구</span>
+        <p>의료 진단이나 응급 대응을 대신하지 않아요. 즉각적인 위험이 있다면 112·119 또는 가까운 응급실에 도움을 요청해 주세요.</p>
+      </footer>
+    </div>
+
+    <script src="/static/demo/demo.js?v=20260723-4" defer></script>
+  </body>
+</html>
