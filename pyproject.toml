@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pume-chatbot"
+version = "0.1.0"
+description = "Terminal client for Pume's empathy-first A-series counseling pipeline"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "langgraph>=0.2,<2",
+  "openai>=1.68,<3",
+  "google-auth>=2.38,<3",
+  "requests>=2.32,<3",
+  "python-dotenv>=1,<2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10"]
+
+[project.scripts]
+pume-chatbot = "chatbot.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["chatbot", "chatbot.*"]
+
+[tool.setuptools.package-data]
+chatbot = ["*.json"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-q"

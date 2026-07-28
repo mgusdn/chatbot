@@ -1,0 +1,819 @@
+{
+  "schema_version": "1.0",
+  "bank_version": "2026-07-23.3",
+  "description": "Principle-first explanation bank for the baseline counseling arm.",
+  "source_candidate_document": "docs/principle_reference_candidates_100.md",
+  "delivery_modes": [
+    "reference",
+    "named_pattern",
+    "social_context"
+  ],
+  "reference_policies": {
+    "direct": "May be rendered in a matching, low-risk context.",
+    "conditional": "Prefer a plain paraphrase; render the original only with a strong contextual match.",
+    "reverse_only": "Never render the original. Use only the safe principle that reverses its blame or pressure.",
+    "blocked": "Do not render or reuse its original logic in the blocked context."
+  },
+  "global_blocked_contexts": [
+    "self_harm_or_suicide",
+    "acute_crisis",
+    "abuse_or_violence",
+    "sexual_harm",
+    "acute_trauma",
+    "bereavement",
+    "medical_emergency",
+    "legal_emergency"
+  ],
+  "principles": [
+    {
+      "id": "manageable_first_step",
+      "principle": "큰 과제는 지금 가능한 한 단계와 이미 가진 재료로 줄이면 시작하기 쉬워진다.",
+      "retrieval": {
+        "terms": ["미루", "시작", "막막", "과제", "자소서", "첫걸음", "손대", "준비"],
+        "slots": ["situation", "behavior", "coping", "goal"]
+      },
+      "references": [
+        {"candidate_id": "P06", "kind": "proverb", "text": "천 리 길도 한 걸음부터", "policy": "direct"},
+        {"candidate_id": "P16", "kind": "proverb", "text": "구슬이 서 말이라도 꿰어야 보배", "policy": "direct"},
+        {"candidate_id": "I20", "kind": "four_hanja_idiom", "text": "우공이산 愚公移山", "policy": "conditional"},
+        {"candidate_id": "I50", "kind": "four_hanja_idiom", "text": "일석이조 一石二鳥", "policy": "direct"}
+      ],
+      "named_pattern": {
+        "name_ko": "실행 의도",
+        "name_en": "Implementation intentions",
+        "explanation": "언제·어디서 어떤 신호가 오면 무엇을 할지 정한 작은 조건부 계획은 막연한 목표를 행동으로 옮기기 쉽게 한다.",
+        "utterance": "심리학에서는 ‘언제 이런 신호가 오면 무엇을 한다’고 정하는 걸 실행 의도라고 해요.",
+        "source_url": "https://doi.org/10.1037/0003-066X.54.7.493",
+        "confidence": "high"
+      },
+      "social_context": {
+        "utterance": "해야 할 일이 너무 크게 보이면 첫발부터 막막해지는 때가 있지요.",
+        "trigger": "과제가 커 보여 시작하지 못한다고 말할 때",
+        "avoid_when": "즉시 안전 행동이 필요하거나 자원 부재가 핵심일 때"
+      }
+    },
+    {
+      "id": "small_progress_counts",
+      "principle": "첫 시도와 작은 진전도 변화의 일부이며 한 번의 결과로 전체를 판단하지 않는다.",
+      "retrieval": {
+        "terms": ["조금", "작은", "진전", "해봤", "시도", "실패", "변화", "첫 시도"],
+        "slots": ["behavior", "coping", "goal"]
+      },
+      "references": [
+        {"candidate_id": "P07", "kind": "proverb", "text": "첫술에 배부르랴", "policy": "direct"},
+        {"candidate_id": "P08", "kind": "proverb", "text": "티끌 모아 태산", "policy": "direct"},
+        {"candidate_id": "I17", "kind": "four_hanja_idiom", "text": "절차탁마 切磋琢磨", "policy": "conditional"},
+        {"candidate_id": "I21", "kind": "four_hanja_idiom", "text": "일취월장 日就月將", "policy": "direct"}
+      ],
+      "named_pattern": {
+        "name_ko": "작은 승리",
+        "name_en": "Small wins",
+        "explanation": "크고 막막한 문제를 작고 구체적으로 완결할 수 있는 변화로 바꾸면 움직일 여지를 만들 수 있다.",
+        "utterance": "큰 문제를 작고 확인 가능한 변화로 바꾸는 접근을 ‘작은 승리’라고 해요.",
+        "source_url": "https://doi.org/10.1037/0003-066X.39.1.40",
+        "confidence": "high"
+      },
+      "social_context": {
+        "utterance": "작은 변화는 당장 눈에 안 보여도 돌아보면 흔적이 남아 있기도 해요.",
+        "trigger": "사용자가 실제로 작은 시도나 변화를 말할 때",
+        "avoid_when": "변화의 근거가 없거나 즉시 개입이 필요한 악화 상황일 때"
+      }
+    },
+    {
+      "id": "focus_and_momentum",
+      "principle": "준비가 됐을 때 한 방법을 정해 짧게 실행하고 생긴 동력은 작고 안전한 행동에만 쓴다.",
+      "retrieval": {
+        "terms": ["집중", "산만", "여러 가지", "하나씩", "바로 시작", "동력", "마음이 움직", "준비됐"],
+        "slots": ["behavior", "coping", "goal"]
+      },
+      "references": [
+        {"candidate_id": "P13", "kind": "proverb", "text": "우물을 파도 한 우물을 파라", "policy": "conditional"},
+        {"candidate_id": "P17", "kind": "proverb", "text": "쇠뿔도 단김에 빼라", "policy": "conditional"},
+        {"candidate_id": "P41", "kind": "proverb", "text": "떡 본 김에 제사 지낸다", "policy": "direct"},
+        {"candidate_id": "I16", "kind": "four_hanja_idiom", "text": "심기일전 心機一轉", "policy": "conditional"}
+      ],
+      "named_pattern": {
+        "name_ko": "새 출발 효과",
+        "name_en": "Fresh start effect",
+        "explanation": "새로운 주·달·학기 같은 시간의 경계는 지난 실패와 현재를 구분하게 해 목표 행동의 동기를 높일 수 있다.",
+        "utterance": "새로운 시간의 경계가 다시 움직일 힘을 주는 걸 새 출발 효과라고 해요.",
+        "source_url": "https://doi.org/10.1287/mnsc.2014.1901",
+        "confidence": "medium"
+      },
+      "social_context": {
+        "utterance": "마음이 움직인 순간에는 작은 행동 하나가 다음 움직임을 이어주기도 해요.",
+        "trigger": "사용자가 이미 할 행동을 정했고 지금 시작할 준비가 됐을 때",
+        "avoid_when": "충동 상태이거나 크고 되돌리기 어려운 결정일 때"
+      }
+    },
+    {
+      "id": "sustainable_personal_pace",
+      "principle": "타인의 속도보다 현재 자원과 조건에 맞는 지속 가능한 속도를 찾는다.",
+      "retrieval": {
+        "terms": ["지치", "피로", "시간 부족", "속도", "비교", "무리", "부담", "벅차"],
+        "slots": ["emotion", "behavior", "duration", "impact", "goal"]
+      },
+      "references": [
+        {"candidate_id": "P50", "kind": "proverb", "text": "뱁새가 황새를 따라가면 다리가 찢어진다", "policy": "conditional"},
+        {"candidate_id": "I18", "kind": "four_hanja_idiom", "text": "대기만성 大器晩成", "policy": "conditional"},
+        {"candidate_id": "I23", "kind": "four_hanja_idiom", "text": "과유불급 過猶不及", "policy": "direct"},
+        {"candidate_id": "I42", "kind": "four_hanja_idiom", "text": "용두사미 龍頭蛇尾", "policy": "reverse_only"}
+      ],
+      "named_pattern": {
+        "name_ko": "자원보존이론",
+        "name_en": "Conservation of Resources Theory",
+        "explanation": "시간·에너지·안전·관계 같은 자원이 부족하거나 위협받으면 같은 일도 더 큰 부담이 될 수 있다.",
+        "utterance": "스트레스 연구에서는 시간과 에너지 같은 자원의 손실이 부담을 키운다고 봐요.",
+        "source_url": "https://pubmed.ncbi.nlm.nih.gov/2648906/",
+        "confidence": "high"
+      },
+      "social_context": {
+        "utterance": "같은 일도 지금 가진 힘과 시간에 따라 버거움이 달라질 수 있어요.",
+        "trigger": "피로·시간 부족·부담 증가가 구체적으로 드러날 때",
+        "avoid_when": "구조적 박탈을 단순한 속도 조절 문제로 축소할 때"
+      }
+    },
+    {
+      "id": "safety_and_basic_needs_first",
+      "principle": "성과나 해결보다 안전·수면·식사·휴식·몸의 신호와 감당 가능한 여력을 먼저 확인한다.",
+      "retrieval": {
+        "terms": ["잠", "수면", "식사", "밥", "휴식", "피곤", "아프", "안전", "못 자", "끼니", "머리가 안 돌아"],
+        "slots": ["emotion", "cause", "behavior", "duration", "impact"]
+      },
+      "references": [
+        {"candidate_id": "P42", "kind": "proverb", "text": "내 코가 석 자", "policy": "direct"},
+        {"candidate_id": "P48", "kind": "proverb", "text": "금강산도 식후경", "policy": "direct"},
+        {"candidate_id": "I03", "kind": "four_hanja_idiom", "text": "좌불안석 坐不安席", "policy": "direct"},
+        {"candidate_id": "I46", "kind": "four_hanja_idiom", "text": "자포자기 自暴自棄", "policy": "conditional"}
+      ],
+      "named_pattern": {
+        "name_ko": "냉온 공감 격차",
+        "name_en": "Hot-cold empathy gap",
+        "explanation": "배고픔·통증·강한 감정 같은 현재 상태는 판단을 바꾸지만 다른 상태에서는 그 영향을 과소평가하기 쉽다.",
+        "utterance": "몸과 감정의 상태가 판단에 주는 영향을 놓치기 쉬운 걸 냉온 공감 격차라고 해요.",
+        "source_url": "https://doi.org/10.1006/obhd.1996.0028",
+        "confidence": "medium"
+      },
+      "social_context": {
+        "utterance": "잠과 식사, 쉼이 흐트러지면 평소 하던 일도 유난히 버거울 수 있어요.",
+        "trigger": "기본 욕구의 변화와 수행 곤란을 함께 말할 때",
+        "avoid_when": "의료 원인을 단정할 우려가 있거나 급성 건강 위기일 때"
+      }
+    },
+    {
+      "id": "mistake_not_identity",
+      "principle": "한 번의 실수나 끊긴 결심은 한 장면이지 사람 전체의 능력이나 성격이 아니다.",
+      "retrieval": {
+        "terms": ["실수", "자책", "무능", "게으", "못난", "스스로", "실패", "난 원래"],
+        "slots": ["emotion", "thought", "cause", "self_message"]
+      },
+      "references": [
+        {"candidate_id": "P20", "kind": "proverb", "text": "원숭이도 나무에서 떨어진다", "policy": "direct"},
+        {"candidate_id": "I30", "kind": "four_hanja_idiom", "text": "천려일실 千慮一失", "policy": "direct"},
+        {"candidate_id": "I41", "kind": "four_hanja_idiom", "text": "작심삼일 作心三日", "policy": "reverse_only"}
+      ],
+      "named_pattern": {
+        "name_ko": "자기자비",
+        "name_en": "Self-compassion",
+        "explanation": "실수와 어려움 앞에서 자신 전체를 공격하기보다 상황을 알아차리고 자신에게 인간적인 태도를 취하는 접근이다.",
+        "utterance": "실수 앞에서 자신 전체를 공격하지 않는 태도를 자기자비라고 해요.",
+        "source_url": "https://doi.org/10.1080/15298860309032",
+        "confidence": "high"
+      },
+      "social_context": {
+        "utterance": "한 번 뜻대로 안 된 장면이 사람 전체를 설명해 주는 건 아니지요.",
+        "trigger": "한 번의 실수로 자신을 무능하거나 게으르다고 규정할 때",
+        "avoid_when": "반복된 중대한 피해의 책임을 먼저 다뤄야 할 때"
+      }
+    },
+    {
+      "id": "past_pattern_not_destiny",
+      "principle": "오래된 습관과 과거 경험은 현재를 이해할 자료이지 운명이나 정체성이 아니다.",
+      "retrieval": {
+        "terms": ["습관", "오래", "예전부터", "반복", "버릇", "늘 그랬", "항상", "원래부터", "평생", "못 바뀔", "앞으로도"],
+        "slots": ["thought", "cause", "behavior", "duration", "self_message"]
+      },
+      "references": [
+        {"candidate_id": "P10", "kind": "proverb", "text": "세 살 버릇 여든까지 간다", "policy": "reverse_only"},
+        {"candidate_id": "I29", "kind": "four_hanja_idiom", "text": "온고지신 溫故知新", "policy": "direct"}
+      ],
+      "named_pattern": {
+        "name_ko": "습관 형성·맥락 의존적 자동성",
+        "name_en": "Habit formation and context-dependent automaticity",
+        "explanation": "같은 맥락에서 작은 행동을 반복하면 시간이 지나며 그 행동이 점차 자동화될 수 있다.",
+        "utterance": "같은 상황에서 반복된 행동이 점차 자동화되는 과정을 습관 형성이라고 해요.",
+        "source_url": "https://doi.org/10.1002/ejsp.674",
+        "confidence": "high"
+      },
+      "social_context": {
+        "utterance": "오래된 습관은 익숙해서 되풀이되기 쉽지만 익숙함이 운명은 아니에요.",
+        "trigger": "사용자가 오래전부터 반복된 습관이라고 직접 설명할 때",
+        "avoid_when": "과거를 부모 비난이나 성격 진단으로 확정할 때"
+      }
+    },
+    {
+      "id": "nonlinear_progress",
+      "principle": "변화에는 전진·정체·후퇴와 예상 밖 장애가 섞이며 한 번의 후퇴가 전체 실패는 아니다.",
+      "retrieval": {
+        "terms": ["다시", "후퇴", "재발", "도로", "나아졌", "악화", "제자리", "또 반복"],
+        "slots": ["emotion", "thought", "behavior", "duration", "coping"]
+      },
+      "references": [
+        {"candidate_id": "P11", "kind": "proverb", "text": "비 온 뒤에 땅이 굳어진다", "policy": "conditional"},
+        {"candidate_id": "I26", "kind": "four_hanja_idiom", "text": "호사다마 好事多魔", "policy": "conditional"},
+        {"candidate_id": "I31", "kind": "four_hanja_idiom", "text": "일희일비 一喜一悲", "policy": "direct"},
+        {"candidate_id": "I44", "kind": "four_hanja_idiom", "text": "일진일퇴 一進一退", "policy": "direct"}
+      ],
+      "named_pattern": {
+        "name_ko": "범이론적 변화단계모형",
+        "name_en": "Transtheoretical Model",
+        "explanation": "행동 변화에는 준비·실행·유지와 다시 흔들리는 과정이 포함될 수 있어 한 번의 후퇴가 끝을 뜻하지는 않는다.",
+        "utterance": "변화단계모형에서는 변화가 한 번에 직선으로 끝난다고 보지 않아요.",
+        "source_url": "https://pubmed.ncbi.nlm.nih.gov/6863699/",
+        "confidence": "medium"
+      },
+      "social_context": {
+        "utterance": "마음과 생활의 변화는 늘 반듯한 직선처럼 이어지지만은 않아요.",
+        "trigger": "호전 뒤 어려움이 반복되어 낙담할 때",
+        "avoid_when": "급격한 악화나 의료 위험을 정상 과정으로 넘길 때"
+      }
+    },
+    {
+      "id": "uncertainty_not_final",
+      "principle": "지금 답이나 방향이 보이지 않는다고 영원히 불가능한 것은 아니며 의미를 아직 확정하지 않아도 된다.",
+      "retrieval": {
+        "terms": ["결국", "못할 것", "못 낼", "망할", "불확실", "앞이 안 보", "실패할 것", "답이 없", "영영", "뻔하", "떨어질", "발표도 안"],
+        "slots": ["emotion", "thought", "cause", "goal"]
+      },
+      "references": [
+        {"candidate_id": "P45", "kind": "proverb", "text": "가는 날이 장날", "policy": "direct"},
+        {"candidate_id": "I06", "kind": "four_hanja_idiom", "text": "오리무중 五里霧中", "policy": "direct"},
+        {"candidate_id": "I10", "kind": "four_hanja_idiom", "text": "속수무책 束手無策", "policy": "conditional"},
+        {"candidate_id": "I25", "kind": "four_hanja_idiom", "text": "새옹지마 塞翁之馬", "policy": "conditional"}
+      ],
+      "named_pattern": {
+        "name_ko": "인지적 종결 욕구",
+        "name_en": "Need for cognitive closure",
+        "explanation": "불확실함이 불편할수록 빠르고 확실한 답에 끌릴 수 있지만 그 답이 충분히 검토된 것은 아닐 수 있다.",
+        "utterance": "불확실할수록 빨리 결론 내리고 싶어지는 마음을 인지적 종결 욕구라고 해요.",
+        "source_url": "https://pubmed.ncbi.nlm.nih.gov/7815301/",
+        "confidence": "high"
+      },
+      "social_context": {
+        "utterance": "지금은 이 일이 무엇을 뜻하는지 결론 내리기 이른 때일 수도 있어요.",
+        "trigger": "정보가 부족한데 실패나 파국으로 확정할 때",
+        "avoid_when": "명백한 위해나 안전 침해의 판단을 미루게 할 때"
+      }
+    },
+    {
+      "id": "mixed_emotions_are_valid",
+      "principle": "믿음과 의심, 기쁨과 슬픔처럼 상반된 감정이 함께 있을 수 있고 바로 한 단어로 정리되지 않아도 된다.",
+      "retrieval": {
+        "terms": ["한편", "동시에", "좋지만", "싫지만", "복잡", "양가", "감정이 섞", "마음이 오락가락", "기쁘긴", "미안", "무섭기도"],
+        "slots": ["emotion", "thought", "cause"]
+      },
+      "references": [
+        {"candidate_id": "P03", "kind": "proverb", "text": "아 해 다르고 어 해 다르다", "policy": "direct"},
+        {"candidate_id": "I11", "kind": "four_hanja_idiom", "text": "희로애락 喜怒哀樂", "policy": "direct"},
+        {"candidate_id": "I12", "kind": "four_hanja_idiom", "text": "감개무량 感慨無量", "policy": "direct"}
+      ],
+      "named_pattern": {
+        "name_ko": "혼합 감정·평가공간모형",
+        "name_en": "Mixed emotions and the Evaluative Space Model",
+        "explanation": "기쁨과 슬픔처럼 반대 방향의 감정도 중요한 전환점에서는 동시에 존재할 수 있다.",
+        "utterance": "반대되는 감정이 함께 드는 상태를 심리학에서는 혼합 감정이라고 해요.",
+        "source_url": "https://doi.org/10.1037/0022-3514.81.4.684",
+        "confidence": "high"
+      },
+      "social_context": {
+        "utterance": "한 가지 일에도 반가움과 서운함처럼 다른 마음이 함께 들 수 있어요.",
+        "trigger": "서로 다른 감정을 동시에 표현할 때",
+        "avoid_when": "사용자가 말하지 않은 양가감정을 임의로 주입할 때"
+      }
+    },
+    {
+      "id": "cumulative_load_matters",
+      "principle": "작은 부담도 반복되면 큰 영향을 만들 수 있으므로 사건 하나보다 부담의 총량과 지속 기간을 본다.",
+      "retrieval": {
+        "terms": ["계속", "매번", "자주", "반복", "쌓", "두 달", "오랫동안", "내내", "매일 겹", "자잘한", "큰일은 없"],
+        "slots": ["situation", "emotion", "behavior", "duration", "impact"]
+      },
+      "references": [
+        {"candidate_id": "P09", "kind": "proverb", "text": "가랑비에 옷 젖는 줄 모른다", "policy": "direct"},
+        {"candidate_id": "I01", "kind": "four_hanja_idiom", "text": "노심초사 勞心焦思", "policy": "direct"}
+      ],
+      "named_pattern": {
+        "name_ko": "일상적 스트레스 요인",
+        "name_en": "Daily hassles",
+        "explanation": "각각은 작아 보이는 반복적 골칫거리도 쌓이면 큰 사건과 별개로 상당한 스트레스 부담이 될 수 있다.",
+        "utterance": "작은 골칫거리도 반복되면 부담이 커지는 걸 일상적 스트레스 요인이라고 해요.",
+        "source_url": "https://pubmed.ncbi.nlm.nih.gov/7288876/",
+        "confidence": "high"
+      },
+      "social_context": {
+        "utterance": "사소해 보이는 부담도 여러 날 겹치면 제법 무겁게 남을 수 있어요.",
+        "trigger": "작은 스트레스가 반복되었다는 구체적 발화가 있을 때",
+        "avoid_when": "단일 사건이나 의료 문제에 누적 원인을 임의로 붙일 때"
+      }
+    },
+    {
+      "id": "learned_alarm_is_understandable",
+      "principle": "큰 충격이나 과거의 놀람 뒤 비슷한 단서에 몸과 마음이 조심스러워지는 것은 이해 가능한 반응일 수 있다.",
+      "retrieval": {
+        "terms": ["그때", "예전 일", "비슷한 상황", "겁", "무서", "놀라", "긴장", "경계"],
+        "slots": ["situation", "emotion", "thought", "cause", "behavior"]
+      },
+      "references": [
+        {"candidate_id": "P21", "kind": "proverb", "text": "자라 보고 놀란 가슴 솥뚜껑 보고 놀란다", "policy": "conditional"},
+        {"candidate_id": "I02", "kind": "four_hanja_idiom", "text": "전전긍긍 戰戰兢兢", "policy": "conditional"},
+        {"candidate_id": "I04", "kind": "four_hanja_idiom", "text": "망연자실 茫然自失", "policy": "direct"}
+      ],
+      "named_pattern": {
+        "name_ko": "공포 일반화",
+        "name_en": "Fear generalization",
+        "explanation": "이전에 위험과 연결된 경험 뒤에는 그때와 닮은 안전한 단서에도 경보 반응이 퍼질 수 있다.",
+        "utterance": "이전의 놀람이 비슷한 단서까지 경계하게 만드는 걸 공포 일반화라고 해요.",
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2435484/",
+        "confidence": "high"
+      },
+      "social_context": {
+        "utterance": "예전에 크게 놀랐던 장면과 닮아 보이면 마음이 먼저 움츠러들 때도 있지요.",
+        "trigger": "사용자가 과거와 현재의 유사성을 직접 언급할 때",
+        "avoid_when": "과거 경험이 없는데 트라우마를 임의로 추정할 때"
+      }
+    },
+    {
+      "id": "compare_context_not_worth",
+      "principle": "타인의 보이는 결과와 자신의 전체 과정을 같은 조건으로 비교하지 않고 주변 기대와 내가 원하는 기준을 구분한다.",
+      "retrieval": {
+        "terms": ["남들", "다른 사람", "비교", "뒤처", "열등", "주변 기대", "기준", "나만", "친구들은 벌써", "저만 뒤처", "제가 부족"],
+        "slots": ["emotion", "thought", "cause", "goal", "self_message"]
+      },
+      "references": [
+        {"candidate_id": "P22", "kind": "proverb", "text": "남의 손의 떡이 더 커 보이고 남이 잡은 일감이 더 헐어 보인다", "policy": "direct"},
+        {"candidate_id": "P32", "kind": "proverb", "text": "친구 따라 강남 간다", "policy": "direct"},
+        {"candidate_id": "I22", "kind": "four_hanja_idiom", "text": "초지일관 初志一貫", "policy": "conditional"}
+      ],
+      "named_pattern": {
+        "name_ko": "사회비교이론",
+        "name_en": "Social Comparison Theory",
+        "explanation": "사람은 자신을 이해하려 타인과 비교하지만 비교 대상의 조건이 다르면 그 결과를 그대로 자기평가로 쓰기 어렵다.",
+        "utterance": "타인을 기준으로 자신을 가늠하려는 경향을 사회비교라고 해요.",
+        "source_url": "https://doi.org/10.1177/001872675400700202",
+        "confidence": "high"
+      },
+      "social_context": {
+        "utterance": "다른 사람의 결과는 보여도 그 뒤의 조건과 과정까지 다 보이진 않지요.",
+        "trigger": "타인의 결과만 보고 자신을 열등하다고 평가할 때",
+        "avoid_when": "실제 차별과 자원 격차를 비교 심리로 지울 때"
+      }
+    },
+    {
+      "id": "constraints_make_choices_hard",
+      "principle": "선택지가 제한되고 권력·비용·접근성 장벽이 있으면 결정과 실행이 어려운 것이 자연스럽다.",
+      "retrieval": {
+        "terms": ["돈", "비용", "시간이 없", "권한", "자격", "기회가 없", "선택지가 없", "여건"],
+        "slots": ["situation", "cause", "behavior", "impact", "coping"]
+      },
+      "references": [
+        {"candidate_id": "P31", "kind": "proverb", "text": "고래 싸움에 새우 등 터진다", "policy": "direct"},
+        {"candidate_id": "P38", "kind": "proverb", "text": "그림의 떡", "policy": "direct"},
+        {"candidate_id": "P46", "kind": "proverb", "text": "울며 겨자 먹기", "policy": "conditional"},
+        {"candidate_id": "I08", "kind": "four_hanja_idiom", "text": "진퇴양난 進退兩難", "policy": "direct"},
+        {"candidate_id": "I09", "kind": "four_hanja_idiom", "text": "사면초가 四面楚歌", "policy": "conditional"}
+      ],
+      "named_pattern": {
+        "name_ko": "대응 편향·기본적 귀인 오류",
+        "name_en": "Correspondence bias",
+        "explanation": "행동을 볼 때 상황의 제약을 충분히 반영하지 않고 사람의 성격이나 의도 때문이라고 해석하기 쉽다.",
+        "utterance": "상황의 제약보다 사람의 성격 탓으로 보기 쉬운 걸 대응 편향이라고 해요.",
+        "source_url": "https://doi.org/10.1016/0022-1031(67)90034-0",
+        "confidence": "medium"
+      },
+      "social_context": {
+        "utterance": "선택지가 적은 상황에서는 결정을 못 내리는 게 의지의 문제만은 아니에요.",
+        "trigger": "비용·시간·권한·자격 같은 실제 제약이 확인될 때",
+        "avoid_when": "반복되는 위해 행동이나 실제 책임까지 환경 탓으로 없앨 때"
+      }
+    },
+    {
+      "id": "responsibility_without_self_blame",
+      "principle": "결과를 전부 내 탓으로 돌리지 않고 환경·과정·우연과 내가 바꿀 수 있는 몫을 구분한다.",
+      "retrieval": {
+        "terms": ["내 탓", "제 잘못", "모두 내", "책임", "자책", "환경 때문", "운이 없", "나 때문에"],
+        "slots": ["emotion", "thought", "cause", "self_message"]
+      },
+      "references": [
+        {"candidate_id": "P19", "kind": "proverb", "text": "소 잃고 외양간 고친다", "policy": "reverse_only"},
+        {"candidate_id": "P28", "kind": "proverb", "text": "콩 심은 데 콩 나고 팥 심은 데 팥 난다", "policy": "reverse_only"},
+        {"candidate_id": "I45", "kind": "four_hanja_idiom", "text": "자승자박 自繩自縛", "policy": "reverse_only"},
+        {"candidate_id": "I47", "kind": "four_hanja_idiom", "text": "결자해지 結者解之", "policy": "reverse_only"}
+      ],
+      "named_pattern": {
+        "name_ko": "성격 기반·행동 기반 자기비난 구분",
+        "name_en": "Characterological versus behavioral self-blame",
+        "explanation": "내가 한 행동을 검토하는 것과 나는 본래 잘못된 사람이라고 결론 내리는 것은 다른 수준의 판단이다.",
+        "utterance": "행동을 돌아보는 것과 사람 전체를 탓하는 건 서로 다른 자기평가예요.",
+        "source_url": "https://doi.org/10.1037/0022-3514.37.10.1798",
+        "confidence": "medium"
+      },
+      "social_context": {
+        "utterance": "내 몫을 돌아보는 일과 모든 잘못을 내 탓으로 돌리는 일은 서로 달라요.",
+        "trigger": "구체적 책임보다 사람 전체를 비난할 때",
+        "avoid_when": "실제 피해와 책임을 인정하기 전 면죄 문장으로 쓸 때"
+      }
+    },
+    {
+      "id": "adapt_method_keep_value",
+      "principle": "가치와 안전은 지키되 목표에 이르는 방법은 현실에 맞춰 바꿀 수 있다.",
+      "retrieval": {
+        "terms": ["방법", "알람", "스터디", "소용없", "도움이 안", "다른 방식", "대안", "맞는 방법"],
+        "slots": ["behavior", "coping", "goal"]
+      },
+      "references": [
+        {"candidate_id": "P15", "kind": "proverb", "text": "모로 가도 서울만 가면 된다", "policy": "conditional"},
+        {"candidate_id": "P24", "kind": "proverb", "text": "꿩 대신 닭", "policy": "direct"},
+        {"candidate_id": "I49", "kind": "four_hanja_idiom", "text": "임기응변 臨機應變", "policy": "direct"}
+      ],
+      "named_pattern": {
+        "name_ko": "대처 유연성",
+        "name_en": "Coping flexibility",
+        "explanation": "효과 없는 대응을 점검하고 현재 상황에 더 맞는 다른 대응을 만들어 적용하는 능력이다.",
+        "utterance": "상황에 맞춰 대응 방법을 바꾸는 능력을 대처 유연성이라고 해요.",
+        "source_url": "https://doi.org/10.1037/a0027770",
+        "confidence": "high"
+      },
+      "social_context": {
+        "utterance": "현실에서는 가장 좋은 방법보다 지금 가능한 방법이 필요한 때도 있어요.",
+        "trigger": "이상적인 방법은 어렵지만 안전한 대안이 있을 때",
+        "avoid_when": "안전·치료·동의·권리의 기준을 낮출 때"
+      }
+    },
+    {
+      "id": "test_before_concluding",
+      "principle": "위험이 낮고 되돌릴 수 있는 작은 시험으로 방법의 적합성을 확인한 뒤 판단한다.",
+      "retrieval": {
+        "terms": ["시험해", "한번 해", "시도", "비교", "맞는지", "효과", "실험", "써봤"],
+        "slots": ["behavior", "coping", "goal"]
+      },
+      "references": [
+        {"candidate_id": "P35", "kind": "proverb", "text": "길고 짧은 것은 대어 보아야 안다", "policy": "direct"},
+        {"candidate_id": "I43", "kind": "four_hanja_idiom", "text": "좌충우돌 左衝右突", "policy": "conditional"}
+      ],
+      "named_pattern": {
+        "name_ko": "행동 실험",
+        "name_en": "Behavioral experiment",
+        "explanation": "생각만으로 결론 내리기보다 예측을 세우고 위험이 낮은 작은 행동으로 실제 결과를 관찰하는 방법이다.",
+        "utterance": "예측을 작고 안전하게 확인해 보는 방법을 행동 실험이라고 해요.",
+        "source_url": "https://doi.org/10.1016/j.jbtep.2011.07.003",
+        "confidence": "high"
+      },
+      "social_context": {
+        "utterance": "생각만으로 모르겠던 일도 작게 겪어 보면 느낌이 선명해질 때가 있어요.",
+        "trigger": "되돌릴 수 있고 위험이 낮은 선택을 비교할 때",
+        "avoid_when": "의료·법률·재정·관계 단절 같은 고위험 결정일 때"
+      }
+    },
+    {
+      "id": "organize_information_roles",
+      "principle": "혼란이 생겼을 때 성격을 탓하기보다 기준·정보·역할·결정권을 먼저 정리한다.",
+      "retrieval": {
+        "terms": ["헷갈", "일정", "깜빡", "정보", "역할", "우선순위", "정리", "충돌"],
+        "slots": ["situation", "thought", "behavior", "impact", "coping"]
+      },
+      "references": [
+        {"candidate_id": "P23", "kind": "proverb", "text": "사공이 많으면 배가 산으로 간다", "policy": "direct"},
+        {"candidate_id": "P27", "kind": "proverb", "text": "등잔 밑이 어둡다", "policy": "direct"},
+        {"candidate_id": "I07", "kind": "four_hanja_idiom", "text": "우왕좌왕 右往左往", "policy": "reverse_only"}
+      ],
+      "named_pattern": {
+        "name_ko": "인지부하이론",
+        "name_en": "Cognitive Load Theory",
+        "explanation": "처리해야 할 정보와 규칙이 한꺼번에 많으면 제한된 인지 자원이 소모되어 판단이 어려워질 수 있다.",
+        "utterance": "정보와 규칙이 한꺼번에 많아 판단이 버거워지는 걸 인지부하라고 해요.",
+        "source_url": "https://doi.org/10.1207/s15516709cog1202_4",
+        "confidence": "medium"
+      },
+      "social_context": {
+        "utterance": "말과 기준이 여러 갈래로 엇갈리면 익숙한 일도 혼란스러워지기 쉬워요.",
+        "trigger": "여러 지시·일정·역할이 실제로 충돌할 때",
+        "avoid_when": "사용자의 어려움을 외부 혼선으로 섣불리 단정할 때"
+      }
+    },
+    {
+      "id": "prepare_with_stop_rule",
+      "principle": "실수 비용이 큰 일은 확인하되 확인 횟수와 종료 기준을 함께 둔다.",
+      "retrieval": {
+        "terms": ["계속 확인", "반복 확인", "불안해서 확인", "검토", "점검", "멈추지 못", "확인 횟수", "실수할까", "열 번", "같은 화면", "한 시간 동안"],
+        "slots": ["thought", "cause", "behavior", "impact", "coping"]
+      },
+      "references": [
+        {"candidate_id": "P14", "kind": "proverb", "text": "돌다리도 두들겨 보고 건너라", "policy": "direct"},
+        {"candidate_id": "P18", "kind": "proverb", "text": "호미로 막을 것을 가래로 막는다", "policy": "reverse_only"},
+        {"candidate_id": "I48", "kind": "four_hanja_idiom", "text": "유비무환 有備無患", "policy": "conditional"}
+      ],
+      "named_pattern": {
+        "name_ko": "안전추구행동",
+        "name_en": "Safety-seeking behavior",
+        "explanation": "위협을 막으려는 반복 확인이나 회피가 오히려 그 행동 없이는 위험하다는 믿음을 남겨 불안을 유지할 수 있다.",
+        "utterance": "확인이 끝나지 않아 오히려 불안을 붙잡는 행동을 안전추구행동이라고 해요.",
+        "source_url": "https://doi.org/10.1017/S0141347300011472",
+        "confidence": "medium"
+      },
+      "social_context": {
+        "utterance": "준비는 마음을 놓게도 하지만 확인이 끝나지 않으면 오히려 지치게도 해요.",
+        "trigger": "같은 내용을 반복 확인하며 피로를 호소할 때",
+        "avoid_when": "실제 안전 절차를 제거하거나 강박을 임의로 진단할 때"
+      }
+    },
+    {
+      "id": "method_cost_should_serve_goal",
+      "principle": "방법과 관리의 비용이 원래 얻으려던 가치보다 커지지 않았는지 장단점을 함께 본다.",
+      "retrieval": {
+        "terms": ["너무 힘", "시간만", "비용이 크", "관계가 나빠", "건강", "배보다 배꼽", "손해", "감당", "전부 버리", "이미 들인", "썼으니"],
+        "slots": ["cause", "behavior", "impact", "coping", "goal"]
+      },
+      "references": [
+        {"candidate_id": "P47", "kind": "proverb", "text": "배보다 배꼽이 더 크다", "policy": "direct"},
+        {"candidate_id": "I24", "kind": "four_hanja_idiom", "text": "일장일단 一長一短", "policy": "direct"}
+      ],
+      "named_pattern": {
+        "name_ko": "매몰비용 효과",
+        "name_en": "Sunk-cost effect",
+        "explanation": "이미 시간·돈·노력을 썼다는 이유로 앞으로의 비용과 가능성이 좋지 않은 선택을 계속하려는 경향이다.",
+        "utterance": "이미 들인 비용 때문에 계속 멈추기 어려워지는 걸 매몰비용 효과라고 해요.",
+        "source_url": "https://doi.org/10.1016/0749-5978(85)90049-4",
+        "confidence": "high"
+      },
+      "social_context": {
+        "utterance": "목표가 소중해도 그 길에서 치르는 비용까지 모두 감당해야 하는 건 아니에요.",
+        "trigger": "목표 추구로 건강·관계·시간 비용이 커졌다고 말할 때",
+        "avoid_when": "필수 치료·안전·법적 보호 비용을 낭비처럼 다룰 때"
+      }
+    },
+    {
+      "id": "learn_without_glorifying_pain",
+      "principle": "원치 않았던 경험에서도 남은 기술·자료·경계는 찾을 수 있지만 고통에 교훈이나 성장을 강요하지 않는다.",
+      "retrieval": {
+        "terms": ["상처", "배운 점", "의미", "성장", "고통", "후회", "남은 것", "겪고 나서"],
+        "slots": ["situation", "emotion", "thought", "cause", "self_message"]
+      },
+      "references": [
+        {"candidate_id": "P30", "kind": "proverb", "text": "공든 탑이 무너지랴", "policy": "conditional"},
+        {"candidate_id": "I27", "kind": "four_hanja_idiom", "text": "타산지석 他山之石", "policy": "direct"},
+        {"candidate_id": "I28", "kind": "four_hanja_idiom", "text": "반면교사 反面敎師", "policy": "conditional"}
+      ],
+      "named_pattern": {
+        "name_ko": "의미 만들기 모형",
+        "name_en": "Meaning-making model",
+        "explanation": "힘든 사건 뒤 사람은 기존 믿음과 사건을 이해하려 하지만 의미를 찾으려는 노력과 실제 의미가 생긴 것은 다르다.",
+        "utterance": "힘든 일을 기존의 삶과 연결해 이해하려는 과정을 의미 만들기라고 해요.",
+        "source_url": "https://pubmed.ncbi.nlm.nih.gov/20192563/",
+        "confidence": "medium"
+      },
+      "social_context": {
+        "utterance": "힘든 일에서 무언가 남았더라도 그 고통까지 필요했던 일이 되는 건 아니에요.",
+        "trigger": "경험에서 배운 점과 상처를 함께 말할 때",
+        "avoid_when": "급성 트라우마·사별 중 교훈 찾기를 유도할 때"
+      }
+    },
+    {
+      "id": "retry_rest_or_redirect",
+      "principle": "재시도·휴식·중단·방향 전환은 모두 가능한 선택이며 끈기는 의무가 아니다.",
+      "retrieval": {
+        "terms": ["포기", "계속할까", "그만", "쉬고 싶", "지쳤", "다시 시도", "방향을 바", "중단", "잠깐 쉬", "다른 길", "너무 지쳤"],
+        "slots": ["emotion", "thought", "behavior", "coping", "goal"]
+      },
+      "references": [
+        {"candidate_id": "P37", "kind": "proverb", "text": "열 번 찍어 아니 넘어가는 나무 없다", "policy": "blocked"},
+        {"candidate_id": "I15", "kind": "four_hanja_idiom", "text": "칠전팔기 七顚八起", "policy": "conditional"},
+        {"candidate_id": "I19", "kind": "four_hanja_idiom", "text": "권토중래 捲土重來", "policy": "conditional"}
+      ],
+      "named_pattern": {
+        "name_ko": "목표 이탈·재참여",
+        "name_en": "Goal disengagement and reengagement",
+        "explanation": "달성하기 어려운 목표에서 노력을 거두고 다른 의미 있는 목표로 옮기는 것도 적응적인 자기조절일 수 있다.",
+        "utterance": "어려운 목표에서 물러나 다른 목표로 옮기는 것도 목표 조절의 한 방식이에요.",
+        "source_url": "https://doi.org/10.1177/0146167203256921",
+        "confidence": "high"
+      },
+      "social_context": {
+        "utterance": "다시 해보는 것뿐 아니라 잠시 쉬거나 길을 바꾸는 것도 과정의 일부예요.",
+        "trigger": "반복 시도로 소진되어 여러 선택지를 고민할 때",
+        "avoid_when": "시간에 민감한 안전 조치나 필수 책임을 미루게 할 때"
+      }
+    },
+    {
+      "id": "accessible_support_network",
+      "principle": "명목상 가까운 사람보다 실제로 안전하게 연락 가능한 지원을 찾고 작은 도움을 여러 곳에 나눌 수 있다.",
+      "retrieval": {
+        "terms": ["도움", "연락", "혼자", "의지할", "지원받", "도움 요청", "부탁", "기댈", "말할 사람"],
+        "slots": ["impact", "relationship", "coping"]
+      },
+      "references": [
+        {"candidate_id": "P05", "kind": "proverb", "text": "백지장도 맞들면 낫다", "policy": "direct"},
+        {"candidate_id": "P33", "kind": "proverb", "text": "먼 사촌보다 가까운 이웃이 낫다", "policy": "direct"},
+        {"candidate_id": "I36", "kind": "four_hanja_idiom", "text": "십시일반 十匙一飯", "policy": "direct"}
+      ],
+      "named_pattern": {
+        "name_ko": "사회적 지지의 스트레스 완충 가설",
+        "name_en": "Stress-buffering hypothesis",
+        "explanation": "적절한 사회적 지지는 스트레스가 심리적·신체적 부담으로 이어지는 영향을 줄여 줄 수 있다.",
+        "utterance": "적절한 지지가 스트레스의 영향을 덜어줄 수 있다는 설명을 완충 가설이라고 해요.",
+        "source_url": "https://doi.org/10.1037/0033-2909.98.2.310",
+        "confidence": "high"
+      },
+      "social_context": {
+        "utterance": "일이 벅찰 때 곁의 손을 찾고 싶어지는 건 이상한 일이 아니에요.",
+        "trigger": "도움 욕구가 있고 안전한 지원 후보가 확인될 때",
+        "avoid_when": "지원망이 없거나 주변 사람이 안전하지 않을 때"
+      }
+    },
+    {
+      "id": "mutual_help_needs_boundaries",
+      "principle": "도움은 일방적 희생이 아니라 서로의 한계와 역할을 존중하는 범위에서 오가야 한다.",
+      "retrieval": {
+        "terms": ["부담", "희생", "도와주", "일방적", "거절", "경계", "떠맡", "눈치"],
+        "slots": ["emotion", "behavior", "impact", "relationship", "coping"]
+      },
+      "references": [
+        {"candidate_id": "P40", "kind": "proverb", "text": "누이 좋고 매부 좋다", "policy": "direct"},
+        {"candidate_id": "I35", "kind": "four_hanja_idiom", "text": "동고동락 同苦同樂", "policy": "direct"},
+        {"candidate_id": "I37", "kind": "four_hanja_idiom", "text": "상부상조 相扶相助", "policy": "direct"},
+        {"candidate_id": "I38", "kind": "four_hanja_idiom", "text": "오월동주 吳越同舟", "policy": "conditional"}
+      ],
+      "named_pattern": {
+        "name_ko": "호혜성 규범",
+        "name_en": "Norm of reciprocity",
+        "explanation": "도움을 받은 사람이 다시 도움을 돌려주려는 사회적 기대는 관계를 조직하지만 의무감도 만들 수 있다.",
+        "utterance": "도움을 주고받으려는 사회적 기대를 호혜성 규범이라고 해요.",
+        "source_url": "https://doi.org/10.2307/2092623",
+        "confidence": "high"
+      },
+      "social_context": {
+        "utterance": "도움은 한쪽이 늘 참는 일이 아니라 서로의 여유를 살피며 오갈 수 있어요.",
+        "trigger": "안전한 관계에서 도움의 균형과 부담을 고민할 때",
+        "avoid_when": "착취·강요·돌봄 소진 상황에서 상호성을 의무화할 때"
+      }
+    },
+    {
+      "id": "clear_kind_expression",
+      "principle": "관찰·감정·요청을 분명하고 부드럽게 표현하면 안전한 관계의 오해와 방어를 줄일 수 있다.",
+      "retrieval": {
+        "terms": ["말을 못", "표현", "부탁", "요청", "오해", "솔직하게", "전달", "어떻게 말"],
+        "slots": ["emotion", "behavior", "impact", "relationship", "coping"]
+      },
+      "references": [
+        {"candidate_id": "P01", "kind": "proverb", "text": "가는 말이 고와야 오는 말이 곱다", "policy": "direct"},
+        {"candidate_id": "P02", "kind": "proverb", "text": "말 한마디에 천 냥 빚도 갚는다", "policy": "direct"},
+        {"candidate_id": "I39", "kind": "four_hanja_idiom", "text": "허심탄회 虛心坦懷", "policy": "direct"}
+      ],
+      "named_pattern": {
+        "name_ko": "요구–철회 패턴",
+        "name_en": "Demand-withdraw pattern",
+        "explanation": "한쪽의 압박이 커질수록 다른 쪽이 물러나고 그 철회가 다시 압박을 키우는 순환이 생길 수 있다.",
+        "utterance": "압박과 물러남이 서로를 키우는 순환을 요구–철회 패턴이라고 해요.",
+        "source_url": "https://pubmed.ncbi.nlm.nih.gov/2213491/",
+        "confidence": "medium"
+      },
+      "social_context": {
+        "utterance": "같은 마음도 어떤 말에 담느냐에 따라 서로에게 닿는 모양이 달라져요.",
+        "trigger": "안전한 관계에서 의도와 표현이 엇갈릴 때",
+        "avoid_when": "학대·권력 불균형에서 피해자의 말투 탓으로 돌릴 때"
+      }
+    },
+    {
+      "id": "ask_dont_assume_safely",
+      "principle": "상대의 마음을 추측으로 확정하지 않고 안전한 사람·장소·채널에서 필요한 것을 구체적으로 묻고 말한다.",
+      "retrieval": {
+        "terms": ["눈치", "추측", "물어보", "상대 마음", "확인", "단정", "싫어할 것", "뭐라고 생각", "물어본 적", "답장이 늦", "싫어졌"],
+        "slots": ["thought", "cause", "behavior", "relationship"]
+      },
+      "references": [
+        {"candidate_id": "P04", "kind": "proverb", "text": "낮말은 새가 듣고 밤말은 쥐가 듣는다", "policy": "direct"},
+        {"candidate_id": "P34", "kind": "proverb", "text": "열 길 물속은 알아도 한 길 사람의 속은 모른다", "policy": "direct"},
+        {"candidate_id": "P49", "kind": "proverb", "text": "우는 아이 젖 준다", "policy": "conditional"},
+        {"candidate_id": "I34", "kind": "four_hanja_idiom", "text": "이심전심 以心傳心", "policy": "reverse_only"}
+      ],
+      "named_pattern": {
+        "name_ko": "투명성 착각",
+        "name_en": "Illusion of transparency",
+        "explanation": "자신의 생각과 감정이 상대에게 실제보다 더 잘 드러났다고 믿기 쉬운 경향이다.",
+        "utterance": "내 마음이 상대에게 생각보다 잘 보인다고 느끼는 걸 투명성 착각이라고 해요.",
+        "source_url": "https://pubmed.ncbi.nlm.nih.gov/9731312/",
+        "confidence": "high"
+      },
+      "social_context": {
+        "utterance": "가까운 사이라도 말하지 않은 마음까지 알아맞히기는 어려울 때가 있어요.",
+        "trigger": "확인하지 않은 상대의 생각을 사실처럼 단정할 때",
+        "avoid_when": "명백한 위협을 오해로 축소하거나 민감한 공개를 강요할 때"
+      }
+    },
+    {
+      "id": "perspective_without_self_erasure",
+      "principle": "다른 관점과 비슷한 경험은 이해의 통로가 될 수 있지만 내 경계와 경험의 차이를 지우지 않는다.",
+      "retrieval": {
+        "terms": ["입장", "관점", "이해해야", "경계", "맞춰주", "참아", "내 마음보다", "상대 편"],
+        "slots": ["emotion", "thought", "behavior", "impact", "relationship"]
+      },
+      "references": [
+        {"candidate_id": "P29", "kind": "proverb", "text": "개구리 올챙이 적 생각 못 한다", "policy": "conditional"},
+        {"candidate_id": "P36", "kind": "proverb", "text": "우물 안 개구리", "policy": "conditional"},
+        {"candidate_id": "I32", "kind": "four_hanja_idiom", "text": "역지사지 易地思之", "policy": "direct"},
+        {"candidate_id": "I33", "kind": "four_hanja_idiom", "text": "동병상련 同病相憐", "policy": "direct"}
+      ],
+      "named_pattern": {
+        "name_ko": "공감에서의 자기–타인 구분",
+        "name_en": "Self-other distinction in empathy",
+        "explanation": "상대 관점을 이해하면서도 그 감정·책임·필요와 자신의 것을 구별하는 능력이 함께 필요하다.",
+        "utterance": "공감에서도 상대의 마음과 내 몫을 구분하는 걸 자기–타인 구분이라고 해요.",
+        "source_url": "https://doi.org/10.1098/rstb.2015.0083",
+        "confidence": "medium"
+      },
+      "social_context": {
+        "utterance": "상대를 이해하는 것과 내 마음의 경계를 지키는 일은 함께 갈 수 있어요.",
+        "trigger": "안전한 관계에서 상대 관점과 자기 경계 사이를 고민할 때",
+        "avoid_when": "피해자에게 가해자를 이해하라고 요구할 때"
+      }
+    },
+    {
+      "id": "trust_injury_needs_pattern_view",
+      "principle": "뒤의 호의가 앞선 해를 자동으로 지우지 않으며 신뢰와 불신이 함께 드는 마음과 반복 패턴을 본다.",
+      "retrieval": {
+        "terms": ["배신", "거짓말", "약속을 어", "믿어도", "의심", "기만", "신뢰", "또 속", "비밀을 퍼뜨", "못 믿", "잘해주는데"],
+        "slots": ["situation", "emotion", "thought", "cause", "relationship"]
+      },
+      "references": [
+        {"candidate_id": "P39", "kind": "proverb", "text": "믿는 도끼에 발등 찍힌다", "policy": "direct"},
+        {"candidate_id": "P44", "kind": "proverb", "text": "병 주고 약 준다", "policy": "conditional"},
+        {"candidate_id": "I05", "kind": "four_hanja_idiom", "text": "반신반의 半信半疑", "policy": "direct"}
+      ],
+      "named_pattern": {
+        "name_ko": "배신 회피",
+        "name_en": "Betrayal aversion",
+        "explanation": "같은 나쁜 결과라도 우연보다 신뢰했던 사람의 선택 때문에 생기면 추가적인 심리적 비용을 느낄 수 있다.",
+        "utterance": "믿었던 사람의 선택에서 생긴 손실이 더 크게 느껴지는 걸 배신 회피라고 해요.",
+        "source_url": "https://doi.org/10.1016/j.jebo.2003.11.004",
+        "confidence": "high"
+      },
+      "social_context": {
+        "utterance": "믿었던 사람에게서 받은 상처는 낯선 사람의 말보다 깊게 남기도 해요.",
+        "trigger": "실제 약속 위반·기만·배신 사건이 확인될 때",
+        "avoid_when": "근거 없는 의심이나 피해 확신을 강화할 때"
+      }
+    },
+    {
+      "id": "deescalate_before_problem_solving",
+      "principle": "감정이 격한 순간에는 추가 자극을 줄이고 멈추되 필요한 경계는 부드럽고 분명하게 지킨다.",
+      "retrieval": {
+        "terms": ["화가 나", "싸움", "격해", "언성", "다툼", "멈춰", "진정", "소리 질", "목소리를 높", "크게 말", "상처 주는 말"],
+        "slots": ["situation", "emotion", "behavior", "impact", "relationship"]
+      },
+      "references": [
+        {"candidate_id": "P25", "kind": "proverb", "text": "웃는 낯에 침 못 뱉는다", "policy": "conditional"},
+        {"candidate_id": "P26", "kind": "proverb", "text": "누워서 침 뱉기", "policy": "conditional"},
+        {"candidate_id": "P43", "kind": "proverb", "text": "불난 집에 부채질한다", "policy": "direct"},
+        {"candidate_id": "I40", "kind": "four_hanja_idiom", "text": "외유내강 外柔內剛", "policy": "conditional"}
+      ],
+      "named_pattern": {
+        "name_ko": "관계 회복 시도",
+        "name_en": "Repair attempts",
+        "explanation": "갈등 중 커진 부정성을 낮추고 공격–방어 흐름을 협력으로 바꾸려는 말이나 행동을 뜻한다.",
+        "utterance": "갈등이 더 커지기 전에 흐름을 낮추려는 행동을 관계 회복 시도라고 해요.",
+        "source_url": "https://doi.org/10.1080/08975353.2015.1038962",
+        "confidence": "medium"
+      },
+      "social_context": {
+        "utterance": "감정이 뜨거울 때는 말 한마디가 다음 말을 더 뜨겁게 만들기도 해요.",
+        "trigger": "안전한 관계에서 대화가 반복적으로 격해질 때",
+        "avoid_when": "피해자에게 웃거나 침묵하라고 요구하거나 경계를 약화할 때"
+      }
+    },
+    {
+      "id": "hope_without_guarantee",
+      "principle": "현재 확인되는 선택지와 남은 자원을 찾되 미래의 성공·회복·보상을 약속하지 않는다.",
+      "retrieval": {
+        "terms": ["희망", "가능성", "최악", "다 끝", "미래", "될까", "방법이 없", "가망"],
+        "slots": ["emotion", "thought", "cause", "goal"]
+      },
+      "references": [
+        {"candidate_id": "P12", "kind": "proverb", "text": "하늘이 무너져도 솟아날 구멍이 있다", "policy": "conditional"},
+        {"candidate_id": "I13", "kind": "four_hanja_idiom", "text": "전화위복 轉禍爲福", "policy": "conditional"},
+        {"candidate_id": "I14", "kind": "four_hanja_idiom", "text": "고진감래 苦盡甘來", "policy": "conditional"}
+      ],
+      "named_pattern": {
+        "name_ko": "희망이론",
+        "name_en": "Hope Theory",
+        "explanation": "희망은 좋은 결과의 예언보다 원하는 방향으로 갈 여러 경로와 그 경로를 시도할 힘을 인식하는 과정에 가깝다.",
+        "utterance": "희망이론에서는 희망을 결과 예언보다 가능한 경로를 찾는 힘으로 봐요.",
+        "source_url": "https://doi.org/10.1207/S15327965PLI1304_01",
+        "confidence": "medium"
+      },
+      "social_context": {
+        "utterance": "잘될 거라 단정할 순 없어도 아직 정해지지 않은 몫은 남아 있어요.",
+        "trigger": "결과가 실제로 미정인데 최악으로 확정할 때",
+        "avoid_when": "사별·확정 판정·돌이킬 수 없는 손실을 부정할 때"
+      }
+    }
+  ]
+}
