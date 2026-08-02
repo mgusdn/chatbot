@@ -24,6 +24,7 @@ describe("world HUD guestbook placement", () => {
   it("describes the live wall candidate and wall-specific Q action", () => {
     useGuestbookVoucherStore.setState({
       status: "armed",
+      placement_ready: true,
       placement_preview: {
         surface_id: "wall.interior.west",
         kind: "wall",
@@ -42,6 +43,7 @@ describe("world HUD guestbook placement", () => {
   it("surfaces wall fixture collisions before Q is pressed", () => {
     useGuestbookVoucherStore.setState({
       status: "armed",
+      placement_ready: true,
       placement_preview: {
         surface_id: "wall.interior.north",
         kind: "wall",
@@ -55,5 +57,21 @@ describe("world HUD guestbook placement", () => {
     const voucher = screen.getByTestId("guestbook-voucher-hud");
     expect(voucher).toHaveClass("is-error");
     expect(within(voucher).getByText("벽의 가구나 게시물과 겹쳐요.")).toBeVisible();
+  });
+
+  it("shows a neutral carry instruction and suppresses the nearby E prompt", () => {
+    useGameStore.setState({ nearbyInteractable: "guestbook" });
+    useGuestbookVoucherStore.setState({
+      status: "armed",
+      placement_ready: false,
+      placement_preview: null,
+    });
+
+    render(<WorldHud />);
+
+    const voucher = within(screen.getByTestId("guestbook-voucher-hud"));
+    expect(voucher.getByText("방명록을 들었어요")).toBeVisible();
+    expect(voucher.getByText("책상 주변을 벗어나 열린 곳으로 이동해주세요.")).toBeVisible();
+    expect(screen.queryByTestId("interaction-prompt")).not.toBeInTheDocument();
   });
 });

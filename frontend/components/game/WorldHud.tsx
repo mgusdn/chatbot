@@ -1,5 +1,6 @@
 "use client";
 
+import { requestBackgroundAudioPlayback } from "@/components/audio/AudioDirector";
 import { CHARACTER_BY_ID } from "@/constants/characterCatalog";
 import { INTERACTION_PROMPTS } from "@/constants/interactionPrompts";
 import { getMemorySurface } from "@/constants/memorySurfaces";
@@ -26,6 +27,7 @@ export function WorldHud({ nickname }: { nickname?: string }) {
   const guestbookStatus = useGuestbookVoucherStore((state) => state.status);
   const guestbookError = useGuestbookVoucherStore((state) => state.error);
   const guestbookPreview = useGuestbookVoucherStore((state) => state.placement_preview);
+  const guestbookPlacementReady = useGuestbookVoucherStore((state) => state.placement_ready);
   const discardGuestbook = useGuestbookVoucherStore((state) => state.discard);
   const relocationStatus = useMemoryRelocationStore((state) => state.status);
   const relocationCandidate = useMemoryRelocationStore((state) => state.candidate);
@@ -36,7 +38,7 @@ export function WorldHud({ nickname }: { nickname?: string }) {
   const hasMemoryRelocation = scene === "interior" && relocationStatus !== "idle";
   const hasGuestbookVoucher = !hasMemoryRelocation && scene === "interior"
     && ["armed", "submitting", "error"].includes(guestbookStatus);
-  const guestbookSurface = guestbookPreview
+  const guestbookSurface = guestbookPlacementReady && guestbookPreview
     ? getMemorySurface(guestbookPreview.surface_id)
     : null;
   const guestbookOnWall = guestbookPreview?.kind === "wall";
@@ -71,7 +73,16 @@ export function WorldHud({ nickname }: { nickname?: string }) {
           <strong>{nickname ? `${nickname} · ` : ""}{companionLabel(characterName)} 산책 중</strong>
         </div>
         <div className="world-actions">
-          <button type="button" onClick={toggleMuted} aria-pressed={!muted}>{muted ? "음향 켜기" : "음향 끄기"}</button>
+          <button
+            type="button"
+            onClick={() => {
+              toggleMuted();
+              requestBackgroundAudioPlayback();
+            }}
+            aria-pressed={!muted}
+          >
+            {muted ? "음향 켜기" : "음향 끄기"}
+          </button>
           <button type="button" disabled={relocationStatus === "submitting"} onClick={changeCharacter}>캐릭터 바꾸기</button>
         </div>
       </header>
@@ -87,12 +98,16 @@ export function WorldHud({ nickname }: { nickname?: string }) {
             <strong>
               {guestbookStatus === "submitting"
                 ? guestbookOnWall ? "벽에 붙이는 중…" : "바닥에 놓는 중…"
+                : !guestbookPlacementReady
+                  ? "방명록을 들었어요"
                 : guestbookSurface
                   ? `현재: ${guestbookSurface.label}`
                   : "캐릭터 앞에 놓을 준비가 됐어요"}
             </strong>
             <small>
-              {guestbookValidationMessage
+              {!guestbookPlacementReady
+                ? "책상 주변을 벗어나 열린 곳으로 이동해주세요."
+                : guestbookValidationMessage
                 || guestbookError
                 || (guestbookOnWall
                   ? "Q 벽에 붙이기 · 벽에서 멀어지면 다시 회전할 수 있어요"
@@ -140,7 +155,7 @@ export function WorldHud({ nickname }: { nickname?: string }) {
           </button>
         </aside>
       ) : null}
-      {nearby && !hasMemoryRelocation && (
+      {nearby && !hasMemoryRelocation && !hasGuestbookVoucher && (
         <button className="interaction-prompt" type="button" onClick={requestInteraction} data-testid="interaction-prompt">
           <kbd>E</kbd><span>{INTERACTION_PROMPTS[nearby]}</span>
         </button>

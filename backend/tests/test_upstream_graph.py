@@ -37,6 +37,22 @@ def _advance_to_loop(store: ExperimentStore, experiment_id: str, arm: str):
     return result
 
 
+def test_value_selection_enters_rapport_without_repeating_the_value_prompt():
+    store = ExperimentStore()
+    experiment = store.create(name="테스터")
+
+    result = store.run_turn(
+        experiment["experiment_id"],
+        "baseline",
+        "1, 2, 3, 4, 5",
+    )
+
+    assert result["status"] == "ok"
+    assert result["state"]["stage"] == "rapport"
+    assert "정확히 5개" not in result["message"]
+    assert "테스터님, 만나서 반갑습니다" in result["message"]
+
+
 def test_latest_upstream_baseline_has_iceberg_slots_values_and_report():
     store = ExperimentStore()
     experiment = store.create(name="테스터")
@@ -409,7 +425,7 @@ def test_baseline_detail_uses_slot_locked_question_not_model_wording(monkeypatch
 
     assert result["pending"]["target_slot"] == "situation"
     assert result["bot_message"].endswith(
-        "최근 가장 먼저 떠오르는 장면 하나를 편하게 들려주실 수 있나요?"
+        "최근 가장 먼저 떠오르는 경험 하나를 편하게 들려주실 수 있나요?"
     )
     assert "엉뚱한 질문" not in result["bot_message"]
 
@@ -452,9 +468,8 @@ def test_optimized_rapport_reflection_uses_primary_minimal_profile(monkeypatch):
         observed.update(kwargs)
         return {"reflection": "저도 만나서 반가워요."}
 
-    monkeypatch.setenv("OPTIMIZED_RESPONSE_API_ROUTE", "primary")
-    monkeypatch.setenv("OPTIMIZED_RESPONSE_THINKING", "minimal")
-    monkeypatch.setenv("OPTIMIZED_RAPPORT_TIMEOUT_SECONDS", "0.75")
+    monkeypatch.setenv("BASELINE_RESPONSE_THINKING_LEVEL", "minimal")
+    monkeypatch.setenv("RAPPORT_TIMEOUT_SECONDS", "0.75")
     monkeypatch.setattr(baseline_nodes, "_timed_llm_call", fake_timed_call)
 
     result = baseline_nodes.rapport_node(state)
@@ -480,9 +495,8 @@ def test_baseline_rapport_uses_same_gemini_profile_as_optimized(monkeypatch):
         observed.update(kwargs)
         return {"reflection": "긴장되는 마음을 솔직히 나눠주셔서 고마워요."}
 
-    monkeypatch.setenv("OPTIMIZED_RESPONSE_API_ROUTE", "primary")
-    monkeypatch.setenv("OPTIMIZED_RESPONSE_THINKING", "minimal")
-    monkeypatch.setenv("OPTIMIZED_RAPPORT_TIMEOUT_SECONDS", "0.75")
+    monkeypatch.setenv("BASELINE_RESPONSE_THINKING_LEVEL", "minimal")
+    monkeypatch.setenv("RAPPORT_TIMEOUT_SECONDS", "0.75")
     monkeypatch.setattr(baseline_nodes, "_timed_llm_call", fake_timed_call)
     result = baseline_nodes.rapport_node(state)
 

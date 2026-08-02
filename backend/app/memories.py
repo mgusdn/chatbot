@@ -64,11 +64,12 @@ MEMORY_LEGACY_WRITE_SURFACES = MEMORY_SURFACES - {
 # Placements remain normalized UV coordinates across the scene expansion.
 # Existing cards therefore spread with the larger surfaces; no coordinate
 # migration is intentionally performed for this scene revision.
+MEMORY_INTERIOR_SIZE = (21.6, 18.0)
 MEMORY_RELOCATION_SURFACE_SIZES = {
-    "floor.interior": (19.8, 16.5),
-    "wall.interior.north": (19.2, 2.85),
-    "wall.interior.west": (15.9, 2.85),
-    "wall.interior.east": (15.9, 2.85),
+    "floor.interior": MEMORY_INTERIOR_SIZE,
+    "wall.interior.north": (MEMORY_INTERIOR_SIZE[0] - 0.6, 2.85),
+    "wall.interior.west": (MEMORY_INTERIOR_SIZE[1] - 0.6, 2.85),
+    "wall.interior.east": (MEMORY_INTERIOR_SIZE[1] - 0.6, 2.85),
 }
 MEMORY_RELOCATION_KIND_SIZES = {
     "note": (0.34, 0.25),
@@ -79,32 +80,55 @@ MEMORY_RELOCATION_DESIGN_SIZE = (2.4, 1.5)
 MEMORY_RELOCATION_EDGE_CLEARANCE = 0.08
 MEMORY_RELOCATION_FLOOR_EDGE_MARGIN = 0.19
 MEMORY_RELOCATION_WALL_FIXTURE_CLEARANCE = 0.015
-MEMORY_RELOCATION_ENTRY_BOUNDS = (-1.8, 1.8, -8.25, -6.45)
+MEMORY_RELOCATION_ENTRY_BOUNDS = (-1.8, 1.8, -9.0, -7.2)
+
+
+def _floor_fixture(
+    fixture_id: str,
+    center_x: float,
+    center_z: float,
+    half_x: float,
+    half_z: float,
+) -> tuple[str, float, float, float, float]:
+    """Convert the scene's X/Z footprint into floor-surface U/-Z bounds."""
+
+    return (
+        fixture_id,
+        center_x - half_x,
+        center_x + half_x,
+        -center_z - half_z,
+        -center_z + half_z,
+    )
+
+
 MEMORY_RELOCATION_FLOOR_FIXTURES = (
-    ("guestbook-worktable", -6.5, -4.0, -5.87, -4.63),
-    ("guestbook-low-shelf", -9.71, -8.99, -5.95, -3.35),
-    ("cowork-table", 3.95, 6.65, -6.33, -4.97),
-    ("cowork-sofa", 8.5, 9.6, -6.75, -4.45),
-    ("library-bookcase-west", -9.77, -9.13, -1.45, 1.95),
-    ("library-worktable", -6.55, -3.95, -0.53, 0.83),
-    ("archive-bookcase", -8.05, -5.35, 7.47, 8.07),
-    ("pbao-desk", -1.65, 1.65, 4.6, 5.6),
-    ("recovery-bench", 8.54, 9.5, 0.2, 2.3),
-    ("recovery-project-table", 4.55, 6.15, 0.45, 2.05),
-    ("plant-lab-island", 5.65, 7.65, 4.73, 6.17),
-    ("installation-console", 8.63, 9.47, -3.57, -2.73),
+    _floor_fixture("guestbook-worktable", -5.6, 5.3, 1.25, 0.62),
+    _floor_fixture("guestbook-chair-north", -5.6, 4.15, 0.36, 0.38),
+    _floor_fixture("guestbook-low-shelf", -8.15, 5.0, 0.36, 1.3),
+    _floor_fixture("guestbook-notice-board", -7.5, 7.15, 0.58, 0.1),
+    _floor_fixture("cowork-table", 4.75, 5.55, 1.3, 0.68),
+    _floor_fixture("cowork-chair-north-west", 4.05, 4.48, 0.38, 0.38),
+    _floor_fixture("cowork-chair-north-east", 5.45, 4.48, 0.38, 0.38),
+    _floor_fixture("cowork-chair-south", 4.75, 6.65, 0.38, 0.38),
+    _floor_fixture("cowork-sofa", 8.05, 5.55, 0.5, 1.15),
+    _floor_fixture("cowork-floor-lamp", 8.1, 7.15, 0.32, 0.32),
+    _floor_fixture("installation-console", 8.1, 3.1, 0.42, 0.42),
+    _floor_fixture("library-bookcase-west", -8.0, -0.3, 0.32, 1.7),
+    _floor_fixture("library-low-bookcase-west", -8.0, -4.0, 0.34, 1.25),
+    _floor_fixture("archive-bookcase", -6.7, -8.52, 1.35, 0.3),
+    _floor_fixture("library-worktable", -4.95, -0.15, 1.3, 0.68),
+    _floor_fixture("library-chair-south", -4.95, 0.95, 0.36, 0.38),
+    _floor_fixture("recovery-bench", 8.05, -1.2, 0.48, 1.05),
+    _floor_fixture("recovery-project-table", 5.15, -1.3, 0.8, 0.8),
+    _floor_fixture("recovery-chair-north", 5.15, -2.45, 0.38, 0.38),
+    _floor_fixture("plant-lab-island", 6.6, -5.5, 1.0, 0.72),
+    _floor_fixture("pbao-desk", 0.0, -5.1, 1.65, 0.5),
+    _floor_fixture("pbao-chair-west", -2.75, -4.0, 0.4, 0.4),
+    _floor_fixture("pbao-chair-east", 2.75, -4.0, 0.4, 0.4),
 )
 MEMORY_RELOCATION_WALL_FIXTURES = (
     ("today-wall", "wall.interior.north", -2.75, 2.75, -0.84, 1.09),
     ("archive-bookcase", "wall.interior.north", -8.05, -5.35, -1.425, 0.675),
-    ("guestbook-low-shelf", "wall.interior.west", -5.95, -3.35, -1.425, -0.185),
-    ("library-bookcase-west", "wall.interior.west", -1.45, 1.95, -1.425, 0.875),
-    ("library-low-bookcase-west", "wall.interior.west", 2.5, 5.0, -1.425, -0.175),
-    ("cowork-sofa", "wall.interior.east", 4.45, 6.75, -1.425, -0.465),
-    ("installation-console", "wall.interior.east", 2.73, 3.57, -1.425, 0.675),
-    ("recovery-bench", "wall.interior.east", -2.3, -0.2, -1.425, -0.585),
-    ("recovery-potted-plant", "wall.interior.east", -3.2, -1.9, -1.425, 0.375),
-    ("plant-studio-potted-plant", "wall.interior.east", -7.2, -6.15, -1.425, 0.375),
 )
 MEMORY_REPORT_CATEGORIES = {
     "personal_information", "crisis", "harassment", "spam", "copyright", "other",
@@ -721,6 +745,14 @@ class MemoryStore:
             base_width, base_height = MEMORY_RELOCATION_KIND_SIZES[kind]
         scale = float(placement["scale"])
         rotation_deg = float(placement["rotation_deg"])
+        if (
+            placement["surface_id"] != "floor.interior"
+            and abs(rotation_deg) > 1e-9
+        ):
+            raise MemoryContentRejected(
+                "placement_rotation",
+                "벽에 붙이는 추억은 글씨가 바로 보이도록 수평으로 놓아주세요.",
+            )
         radians = math.radians(rotation_deg)
         half_width = base_width * scale / 2
         half_height = base_height * scale / 2

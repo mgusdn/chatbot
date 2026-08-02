@@ -18,6 +18,7 @@ export function MobileControls() {
   const requestInteraction = useGameStore((state) => state.requestInteraction);
   const guestbookStatus = useGuestbookVoucherStore((state) => state.status);
   const guestbookPreview = useGuestbookVoucherStore((state) => state.placement_preview);
+  const guestbookPlacementReady = useGuestbookVoucherStore((state) => state.placement_ready);
   const rotateGuestbook = useGuestbookVoucherStore((state) => state.rotate);
   const relocationStatus = useMemoryRelocationStore((state) => state.status);
   const relocationCandidate = useMemoryRelocationStore((state) => state.candidate);
@@ -27,8 +28,9 @@ export function MobileControls() {
   const [knob, setKnob] = useState({ x: 0, y: 0 });
   const radius = 42;
   const canRelocateMemory = scene === "interior" && relocationStatus !== "idle";
-  const canPlaceGuestbook = !canRelocateMemory && scene === "interior"
+  const hasGuestbookVoucher = !canRelocateMemory && scene === "interior"
     && ["armed", "error", "submitting"].includes(guestbookStatus);
+  const canPlaceGuestbook = hasGuestbookVoucher && guestbookPlacementReady;
   const guestbookOnWall = guestbookPreview?.kind === "wall";
   const guestbookPlacementInvalid = guestbookPreview?.valid === false;
 
@@ -94,8 +96,8 @@ export function MobileControls() {
       <button
         type="button"
         data-testid="mobile-interaction-button"
-        className={`mobile-interact ${nearby && !canRelocateMemory ? "is-visible" : ""}`}
-        disabled={!nearby || canRelocateMemory}
+        className={`mobile-interact ${nearby && !canRelocateMemory && !hasGuestbookVoucher ? "is-visible" : ""}`}
+        disabled={!nearby || canRelocateMemory || hasGuestbookVoucher}
         onClick={() => {
           if (navigator.vibrate) navigator.vibrate(18);
           requestInteraction();

@@ -47,3 +47,6 @@ data/*.sqlite3-shm
 
 # Local scratch outputs
 tmp/
+
+# Local GPT-SoVITS development checkout and model workspace
+testVoice/

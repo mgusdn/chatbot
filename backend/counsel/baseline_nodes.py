@@ -694,11 +694,11 @@ def _rapport_question(step: str, name: str) -> str:
     return prompts.RAPPORT_WHO
 
 
-def _optimized_rapport_timeout_seconds() -> float:
+def _rapport_timeout_seconds() -> float:
     try:
         return max(
             0.05,
-            float(os.getenv("OPTIMIZED_RAPPORT_TIMEOUT_SECONDS", "3.0")),
+            float(os.getenv("RAPPORT_TIMEOUT_SECONDS", "3.0")),
         )
     except ValueError:
         return 3.0
@@ -726,19 +726,16 @@ def rapport_node(state: SessionState) -> dict:
         prefix_text = ""
     else:
         try:
-            # Product decision: A and B use the same Gemini-minimal reflection
-            # during scripted rapport. Only the later counseling loop differs.
+            # Scripted rapport uses the same fast empathy profile as the
+            # production A-series counseling loop.
             prefix_text = _reflect(
                 state.get("bot_message") or "",
                 user_input,
-                api_route=os.getenv(
-                    "OPTIMIZED_RESPONSE_API_ROUTE", "primary"
-                ).strip(),
+                api_route="primary",
                 thinking_level=os.getenv(
-                    "OPTIMIZED_RESPONSE_THINKING_LEVEL"
-                )
-                or os.getenv("OPTIMIZED_RESPONSE_THINKING", "minimal").strip(),
-                timeout_seconds=_optimized_rapport_timeout_seconds(),
+                    "BASELINE_RESPONSE_THINKING_LEVEL", "minimal"
+                ).strip(),
+                timeout_seconds=_rapport_timeout_seconds(),
             )
         except ModelProviderError:
             # The scripted rapport question is complete by itself, so a late
@@ -1115,15 +1112,21 @@ def values_node(state: SessionState) -> dict:
             "conversation_log": log + [{"role": "bot", "content": message}],
         }
 
-    print("[선택된 가치]")
+    debug_print("[선택된 가치]")
     for vid in selected:
         v = get_value(vid)
-        print(f"  - {v['name_ko']} ({v['name_en']})")
+        debug_print(f"  - {v['name_ko']} ({v['name_en']})")
 
+    # This invocation ends after values. Return the first rapport message now,
+    # so the UI never redisplays the already-completed value prompt while the
+    # internal stage has advanced to rapport.
+    message = _rapport_question("greeting", state["name"])
     return {
         "selected_values": selected,
         "stage": "rapport",
-        "conversation_log": log,
+        "bot_message": message,
+        "rapport_step": "greeting",
+        "conversation_log": log + [{"role": "bot", "content": message}],
     }
 
 
@@ -1150,10 +1153,10 @@ def consolidate_slots_node(state: SessionState) -> dict:
     debug_print(f"[CONSOLIDATE DEBUG] before: {slots}")
     debug_print(f"[CONSOLIDATE DEBUG] after: {consolidated}")
 
-    print("[최종 슬롯 정리]")
+    debug_print("[최종 슬롯 정리]")
     for slot in SLOT_ORDER:
         content = " / ".join(consolidated[slot]) if consolidated[slot] else "X"
-        print(f"  - {SLOT_KOREAN_LABELS[slot]}({slot}): {content}")
+        debug_print(f"  - {SLOT_KOREAN_LABELS[slot]}({slot}): {content}")
 
     return {"slots": consolidated}
 

@@ -15,6 +15,7 @@ from app.memories import (
     MEMORY_RELOCATION_ENTRY_BOUNDS,
     MEMORY_RELOCATION_FLOOR_FIXTURES,
     MEMORY_RELOCATION_SURFACE_SIZES,
+    MEMORY_RELOCATION_WALL_FIXTURES,
     MemoryStore,
 )
 
@@ -226,27 +227,56 @@ def test_persistent_memory_contract_is_separate_and_uses_surface_local_coordinat
 
 def test_relocation_geometry_matches_the_expanded_room_contract():
     assert MEMORY_RELOCATION_SURFACE_SIZES == {
-        "floor.interior": (19.8, 16.5),
-        "wall.interior.north": (19.2, 2.85),
-        "wall.interior.west": (15.9, 2.85),
-        "wall.interior.east": (15.9, 2.85),
+        "floor.interior": (21.6, 18.0),
+        "wall.interior.north": (21.0, 2.85),
+        "wall.interior.west": (17.4, 2.85),
+        "wall.interior.east": (17.4, 2.85),
     }
-    assert MEMORY_RELOCATION_ENTRY_BOUNDS == (-1.8, 1.8, -8.25, -6.45)
+    assert MEMORY_RELOCATION_ENTRY_BOUNDS == (-1.8, 1.8, -9.0, -7.2)
 
     fixtures = {
         fixture_id: (min_u, max_u, min_v, max_v)
         for fixture_id, min_u, max_u, min_v, max_v
         in MEMORY_RELOCATION_FLOOR_FIXTURES
     }
-    # Only furniture carried outward with an outer wall changes coordinates.
-    assert fixtures["guestbook-low-shelf"] == (-9.71, -8.99, -5.95, -3.35)
-    assert fixtures["cowork-sofa"] == (8.5, 9.6, -6.75, -4.45)
-    assert fixtures["library-bookcase-west"] == (-9.77, -9.13, -1.45, 1.95)
-    assert fixtures["archive-bookcase"] == (-8.05, -5.35, 7.47, 8.07)
-    assert fixtures["recovery-bench"] == (8.54, 9.5, 0.2, 2.3)
-    assert fixtures["installation-console"] == (8.63, 9.47, -3.57, -2.73)
-    assert fixtures["guestbook-worktable"] == (-6.5, -4.0, -5.87, -4.63)
+    assert set(fixtures) == {
+        "guestbook-worktable",
+        "guestbook-chair-north",
+        "guestbook-low-shelf",
+        "guestbook-notice-board",
+        "cowork-table",
+        "cowork-chair-north-west",
+        "cowork-chair-north-east",
+        "cowork-chair-south",
+        "cowork-sofa",
+        "cowork-floor-lamp",
+        "installation-console",
+        "library-bookcase-west",
+        "library-low-bookcase-west",
+        "archive-bookcase",
+        "library-worktable",
+        "library-chair-south",
+        "recovery-bench",
+        "recovery-project-table",
+        "recovery-chair-north",
+        "plant-lab-island",
+        "pbao-desk",
+        "pbao-chair-west",
+        "pbao-chair-east",
+    }
+    assert fixtures["guestbook-worktable"] == (-6.85, -4.35, -5.92, -4.68)
+    assert fixtures["guestbook-low-shelf"] == (-8.51, -7.79, -6.3, -3.7)
+    assert fixtures["cowork-sofa"] == pytest.approx((7.55, 8.55, -6.7, -4.4))
+    assert fixtures["library-bookcase-west"] == (-8.32, -7.68, -1.4, 2.0)
+    assert fixtures["archive-bookcase"] == pytest.approx((-8.05, -5.35, 8.22, 8.82))
+    assert fixtures["recovery-bench"] == pytest.approx((7.57, 8.53, 0.15, 2.25))
+    assert fixtures["installation-console"] == pytest.approx((7.68, 8.52, -3.52, -2.68))
     assert fixtures["pbao-desk"] == (-1.65, 1.65, 4.6, 5.6)
+
+    assert {fixture[0] for fixture in MEMORY_RELOCATION_WALL_FIXTURES} == {
+        "today-wall",
+        "archive-bookcase",
+    }
 
 
 def test_room_expansion_keeps_existing_normalized_uvs_without_migration(
@@ -282,8 +312,8 @@ def test_design_v1_is_persisted_with_accessible_moderated_text_and_interior_floo
         ownership_token=IDEMPOTENT_OWNER,
         placement={
             "surface_id": "floor.interior",
-            "u": 0.62,
-            "v": 0.28,
+            "u": 0.6,
+            "v": 0.5,
             "rotation_deg": 37,
             "scale": 1.2,
             "z_index": 8,
@@ -347,8 +377,8 @@ def test_design_v1_is_persisted_with_accessible_moderated_text_and_interior_floo
         "author_alias": None,
         "placement": {
             "surface_id": "floor.interior",
-            "u": 0.62,
-            "v": 0.28,
+            "u": 0.6,
+            "v": 0.5,
             "rotation_deg": 37.0,
             "scale": 1.2,
             "z_index": 8,
@@ -424,10 +454,9 @@ def test_designed_letter_can_be_created_directly_on_each_walk_up_wall(
     [
         ("wall.interior.north", 0.0, "placement_bounds"),
         ("wall.interior.north", 0.5, "placement_collision"),
-        ("wall.interior.west", 0.5, "placement_collision"),
         (
-            "wall.interior.east",
-            0.5 + 3.15 / MEMORY_RELOCATION_SURFACE_SIZES["wall.interior.east"][0],
+            "wall.interior.north",
+            0.5 - 6.7 / MEMORY_RELOCATION_SURFACE_SIZES["wall.interior.north"][0],
             "placement_collision",
         ),
     ],
@@ -461,6 +490,33 @@ def test_designed_wall_create_uses_relocation_bounds_and_fixture_validation(
     assert response.status_code == 422
     assert response.json()["detail"]["code"] == expected_code
     assert client.get("/api/memory-rooms/prometheus").json()["memory_count"] == 0
+
+
+def test_walk_up_wall_rejects_rotation_that_the_client_cannot_create(
+    memory_api_client,
+):
+    client, _, _, _ = memory_api_client
+    payload = memory_payload(
+        design=design_v2(),
+        placement={
+            "surface_id": "wall.interior.north",
+            "u": 0.75,
+            "v": 0.708,
+            "rotation_deg": 15,
+            "scale": 1,
+            "z_index": 0,
+        },
+    )
+    payload.pop("body")
+
+    response = client.post(
+        "/api/memory-rooms/prometheus/memories",
+        json=payload,
+        headers=VISITOR,
+    )
+
+    assert response.status_code == 422
+    assert response.json()["detail"]["code"] == "placement_rotation"
 
 
 @pytest.mark.parametrize("sticker_id", ["thumbs-up", "prometheus-p"])
@@ -1237,6 +1293,7 @@ def test_relocation_rejects_a_card_that_would_cross_surface_edges(memory_api_cli
         surface_id="wall.interior.north",
         u=0,
         v=0.5,
+        rotation_deg=0,
     )
 
     assert response.status_code == 422
@@ -1496,6 +1553,7 @@ def test_relocation_rejects_full_surface_without_consuming_state(memory_api_clie
         client,
         created,
         surface_id="wall.interior.east",
+        rotation_deg=0,
     )
 
     assert response.status_code == 409

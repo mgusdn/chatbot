@@ -37,6 +37,12 @@ export type InteriorCollider = {
   halfExtents: readonly [number, number, number];
 };
 
+export type InteriorFurniturePlacement = {
+  id: string;
+  position: [number, number, number];
+  halfExtents: [number, number, number];
+};
+
 export type CommonsTraceAnchor = {
   id: string;
   kind: "guestbook-entry" | "installation-slot";
@@ -45,10 +51,11 @@ export type CommonsTraceAnchor = {
 
 const ORIGINAL_INTERIOR_SIZE = [18, 15] as const;
 
-export const INTERIOR_PLAN_SCALE = 1.1;
+export const INTERIOR_PLAN_SCALE = 1.2;
+const scalePlan = (value: number) => Math.round(value * INTERIOR_PLAN_SCALE * 1000) / 1000;
 export const INTERIOR_SIZE = [
-  ORIGINAL_INTERIOR_SIZE[0] * INTERIOR_PLAN_SCALE,
-  ORIGINAL_INTERIOR_SIZE[1] * INTERIOR_PLAN_SCALE,
+  scalePlan(ORIGINAL_INTERIOR_SIZE[0]),
+  scalePlan(ORIGINAL_INTERIOR_SIZE[1]),
 ] as const;
 export const INTERIOR_HALF_WIDTH = INTERIOR_SIZE[0] / 2;
 export const INTERIOR_HALF_DEPTH = INTERIOR_SIZE[1] / 2;
@@ -57,17 +64,18 @@ export const INTERIOR_CUTAWAY_HEIGHT = 0.78;
 export const INTERIOR_WALL_THICKNESS = 0.22;
 export const INTERIOR_ENTRANCE_WIDTH = 3.6;
 export const INTERIOR_MAIN_PATH_HALF_WIDTH = 1.7 * INTERIOR_PLAN_SCALE;
+export const INTERIOR_MIN_PATH_WIDTH = 1.4;
+/** Clear walking/preview depth measured inward from each exterior shell centerline. */
+export const INTERIOR_WALL_APPROACH_DEPTH = 2.25;
 export const INTERIOR_WALL_NORMAL_SHIFT = {
   north: -(INTERIOR_SIZE[1] - ORIGINAL_INTERIOR_SIZE[1]) / 2,
   west: -(INTERIOR_SIZE[0] - ORIGINAL_INTERIOR_SIZE[0]) / 2,
   east: (INTERIOR_SIZE[0] - ORIGINAL_INTERIOR_SIZE[0]) / 2,
 } as const;
 
-const scalePlan = (value: number) => value * INTERIOR_PLAN_SCALE;
-
 /**
  * Floor finishes define zones without closing the commons into rooms. The
- * 3.4 m center boulevard remains visually and physically continuous.
+ * 4.08 m center boulevard remains visually and physically continuous.
  */
 export const INTERIOR_ZONES: readonly InteriorZone[] = [
   { id: "welcome-boulevard", label: "마음 연구소 입구", center: [0, scalePlan(4.9)], size: [scalePlan(3.4), scalePlan(4.8)], floorColor: "#a57a5d" },
@@ -100,9 +108,143 @@ export const INTERIOR_WALLS: readonly InteriorWall[] = [
   { id: "outer-south-right", position: [SOUTH_SEGMENT_CENTER, CUTAWAY_Y, INTERIOR_HALF_DEPTH], size: [SOUTH_SEGMENT_WIDTH, INTERIOR_CUTAWAY_HEIGHT, INTERIOR_WALL_THICKNESS], color: "#b8a08c", cutaway: true },
 ] as const;
 
+/**
+ * Large furniture is described once and consumed by both the renderer and the
+ * physics/placement blockers. This keeps visual furniture and its collision
+ * footprint from drifting apart during room-layout iterations.
+ */
+export const INTERIOR_FURNITURE_LAYOUT = {
+  guestbookWorktable: {
+    id: "guestbook-worktable",
+    position: [-5.6, 0, 5.3],
+    halfExtents: [1.25, 0.74, 0.62],
+  },
+  guestbookChairNorth: {
+    id: "guestbook-chair-north",
+    position: [-5.6, 0, 4.15],
+    halfExtents: [0.36, 0.5, 0.38],
+  },
+  guestbookLowShelf: {
+    id: "guestbook-low-shelf",
+    position: [-8.15, 0, 5],
+    halfExtents: [0.36, 0.62, 1.3],
+  },
+  guestbookNoticeBoard: {
+    id: "guestbook-notice-board",
+    position: [-7.5, 0, 7.15],
+    halfExtents: [0.58, 0.8, 0.1],
+  },
+  coworkTable: {
+    id: "cowork-table",
+    position: [4.75, 0, 5.55],
+    halfExtents: [1.3, 0.74, 0.68],
+  },
+  coworkChairNorthWest: {
+    id: "cowork-chair-north-west",
+    position: [4.05, 0, 4.48],
+    halfExtents: [0.38, 0.5, 0.38],
+  },
+  coworkChairNorthEast: {
+    id: "cowork-chair-north-east",
+    position: [5.45, 0, 4.48],
+    halfExtents: [0.38, 0.5, 0.38],
+  },
+  coworkChairSouth: {
+    id: "cowork-chair-south",
+    position: [4.75, 0, 6.65],
+    halfExtents: [0.38, 0.5, 0.38],
+  },
+  coworkSofa: {
+    id: "cowork-sofa",
+    position: [8.05, 0, 5.55],
+    halfExtents: [0.5, 0.48, 1.15],
+  },
+  coworkFloorLamp: {
+    id: "cowork-floor-lamp",
+    position: [8.1, 0, 7.15],
+    halfExtents: [0.32, 1.05, 0.32],
+  },
+  installationConsole: {
+    id: "installation-console",
+    position: [8.1, 0, 3.1],
+    halfExtents: [0.42, 1.05, 0.42],
+  },
+  libraryBookcaseWest: {
+    id: "library-bookcase-west",
+    position: [-8, 0, -0.3],
+    halfExtents: [0.32, 1.15, 1.7],
+  },
+  libraryLowBookcaseWest: {
+    id: "library-low-bookcase-west",
+    position: [-8, 0, -4],
+    halfExtents: [0.34, 0.62, 1.25],
+  },
+  archiveBookcase: {
+    id: "archive-bookcase",
+    position: [-6.7, 0, -7.02 + INTERIOR_WALL_NORMAL_SHIFT.north],
+    halfExtents: [1.35, 1.05, 0.3],
+  },
+  libraryWorktable: {
+    id: "library-worktable",
+    position: [-4.95, 0, -0.15],
+    halfExtents: [1.3, 0.74, 0.68],
+  },
+  libraryChairSouth: {
+    id: "library-chair-south",
+    position: [-4.95, 0, 0.95],
+    halfExtents: [0.36, 0.5, 0.38],
+  },
+  recoveryBench: {
+    id: "recovery-bench",
+    position: [8.05, 0, -1.2],
+    halfExtents: [0.48, 0.42, 1.05],
+  },
+  recoveryProjectTable: {
+    id: "recovery-project-table",
+    position: [5.15, 0, -1.3],
+    halfExtents: [0.8, 0.38, 0.8],
+  },
+  recoveryChairNorth: {
+    id: "recovery-chair-north",
+    position: [5.15, 0, -2.45],
+    halfExtents: [0.38, 0.5, 0.38],
+  },
+  plantLabIsland: {
+    id: "plant-lab-island",
+    position: [6.6, 0, -5.5],
+    halfExtents: [1, 0.42, 0.72],
+  },
+  pbaoDesk: {
+    id: "pbao-desk",
+    position: [0, 0, -5.1],
+    halfExtents: [1.65, 0.68, 0.5],
+  },
+  pbaoChairWest: {
+    id: "pbao-chair-west",
+    position: [-2.75, 0, -4],
+    halfExtents: [0.4, 0.5, 0.4],
+  },
+  pbaoChairEast: {
+    id: "pbao-chair-east",
+    position: [2.75, 0, -4],
+    halfExtents: [0.4, 0.5, 0.4],
+  },
+} satisfies Record<string, InteriorFurniturePlacement>;
+
 export const COMMONS_INTERACTION_ANCHORS = {
-  guestbook: [-5.25, 0, 5.25],
-  installation: [8.15 + INTERIOR_WALL_NORMAL_SHIFT.east, 0, 3.15],
+  // Meet the worktable from its open entrance-facing edge. Keeping the prompt
+  // off the tabletop makes the station reachable straight from the boulevard.
+  guestbook: [
+    INTERIOR_FURNITURE_LAYOUT.guestbookWorktable.position[0],
+    0,
+    INTERIOR_FURNITURE_LAYOUT.guestbookWorktable.position[2] + 1.2,
+  ],
+  // Stand in the open gallery aisle instead of squeezing against the console.
+  installation: [
+    INTERIOR_FURNITURE_LAYOUT.installationConsole.position[0] - 1.5,
+    0,
+    INTERIOR_FURNITURE_LAYOUT.installationConsole.position[2],
+  ],
 } as const satisfies Record<string, readonly [number, number, number]>;
 
 /** Stable slots that a later visitor-history layer can populate with live data. */
@@ -117,20 +259,13 @@ export const COMMONS_TRACE_ANCHORS: readonly CommonsTraceAnchor[] = [
   ),
 ] as const;
 
-export const INTERIOR_FURNITURE_COLLIDERS: readonly InteriorCollider[] = [
-  { id: "guestbook-worktable", position: [-5.25, 0.74, 5.25], halfExtents: [1.25, 0.74, 0.62] },
-  { id: "guestbook-low-shelf", position: [-8.45 + INTERIOR_WALL_NORMAL_SHIFT.west, 0.62, 4.65], halfExtents: [0.36, 0.62, 1.3] },
-  { id: "cowork-table", position: [5.3, 0.74, 5.65], halfExtents: [1.35, 0.74, 0.68] },
-  { id: "cowork-sofa", position: [8.15 + INTERIOR_WALL_NORMAL_SHIFT.east, 0.48, 5.6], halfExtents: [0.55, 0.48, 1.15] },
-  { id: "library-bookcase-west", position: [-8.55 + INTERIOR_WALL_NORMAL_SHIFT.west, 1.15, -0.25], halfExtents: [0.32, 1.15, 1.7] },
-  { id: "library-worktable", position: [-5.25, 0.74, -0.15], halfExtents: [1.3, 0.74, 0.68] },
-  { id: "archive-bookcase", position: [-6.7, 1.05, -7.02 + INTERIOR_WALL_NORMAL_SHIFT.north], halfExtents: [1.35, 1.05, 0.3] },
-  { id: "pbao-desk", position: [0, 0.68, -5.1], halfExtents: [1.65, 0.68, 0.5] },
-  { id: "recovery-bench", position: [8.12 + INTERIOR_WALL_NORMAL_SHIFT.east, 0.42, -1.25], halfExtents: [0.48, 0.42, 1.05] },
-  { id: "recovery-project-table", position: [5.35, 0.38, -1.25], halfExtents: [0.8, 0.38, 0.8] },
-  { id: "plant-lab-island", position: [6.65, 0.42, -5.45], halfExtents: [1, 0.42, 0.72] },
-  { id: "installation-console", position: [8.15 + INTERIOR_WALL_NORMAL_SHIFT.east, 1.05, 3.15], halfExtents: [0.42, 1.05, 0.42] },
-] as const;
+export const INTERIOR_FURNITURE_COLLIDERS: readonly InteriorCollider[] = Object.values(
+  INTERIOR_FURNITURE_LAYOUT,
+).map(({ id, position, halfExtents }) => ({
+  id,
+  position: [position[0], halfExtents[1], position[2]],
+  halfExtents,
+}));
 
 /** The threshold floor extends beyond the shell before this invisible guard. */
 const ENTRY_PORCH_HALF_DEPTH = 0.6;

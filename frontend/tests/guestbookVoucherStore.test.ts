@@ -43,12 +43,22 @@ describe("guestbook voucher store", () => {
       signature: "다정한 산책자",
     });
     expect(store.arm(decorated)).toBe(true);
-    expect(useGuestbookVoucherStore.getState().status).toBe("armed");
+    expect(useGuestbookVoucherStore.getState()).toMatchObject({
+      status: "armed",
+      placement_ready: false,
+      placement_preview: null,
+    });
     expect(getGuestbookVoucherSubmission(useGuestbookVoucherStore.getState())).toMatchObject({
       design: decorated,
       client_request_id: first.client_request_id,
       ownership_token: first.ownership_token,
     });
+    expect(store.setSubmitting()).toBe(false);
+    store.rotate(15);
+    expect(useGuestbookVoucherStore.getState().rotation_offset_deg).toBe(0);
+
+    expect(store.enablePlacement()).toBe(true);
+    expect(store.enablePlacement()).toBe(false);
     store.setPlacementPreview({
       surface_id: "wall.interior.west",
       kind: "wall",
@@ -91,6 +101,7 @@ describe("guestbook voucher store", () => {
       signature: "다시 온 마음",
     });
     store.arm(retryDesign);
+    store.enablePlacement();
     store.setSubmitting();
     const persisted = window.localStorage.getItem(GUESTBOOK_VOUCHER_STORAGE_KEY);
     expect(persisted).toContain('"submitting"');
@@ -107,6 +118,7 @@ describe("guestbook voucher store", () => {
     store.hydrate(window.localStorage);
     expect(useGuestbookVoucherStore.getState().status).toBe("armed");
     expect(useGuestbookVoucherStore.getState().error).toContain("재시도");
+    expect(useGuestbookVoucherStore.getState().placement_ready).toBe(false);
     expect(useGuestbookVoucherStore.getState().placement_preview).toBeNull();
     expect(getGuestbookVoucherSubmission(useGuestbookVoucherStore.getState())?.design).toEqual(retryDesign);
   });
@@ -152,6 +164,8 @@ describe("guestbook voucher store", () => {
 
     const store = useGuestbookVoucherStore.getState();
     store.beginEditing();
+    store.arm(designWithText("돌려 놓을 편지"));
+    store.enablePlacement();
     store.rotate(195);
     expect(useGuestbookVoucherStore.getState().rotation_offset_deg).toBe(-165);
   });

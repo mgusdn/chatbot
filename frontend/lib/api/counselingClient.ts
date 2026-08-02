@@ -1,7 +1,6 @@
 import type {
   ExperimentResponse,
   HealthResponse,
-  ModelArm,
   PublicCounselState,
   TurnStreamEvent,
   TurnResponse,
@@ -73,24 +72,19 @@ export async function readTurnEventStream(
 export const counselingApi = {
   health: (probe = true) => api<HealthResponse>(`/api/health?probe=${probe}`),
   createExperiment: () => api<ExperimentResponse>("/api/experiments", { method: "POST", body: "{}" }),
-  sendTurn: (experimentId: string, message: string, arm: ModelArm, signal?: AbortSignal) =>
-    api<TurnResponse>(`/api/experiments/${experimentId}/turns`, {
-      method: "POST",
-      body: JSON.stringify({ message, arms: [arm] }),
-      signal,
-    }),
   sendTurnStream: (
     experimentId: string,
     message: string,
-    arms: ModelArm[],
     onEvent: (event: TurnStreamEvent) => void,
     signal?: AbortSignal,
   ) => fetch(`/api/experiments/${experimentId}/turns/stream`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message, arms }),
+    // The production counseling page intentionally exposes only the A
+    // pipeline: it starts speaking while its analyzer continues in parallel.
+    body: JSON.stringify({ message, arms: ["baseline"] }),
     signal,
   }).then((response) => readTurnEventStream(response, onEvent)),
-  demoState: (experimentId: string, arm: ModelArm) =>
-    api<PublicCounselState>(`/api/experiments/${experimentId}/demo-state?arm=${arm}`),
+  demoState: (experimentId: string) =>
+    api<PublicCounselState>(`/api/experiments/${experimentId}/demo-state?arm=baseline`),
 };

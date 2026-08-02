@@ -269,7 +269,15 @@ class GptSoVitsService:
             "ref_audio_path": self.reference_audio_path,
             "prompt_text": self.reference_text,
             "prompt_lang": "ko",
-            "media_type": "wav",
+            # Raw signed 16-bit PCM lets the browser feed one long-lived
+            # AudioWorklet instead of starting a fresh <audio> element for
+            # every sentence. The configured voice currently emits 32 kHz mono.
+            "media_type": os.getenv("TTS_MEDIA_TYPE", "raw"),
+            # 60 ms is short enough to keep pre-buffered sentences flowing,
+            # but gives the final syllable a natural release instead of
+            # cutting directly from an active waveform to digital zero.
+            "fragment_interval": float(os.getenv("TTS_FRAGMENT_INTERVAL_SECONDS", "0")),
+            "text_split_method": os.getenv("TTS_TEXT_SPLIT_METHOD", "cut0"),
             # Match chatbot-voice: fastest streaming profile. Never combine it
             # with batch_size; GPT-SoVITS currently errors on that combination.
             "streaming_mode": int(os.getenv("TTS_STREAMING_MODE", "3")),

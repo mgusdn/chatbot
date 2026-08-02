@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import styles from "./ValueSelectionScreen.module.css";
 
 export type ValueItem = {
@@ -47,14 +47,24 @@ type ValueSelectionScreenProps = {
 
 export function ValueSelectionScreen({ onSubmit, busy }: ValueSelectionScreenProps) {
   const [selected, setSelected] = useState<number[]>([]);
+  const [activeNumber, setActiveNumber] = useState(VALUES_DATA[0].number);
+  const [page, setPage] = useState(0);
+  const pages = useMemo(
+    () => Array.from({ length: 3 }, (_, index) => VALUES_DATA.slice(index * 9, index * 9 + 9)),
+    [],
+  );
+  const activeValue = VALUES_DATA.find((item) => item.number === activeNumber) || VALUES_DATA[0];
+  const selectedValues = selected
+    .map((number) => VALUES_DATA.find((item) => item.number === number))
+    .filter((item): item is ValueItem => Boolean(item));
 
   const handleToggle = (num: number) => {
-    if (selected.includes(num)) {
-      setSelected(selected.filter((n) => n !== num));
-    } else {
-      if (selected.length >= 5) return;
-      setSelected([...selected, num]);
-    }
+    setActiveNumber(num);
+    setSelected((current) => {
+      if (current.includes(num)) return current.filter((number) => number !== num);
+      if (current.length >= 5) return current;
+      return [...current, num];
+    });
   };
 
   const handleStart = () => {
@@ -63,49 +73,84 @@ export function ValueSelectionScreen({ onSubmit, busy }: ValueSelectionScreenPro
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} data-testid="value-selection-screen">
       <header className={styles.header}>
         <span className={styles.kicker}>CORE VALUES SELECTION</span>
         <h1>나를 설명하는 5가지 가치를 선택해 주세요</h1>
         <p className={styles.subtext}>
           마음 속 깊은 곳, 나를 가장 잘 나타내는 핵심 가치들을 5가지 선택해 보세요.
         </p>
-        <div className={styles.counter}>
-          선택된 가치: <strong>{selected.length}</strong> / 5
+        <div className={styles.headerInfo}>
+          <div className={styles.counter} aria-live="polite">
+            선택 <strong>{selected.length}</strong> / 5
+          </div>
+          <div className={styles.valueDescription} id="active-value-description">
+            <strong>{activeValue.nameKo}</strong>
+            <span>{activeValue.nameEn}</span>
+            <p>{activeValue.definition}</p>
+          </div>
         </div>
       </header>
 
-      <div className={styles.grid}>
-        {VALUES_DATA.map((item) => {
-          const isSelected = selected.includes(item.number);
-          const isMaxed = selected.length >= 5;
-          const isDisabled = isMaxed && !isSelected;
+      <div className={styles.grid} aria-label="핵심 가치 목록">
+        {pages.map((items, pageIndex) => (
+          <div
+            className={`${styles.page} ${pageIndex === page ? styles.currentPage : ""}`}
+            data-value-page={pageIndex}
+            key={pageIndex}
+          >
+            {items.map((item) => {
+              const isSelected = selected.includes(item.number);
+              const isMaxed = selected.length >= 5;
+              const isDisabled = isMaxed && !isSelected;
 
-          return (
-            <button
-              key={item.number}
-              type="button"
-              className={`${styles.card} ${isSelected ? styles.selected : ""} ${
-                isDisabled ? styles.disabled : ""
-              }`}
-              onClick={() => handleToggle(item.number)}
-              title={item.definition}
-            >
-              <div className={styles.cardHeader}>
-                <div className={styles.titleGroup}>
-                  <span className={styles.num}>{item.number}</span>
+              return (
+                <button
+                  key={item.number}
+                  type="button"
+                  className={`${styles.card} ${isSelected ? styles.selected : ""} ${
+                    isDisabled ? styles.disabled : ""
+                  }`}
+                  aria-pressed={isSelected}
+                  aria-disabled={isDisabled}
+                  aria-describedby="active-value-description"
+                  onClick={() => handleToggle(item.number)}
+                  onFocus={() => setActiveNumber(item.number)}
+                  onMouseEnter={() => setActiveNumber(item.number)}
+                >
+                  <span className={styles.num}>{String(item.number).padStart(2, "0")}</span>
                   <strong className={styles.name}>{item.nameKo}</strong>
                   <small className={styles.enName}>{item.nameEn}</small>
-                </div>
-                {isSelected && <span className={styles.check}>✓</span>}
-              </div>
-              <p className={styles.definition}>{item.definition}</p>
-            </button>
-          );
-        })}
+                  {isSelected && <span className={styles.check} aria-hidden="true">✓</span>}
+                </button>
+              );
+            })}
+          </div>
+        ))}
       </div>
 
+      <nav className={styles.pagination} aria-label="가치 목록 페이지">
+        {pages.map((_, index) => (
+          <button
+            type="button"
+            key={index}
+            className={index === page ? styles.activePageButton : ""}
+            aria-current={index === page ? "page" : undefined}
+            onClick={() => setPage(index)}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </nav>
+
       <footer className={styles.footer}>
+        <div className={styles.selectedValues} aria-label="선택한 가치">
+          {selectedValues.length ? selectedValues.map((item) => (
+            <button type="button" key={item.number} onClick={() => handleToggle(item.number)}>
+              {item.nameKo}<span aria-hidden="true">×</span>
+            </button>
+          )) : <span>마음에 닿는 가치를 골라보세요.</span>}
+        </div>
         <button
           type="button"
           className={styles.startButton}

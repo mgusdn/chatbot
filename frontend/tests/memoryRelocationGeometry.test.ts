@@ -39,7 +39,7 @@ const EAST_APPROACH_X =
 describe("memory surface registry", () => {
   it("preserves legacy board geometry while keeping the west board on the expanded wall", () => {
     expect(MEMORY_SURFACE_REGISTRY["wall.north"]).toMatchObject({
-      position: [-7.65, 1.12, 6.73],
+      position: [-7.5, 1.12, 7.23],
       size: [1.05, 1.25],
       relocationKind: null,
     });
@@ -99,6 +99,31 @@ describe("memory surface registry", () => {
       expect(restored.u).toBeCloseTo(0.23, 10);
       expect(restored.v).toBeCloseTo(0.78, 10);
       expect(restored.normalDistance).toBeCloseTo(0.017, 10);
+    }
+  });
+
+  it("projects floor and wall candidate corners through each surface axis exactly once", () => {
+    for (const surfaceId of MEMORY_RELOCATION_SURFACE_IDS) {
+      const candidate = createMemoryRelocationCandidateForPlacement(
+        {
+          surface_id: surfaceId,
+          u: 0.31,
+          v: 0.68,
+          rotation_deg: 27,
+          scale: 0.9,
+          z_index: 3,
+        },
+        [0.8, 0.6],
+      );
+
+      candidate.worldCorners.forEach((worldCorner, index) => {
+        const restored = memorySurfaceWorldToCoordinates(surfaceId, worldCorner);
+        const [expectedU, expectedV] = candidate.localCorners[index];
+
+        expect(restored.localU).toBeCloseTo(expectedU, 10);
+        expect(restored.localV).toBeCloseTo(expectedV, 10);
+        expect(restored.normalDistance).toBeCloseTo(0.01203, 10);
+      });
     }
   });
 
@@ -209,7 +234,7 @@ describe("carried memory snap selection", () => {
   });
 
   it("clamps a wall ghost wholly inside the readable wall edge", () => {
-    const result = evaluateMemoryRelocation({ x: 8.5, z: NORTH_APPROACH_Z, yaw: Math.PI });
+    const result = evaluateMemoryRelocation({ x: 10.2, z: NORTH_APPROACH_Z, yaw: Math.PI });
 
     expect(result.candidate.surfaceId).toBe("wall.interior.north");
     expect(result.candidate.clamped).toBe(true);
@@ -232,31 +257,31 @@ describe("relocation candidate validation", () => {
     expect(open.validation).toEqual({ valid: true, reason: null, blockerId: null });
   });
 
-  it("places a full-size letter above a low shelf while blocking a full bookcase", () => {
-    const aboveLowShelf = evaluateMemoryRelocation({
+  it("opens the west wall after moving shelves inward while preserving north fixtures", () => {
+    const openWestWall = evaluateMemoryRelocation({
       x: WEST_APPROACH_X,
       z: 4.5,
       yaw: -Math.PI / 2,
     });
-    const inFrontOfBookcase = evaluateMemoryRelocation({
-      x: WEST_APPROACH_X,
-      z: 0,
-      yaw: -Math.PI / 2,
+    const inFrontOfArchive = evaluateMemoryRelocation({
+      x: -6.7,
+      z: NORTH_APPROACH_Z,
+      yaw: Math.PI,
     });
 
-    expect(aboveLowShelf.candidate.surfaceId).toBe("wall.interior.west");
-    expect(aboveLowShelf.candidate.height).toBe(1.5);
-    expect(aboveLowShelf.validation).toEqual({ valid: true, reason: null, blockerId: null });
-    expect(inFrontOfBookcase.validation).toEqual({
+    expect(openWestWall.candidate.surfaceId).toBe("wall.interior.west");
+    expect(openWestWall.candidate.height).toBe(1.5);
+    expect(openWestWall.validation).toEqual({ valid: true, reason: null, blockerId: null });
+    expect(inFrontOfArchive.validation).toEqual({
       valid: false,
       reason: "wall-fixture-collision",
-      blockerId: "library-bookcase-west",
+      blockerId: "archive-bookcase",
     });
   });
 
   it("rejects furniture and the protected entrance on the floor", () => {
     const table = evaluateMemoryRelocation({ x: -5.25, z: 4.35, yaw: 0 });
-    const entrance = evaluateMemoryRelocation({ x: 0, z: 4.8, yaw: 0 });
+    const entrance = evaluateMemoryRelocation({ x: 0, z: 6.4, yaw: 0 });
 
     expect(table.validation).toEqual({
       valid: false,

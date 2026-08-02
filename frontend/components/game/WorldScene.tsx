@@ -59,6 +59,16 @@ const isButtonControl = (target: EventTarget | null) => {
 // remount cannot swallow a key that is already being held down.
 const pressedWorldKeys = new Set<string>();
 
+// The editor opens beside the worktable. Requiring a short walk away keeps the
+// freshly armed letter from immediately appearing as a red table collision.
+export const GUESTBOOK_STATION_PROTECTION_RADIUS = WORLD_CONFIG.interactionRadius + 0.8;
+
+export function hasClearedGuestbookStation(position: { x: number; z: number }) {
+  const anchor = COMMONS_INTERACTION_ANCHORS.guestbook;
+  return Math.hypot(position.x - anchor[0], position.z - anchor[2])
+    > GUESTBOOK_STATION_PROTECTION_RADIUS;
+}
+
 type GuestbookGhostState = MemoryRelocationEvaluation;
 
 function guestbookPlacementMessage(validation: MemoryRelocationValidation) {
@@ -120,12 +130,15 @@ function PlayerController({
   const guestbookStatus = useGuestbookVoucherStore((state) => state.status);
   const guestbookDesign = useGuestbookVoucherStore((state) => state.design);
   const guestbookRotation = useGuestbookVoucherStore((state) => state.rotation_offset_deg);
+  const guestbookPlacementReady = useGuestbookVoucherStore((state) => state.placement_ready);
   const relocationStatus = useMemoryRelocationStore((state) => state.status);
   const relocationKind = useMemoryRelocationStore((state) => state.kind);
   const relocationDesign = useMemoryRelocationStore((state) => state.design);
   const relocationOriginal = useMemoryRelocationStore((state) => state.original);
   const relocationRequestId = useMemoryRelocationStore((state) => state.requestId);
   const relocationActive = relocationStatus !== "idle";
+  const guestbookVoucherActive = scene === "interior"
+    && ["armed", "submitting", "error"].includes(guestbookStatus);
 
   const active = !activeCommonsStation
     && (phase === "exploring-exterior" || phase === "exploring-interior" || phase === "interaction-ready");
@@ -142,6 +155,7 @@ function PlayerController({
       scene !== "interior"
       || !active
       || !["armed", "error"].includes(voucher.status)
+      || !voucher.placement_ready
       || !voucher.design
       || !body.current
       || !visual.current
@@ -249,6 +263,11 @@ function PlayerController({
           return;
         }
       }
+      if (guestbookVoucherActive && (key === "e" || key === " ")) {
+        if (key === " " && isButtonControl(event.target)) return;
+        event.preventDefault();
+        return;
+      }
       if ((key === "e" || key === " ") && !event.repeat) {
         if (key === " " && isButtonControl(event.target)) return;
         event.preventDefault();
@@ -285,6 +304,7 @@ function PlayerController({
     placeGuestbook,
     relocationActive,
     scene,
+    guestbookVoucherActive,
   ]);
 
   useEffect(() => {
@@ -309,7 +329,7 @@ function PlayerController({
 
   useEffect(() => {
     if (!interactionNonce || !body.current) return;
-    if (relocationActive) {
+    if (relocationActive || guestbookVoucherActive) {
       consumeInteraction();
       return;
     }
@@ -352,12 +372,14 @@ function PlayerController({
     onOpenGuestbookEditor,
     openCommonsStation,
     relocationActive,
+    guestbookVoucherActive,
     smoothedTarget,
   ]);
 
   useFrame((_, delta) => {
     if (!body.current) return;
     const velocity = body.current.linvel();
+    const playerPosition = body.current.translation();
     const canPreviewRelocation = scene === "interior"
       && !activeCommonsStation
       && relocationActive
@@ -372,9 +394,8 @@ function PlayerController({
       && relocationOriginal
       && relocationRequestId
     ) {
-      const position = body.current.translation();
       const result = evaluateMemoryRelocation(
-        { x: position.x, z: position.z, yaw: visual.current.rotation.y },
+        { x: playerPosition.x, z: playerPosition.z, yaw: visual.current.rotation.y },
         {
           baseSize: getMemoryRelocationBaseSize({
             kind: relocationKind,
@@ -403,15 +424,22 @@ function PlayerController({
       relocationSnapshot.current = "";
       previousRelocationSurface.current = null;
     }
+    if (
+      guestbookVoucherActive
+      && !guestbookPlacementReady
+      && hasClearedGuestbookStation(playerPosition)
+    ) {
+      useGuestbookVoucherStore.getState().enablePlacement();
+    }
     const canPreviewGuestbook = scene === "interior"
       && !activeCommonsStation
       && !relocationActive
+      && guestbookPlacementReady
       && Boolean(guestbookDesign)
       && ["armed", "submitting", "error"].includes(guestbookStatus);
     if (canPreviewGuestbook && visual.current) {
-      const position = body.current.translation();
       const result = evaluateMemoryRelocation(
-        { x: position.x, z: position.z, yaw: visual.current.rotation.y },
+        { x: playerPosition.x, z: playerPosition.z, yaw: visual.current.rotation.y },
         {
           baseSize: GUESTBOOK_LETTER_SIZE,
           scale: 1,
@@ -461,7 +489,7 @@ function PlayerController({
     const speed = isRunning ? WORLD_CONFIG.runSpeed : WORLD_CONFIG.walkSpeed;
     const nx = isMoving ? x / Math.max(1, length) : 0;
     const nz = isMoving ? z / Math.max(1, length) : 0;
-    const position = body.current.translation();
+    const position = playerPosition;
     const plannedVelocity: [number, number] = [nx * speed, nz * speed];
     const [velocityX, velocityZ] = scene === "exterior"
       ? softenVelocityAtCoast([position.x, position.z], plannedVelocity)
@@ -481,7 +509,7 @@ function PlayerController({
     if (!relocationActive && scene === "exterior" && withinRadius(tuple, WORLD_CONFIG.houseDoor, radius)) {
       target = "counseling-house";
     }
-    if (!relocationActive && scene === "interior") {
+    if (!relocationActive && !guestbookVoucherActive && scene === "interior") {
       if (withinRadius(tuple, WORLD_CONFIG.pbaoInteraction, radius)) target = "pbao";
       else if (withinRadius(tuple, COMMONS_INTERACTION_ANCHORS.guestbook, radius)) target = "guestbook";
       else if (withinRadius(tuple, COMMONS_INTERACTION_ANCHORS.installation, radius)) target = "installation";

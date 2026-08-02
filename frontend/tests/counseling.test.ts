@@ -18,11 +18,11 @@ describe("counseling response guards", () => {
   });
 
   it("maps provider failures to safe Korean guidance", () => {
-    expect(friendlyCounselingError(new Error("429 prepayment credits"), "baseline")).toContain("크레딧");
-    expect(friendlyCounselingError(new Error("connection refused"), "optimized")).toContain("Gemini");
-    expect(friendlyCounselingError(new Error("마음연구소 서버에 연결할 수 없습니다."), "baseline")).toContain("FastAPI");
-    expect(friendlyCounselingError(new Error("응답 시간이 초과되었습니다."), "baseline")).toContain("응답이 늦어");
-    expect(friendlyCounselingError(new Error("404 세션을 찾을 수 없습니다"), "optimized")).toContain("만료");
+    expect(friendlyCounselingError(new Error("429 prepayment credits"))).toContain("크레딧");
+    expect(friendlyCounselingError(new Error("connection refused"))).toContain("Gemini");
+    expect(friendlyCounselingError(new Error("마음연구소 서버에 연결할 수 없습니다."))).toContain("FastAPI");
+    expect(friendlyCounselingError(new Error("응답 시간이 초과되었습니다."))).toContain("응답이 늦어");
+    expect(friendlyCounselingError(new Error("404 세션을 찾을 수 없습니다"))).toContain("만료");
   });
 
   it("auto-completes only a non-safety done response with a report", () => {

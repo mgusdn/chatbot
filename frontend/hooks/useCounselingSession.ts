@@ -1,18 +1,18 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { counselingApi } from "@/lib/api/counselingClient";
-import { getCounselingArmLabels } from "@/lib/counselingProfiles";
 import type {
   CounselReport,
   CounselingSendOutcome,
-  HealthResponse,
   ModelArm,
   PandaStageState,
   PublicCounselState,
   TranscriptEntry,
   TurnResult,
 } from "@/types/counseling";
+
+const COUNSELING_ARM: ModelArm = "baseline";
 
 const EMPTY_STATE: PublicCounselState = {
   stage: "rapport",
@@ -51,7 +51,7 @@ export function withoutLatestTranscriptEntry(
   return [...entries.slice(0, index), ...entries.slice(index + 1)];
 }
 
-export function friendlyCounselingError(error: unknown, arm: ModelArm) {
+export function friendlyCounselingError(error: unknown) {
   const raw = String(error instanceof Error ? error.message : error || "");
   const lower = raw.toLowerCase();
   if (lower.includes("404") || lower.includes("세션을 찾을 수 없습니다")) {
@@ -90,12 +90,10 @@ export function useCounselingSession(
   onSpeechSegment?: (segment: CounselingSpeechSegment) => void,
 ) {
   const [experimentId, setExperimentId] = useState<string | null>(null);
-  const [arm, setArmState] = useState<ModelArm>("optimized");
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
   const [safetyBypass, setSafetyBypass] = useState(false);
   const [turnCount, setTurnCount] = useState(0);
-  const [health, setHealth] = useState<HealthResponse | null>(null);
   const [transcript, setTranscript] = useState<TranscriptEntry[]>([]);
   const [runState, setRunState] = useState<PublicCounselState>(EMPTY_STATE);
   const [stageState, setStageState] = useState<PandaStageState>("booting");
@@ -112,7 +110,6 @@ export function useCounselingSession(
   const timers = useRef<number[]>([]);
   const onSpeechSegmentRef = useRef(onSpeechSegment);
   onSpeechSegmentRef.current = onSpeechSegment;
-  const armLabels = useMemo(() => getCounselingArmLabels(health), [health]);
 
   const clearTimers = useCallback(() => {
     timers.current.forEach(window.clearTimeout);
@@ -123,15 +120,7 @@ export function useCounselingSession(
     setTranscript((current) => [...current, entry].slice(-30));
   }, []);
 
-  const loadHealth = useCallback(async () => {
-    try {
-      setHealth(await counselingApi.health(true));
-    } catch {
-      setHealth(null);
-    }
-  }, []);
-
-  const newSession = useCallback(async (nextArm: ModelArm = arm) => {
+  const newSession = useCallback(async () => {
     pendingAbort.current?.abort();
     pendingAbort.current = null;
     const epoch = ++sessionEpoch.current;
@@ -153,16 +142,16 @@ export function useCounselingSession(
     try {
       const data = await counselingApi.createExperiment();
       if (epoch !== sessionEpoch.current) return;
-      const greeting = data.greetings[nextArm] || "안녕하세요. 오늘 어떤 마음으로 오셨나요?";
+      const greeting = data.greetings[COUNSELING_ARM] || "안녕하세요. 오늘 어떤 마음으로 오셨나요?";
       setExperimentId(data.experiment_id);
       setResponseText(greeting);
       setTranscript([{ role: "bot", text: greeting }]);
-      setRunState(data.states[nextArm] || EMPTY_STATE);
+      setRunState(data.states[COUNSELING_ARM] || EMPTY_STATE);
       setStageState("idle");
       setFormStatus("준비됐어요. 지금 마음에 걸리는 일을 편하게 들려주세요.");
     } catch (error) {
       if (epoch !== sessionEpoch.current) return;
-      const message = friendlyCounselingError(error, nextArm);
+      const message = friendlyCounselingError(error);
       setStageState("error");
       setResponseText(message);
       setFormStatus(message);
@@ -170,17 +159,17 @@ export function useCounselingSession(
     } finally {
       if (epoch === sessionEpoch.current) setBusy(false);
     }
-  }, [arm, clearTimers]);
+  }, [clearTimers]);
 
   const prepare = useCallback(async () => {
     if (prepared.current) return;
     if (preparing.current) return preparing.current;
-    preparing.current = Promise.all([loadHealth(), newSession("optimized")]).then(() => undefined).finally(() => {
+    preparing.current = newSession().finally(() => {
       prepared.current = true;
       preparing.current = null;
     });
     return preparing.current;
-  }, [loadHealth, newSession]);
+  }, [newSession]);
 
   useEffect(() => {
     if (shouldPrepare) void prepare();
@@ -192,13 +181,6 @@ export function useCounselingSession(
     clearTimers();
     sessionEpoch.current += 1;
   }, [clearTimers]);
-
-  const setArm = useCallback(async (nextArm: ModelArm) => {
-    if (busy || turnCount > 0 || nextArm === arm) return;
-    setArmState(nextArm);
-    await newSession(nextArm);
-    await loadHealth();
-  }, [arm, busy, turnCount, newSession, loadHealth]);
 
   const scheduleThinkingCopy = useCallback(() => {
     clearTimers();
@@ -227,36 +209,40 @@ export function useCounselingSession(
     let lastStreamSequence = 0;
     let firstSegmentSeen = false;
     let speechSegmentSeen = false;
+    const pendingSpeechTail: string[] = [];
     pendingTurn.current = true;
     appendTranscript({ role: "user", text: message });
     setBusy(true);
     setStageState("thinking");
     setResponseText("이야기를 차분히 듣고 있어요");
-    setFormStatus(`${armLabels[arm].short} 설정으로 마음의 흐름을 살피고 있어요.`);
+    setFormStatus("프바오가 마음의 흐름을 살피고 있어요.");
     setFormError(false);
     setLatency(null);
     setFirstResponseLatency(null);
     scheduleThinkingCopy();
 
     try {
-      const data = arm === "baseline"
-        ? await counselingApi.sendTurnStream(
+      const data = await counselingApi.sendTurnStream(
           experimentId,
           message,
-          [arm],
           (event) => {
             if (
               epoch === sessionEpoch.current
               && event.type === "arm_result"
               && event.arm === "baseline"
-              && event.speech_continuation
             ) {
-              speechSegmentSeen = true;
-              onSpeechSegmentRef.current?.({
-                id: `${event.turn_id || `baseline-${event.sequence}`}:continuation`,
-                turnId: event.turn_id,
-                text: event.speech_continuation,
-              });
+              const tail = [...pendingSpeechTail, event.speech_continuation || ""]
+                .filter(Boolean)
+                .join(" ")
+                .trim();
+              if (tail) {
+                speechSegmentSeen = true;
+                onSpeechSegmentRef.current?.({
+                  id: `${event.turn_id || `baseline-${event.sequence}`}:continuation`,
+                  turnId: event.turn_id,
+                  text: tail,
+                });
+              }
               return;
             }
             if (
@@ -266,12 +252,19 @@ export function useCounselingSession(
               || event.sequence <= lastStreamSequence
             ) return;
             lastStreamSequence = event.sequence;
-            speechSegmentSeen = true;
-            onSpeechSegmentRef.current?.({
-              id: `${event.turn_id}:${event.sequence}`,
-              turnId: event.turn_id,
-              text: event.text,
-            });
+            if (event.segment === "reflection") {
+              speechSegmentSeen = true;
+              onSpeechSegmentRef.current?.({
+                id: `${event.turn_id}:${event.sequence}`,
+                turnId: event.turn_id,
+                text: event.text,
+              });
+            } else {
+              // Hold short asides until the analyzer supplies the final
+              // continuation. One combined TTS request avoids a prosody reset
+              // and a network gap between two neighboring sentences.
+              pendingSpeechTail.push(event.text);
+            }
             if (!firstSegmentSeen) {
               firstSegmentSeen = true;
               setFirstResponseLatency(Math.round(performance.now() - requestStartedAt));
@@ -290,10 +283,9 @@ export function useCounselingSession(
             );
           },
           turnAbort.signal,
-        )
-        : await counselingApi.sendTurn(experimentId, message, arm, turnAbort.signal);
+        );
       if (epoch !== sessionEpoch.current) return { accepted: false, kind: "rejected" };
-      const result = data.results[arm];
+      const result = data.results[COUNSELING_ARM];
       if (!result || result.status !== "ok") throw new Error(result?.error || "모델 응답이 없습니다.");
       if (!hasSubstantiveText(result.message)) {
         if (result.state) setTurnCount(result.state.turn_count || turnCount);
@@ -302,7 +294,7 @@ export function useCounselingSession(
         throw new Error("NON_SUBSTANTIVE_RESPONSE");
       }
 
-      if (arm === "optimized" || !speechSegmentSeen) {
+      if (!speechSegmentSeen) {
         onSpeechSegmentRef.current?.({
           id: `${result.run_id || data.comparison_id}:complete`,
           turnId: result.run_id,
@@ -325,7 +317,7 @@ export function useCounselingSession(
 
       let detailedState = nextState;
       try {
-        const demoState = await counselingApi.demoState(experimentId, arm);
+        const demoState = await counselingApi.demoState(experimentId);
         if (epoch !== sessionEpoch.current) return { accepted: false, kind: "rejected" };
         detailedState = { ...nextState, ...demoState, stage: nextState.stage };
       } catch {
@@ -346,7 +338,7 @@ export function useCounselingSession(
         const report: CounselReport = {
           id: result.run_id || `${experimentId}-${nextState.turn_count}`,
           experimentId,
-          arm,
+          arm: COUNSELING_ARM,
           createdAt: new Date().toISOString(),
           markdown: result.message,
           reportFallback: Boolean(nextState.report_fallback),
@@ -359,7 +351,7 @@ export function useCounselingSession(
       if (epoch !== sessionEpoch.current) return { accepted: false, kind: "rejected" };
       clearTimers();
       setTranscript((current) => withoutLatestTranscriptEntry(current, { role: "user", text: message }));
-      const messageForUser = friendlyCounselingError(error, arm);
+      const messageForUser = friendlyCounselingError(error);
       setStageState("error");
       setResponseText(messageForUser);
       setFormStatus(messageForUser);
@@ -372,7 +364,7 @@ export function useCounselingSession(
         setBusy(false);
       }
     }
-  }, [arm, armLabels, appendTranscript, busy, clearTimers, done, experimentId, scheduleThinkingCopy, turnCount]);
+  }, [appendTranscript, busy, clearTimers, done, experimentId, scheduleThinkingCopy, turnCount]);
 
   const cancelPendingTurn = useCallback(() => {
     if (!pendingTurn.current) return false;
@@ -388,26 +380,7 @@ export function useCounselingSession(
     return true;
   }, [clearTimers]);
 
-  const providerSummary = useMemo(() => {
-    const provider = health?.providers?.gemini;
-    if (!provider) return { ready: false, pending: true, label: "상태 확인 중", detail: "모델 연결 정보를 불러오고 있어요." };
-    if (provider.connected === true) {
-      return { ready: true, pending: false, label: "연결됨", detail: `${armLabels[arm].short} · ${provider.resolved_model || provider.model}` };
-    }
-    if (provider.connected === null && provider.configured) {
-      return { ready: true, pending: false, label: "설정됨", detail: `${armLabels[arm].short} 연결은 첫 요청 때 최종 확인돼요.` };
-    }
-    return {
-      ready: false,
-      pending: false,
-      label: provider.configured ? "연결 실패" : "설정 필요",
-      detail: "Gemini API 설정과 사용 크레딧을 확인해 주세요.",
-    };
-  }, [arm, armLabels, health]);
-
   return {
-    arm,
-    armLabels,
     busy,
     done,
     safetyBypass,
@@ -421,8 +394,6 @@ export function useCounselingSession(
     formError,
     latency,
     firstResponseLatency,
-    providerSummary,
-    setArm,
     sendMessage,
     cancelPendingTurn,
     newSession,

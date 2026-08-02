@@ -6,11 +6,14 @@ import {
   INTERIOR_ENTRY_PORCH,
   INTERIOR_EXIT_GUARD,
   INTERIOR_FURNITURE_COLLIDERS,
+  INTERIOR_FURNITURE_LAYOUT,
   INTERIOR_HALF_DEPTH,
   INTERIOR_HALF_WIDTH,
   INTERIOR_MAIN_PATH_HALF_WIDTH,
+  INTERIOR_MIN_PATH_WIDTH,
   INTERIOR_PLAN_SCALE,
   INTERIOR_SIZE,
+  INTERIOR_WALL_APPROACH_DEPTH,
   INTERIOR_WALL_NORMAL_SHIFT,
   INTERIOR_WALLS,
   INTERIOR_ZONES,
@@ -31,6 +34,19 @@ const openingAroundCenter = (z: number) => {
   return right[0] - left[1];
 };
 
+const horizontalBounds = (collider: (typeof INTERIOR_FURNITURE_COLLIDERS)[number]) => ({
+  minX: collider.position[0] - collider.halfExtents[0],
+  maxX: collider.position[0] + collider.halfExtents[0],
+  minZ: collider.position[2] - collider.halfExtents[2],
+  maxZ: collider.position[2] + collider.halfExtents[2],
+});
+
+const colliderById = (id: string) => {
+  const collider = INTERIOR_FURNITURE_COLLIDERS.find((item) => item.id === id);
+  if (!collider) throw new Error(`Missing interior collider: ${id}`);
+  return collider;
+};
+
 describe("open-plan mind research commons layout", () => {
   it("contains every planned open zone exactly once", () => {
     const ids = INTERIOR_ZONES.map((zone) => zone.id);
@@ -41,7 +57,7 @@ describe("open-plan mind research commons layout", () => {
   it("uses only outer shell walls and has no internal room dividers", () => {
     expect(INTERIOR_WALLS).toHaveLength(5);
     INTERIOR_WALLS.forEach((wall) => expect(wall.id).toMatch(/^outer-/));
-    expect(INTERIOR_SIZE).toEqual([19.8, 16.5]);
+    expect(INTERIOR_SIZE).toEqual([21.6, 18]);
     expect(INTERIOR_WALLS.find((wall) => wall.id === "outer-north")?.position[2])
       .toBe(-INTERIOR_HALF_DEPTH);
     expect(INTERIOR_WALLS.find((wall) => wall.id === "outer-west")?.position[0])
@@ -60,10 +76,10 @@ describe("open-plan mind research commons layout", () => {
     const guestbook = INTERIOR_ZONES.find((zone) => zone.id === "guestbook-commons");
     const pbao = INTERIOR_ZONES.find((zone) => zone.id === "pbao-research-bay");
 
-    expect(guestbook?.center).toEqual([-5.35 * INTERIOR_PLAN_SCALE, 4.9 * INTERIOR_PLAN_SCALE]);
-    expect(guestbook?.size).toEqual([6.8 * INTERIOR_PLAN_SCALE, 4.8 * INTERIOR_PLAN_SCALE]);
-    expect(pbao?.center).toEqual([0, -5.2 * INTERIOR_PLAN_SCALE]);
-    expect(pbao?.size).toEqual([8.8 * INTERIOR_PLAN_SCALE, 4.1 * INTERIOR_PLAN_SCALE]);
+    expect(guestbook?.center).toEqual([-6.42, 5.88]);
+    expect(guestbook?.size).toEqual([8.16, 5.76]);
+    expect(pbao?.center).toEqual([0, -6.24]);
+    expect(pbao?.size).toEqual([10.56, 4.92]);
   });
 
   it("keeps spawn, exit, Pbao, and public interaction anchors in bounds", () => {
@@ -98,8 +114,8 @@ describe("open-plan mind research commons layout", () => {
     });
   });
 
-  it("keeps the 3.4 m center boulevard clear through the Pbao interaction point", () => {
-    expect(INTERIOR_MAIN_PATH_HALF_WIDTH * 2).toBeGreaterThanOrEqual(3.2);
+  it("keeps the 4.08 m center boulevard clear through the Pbao interaction point", () => {
+    expect(INTERIOR_MAIN_PATH_HALF_WIDTH * 2).toBeCloseTo(4.08);
     const routeStart = WORLD_CONFIG.interiorSpawn[2];
     const routeEnd = WORLD_CONFIG.pbaoInteraction[2];
     const blockers = INTERIOR_FURNITURE_COLLIDERS.filter((collider) => {
@@ -121,26 +137,85 @@ describe("open-plan mind research commons layout", () => {
     expect(INTERIOR_EXIT_GUARD.position[2] + INTERIOR_EXIT_GUARD.halfExtents[2]).toBeGreaterThan(porchEdge);
   });
 
-  it("moves wall-mounted collider and interaction geometry only along wall normals", () => {
-    expect(COMMONS_INTERACTION_ANCHORS.installation).toEqual([
-      8.15 + INTERIOR_WALL_NORMAL_SHIFT.east,
-      0,
-      3.15,
-    ]);
-    expect(COMMONS_INTERACTION_ANCHORS.guestbook).toEqual([-5.25, 0, 5.25]);
+  it("keeps interaction anchors on their furniture islands and intentional fixtures on the north wall", () => {
+    expect(COMMONS_INTERACTION_ANCHORS.installation).toEqual([6.6, 0, 3.1]);
+    expect(COMMONS_INTERACTION_ANCHORS.guestbook).toEqual([-5.6, 0, 6.5]);
 
-    const westShelf = INTERIOR_FURNITURE_COLLIDERS.find((item) => item.id === "guestbook-low-shelf");
-    const northArchive = INTERIOR_FURNITURE_COLLIDERS.find((item) => item.id === "archive-bookcase");
-    expect(westShelf?.position).toEqual([
-      -8.45 + INTERIOR_WALL_NORMAL_SHIFT.west,
-      0.62,
-      4.65,
-    ]);
-    expect(northArchive?.position).toEqual([
+    const westShelf = colliderById("guestbook-low-shelf");
+    const northArchive = colliderById("archive-bookcase");
+    expect(westShelf.position).toEqual([-8.15, 0.62, 5]);
+    expect(northArchive.position).toEqual([
       -6.7,
       1.05,
       -7.02 + INTERIOR_WALL_NORMAL_SHIFT.north,
     ]);
+  });
+
+  it("derives every furniture collider from the same position used by the renderer", () => {
+    const placements = Object.values(INTERIOR_FURNITURE_LAYOUT);
+    expect(INTERIOR_FURNITURE_COLLIDERS.map((collider) => collider.id))
+      .toEqual(placements.map((placement) => placement.id));
+
+    placements.forEach((placement) => {
+      const collider = colliderById(placement.id);
+      expect(collider.position).toEqual([
+        placement.position[0],
+        placement.halfExtents[1],
+        placement.position[2],
+      ]);
+      expect(collider.halfExtents).toEqual(placement.halfExtents);
+    });
+  });
+
+  it("keeps a 2.25 m walking and letter-preview band clear along usable walls", () => {
+    const westInnerEdge = -INTERIOR_HALF_WIDTH + INTERIOR_WALL_APPROACH_DEPTH;
+    const eastInnerEdge = INTERIOR_HALF_WIDTH - INTERIOR_WALL_APPROACH_DEPTH;
+    const northInnerEdge = -INTERIOR_HALF_DEPTH + INTERIOR_WALL_APPROACH_DEPTH;
+
+    INTERIOR_FURNITURE_COLLIDERS.forEach((collider) => {
+      const bounds = horizontalBounds(collider);
+      expect(bounds.minX, `${collider.id} enters the west wall approach`).toBeGreaterThanOrEqual(westInnerEdge - 0.001);
+      expect(bounds.maxX, `${collider.id} enters the east wall approach`).toBeLessThanOrEqual(eastInnerEdge + 0.001);
+      if (collider.id !== "archive-bookcase") {
+        expect(bounds.minZ, `${collider.id} enters the north wall approach`).toBeGreaterThanOrEqual(northInnerEdge - 0.001);
+      }
+    });
+  });
+
+  it("preserves at least 1.4 m routes between the main furniture islands", () => {
+    const coworkTable = horizontalBounds(colliderById("cowork-table"));
+    const coworkSofa = horizontalBounds(colliderById("cowork-sofa"));
+    const libraryShelf = horizontalBounds(colliderById("library-bookcase-west"));
+    const libraryTable = horizontalBounds(colliderById("library-worktable"));
+    const recoveryTable = horizontalBounds(colliderById("recovery-project-table"));
+    const recoveryBench = horizontalBounds(colliderById("recovery-bench"));
+
+    expect(coworkTable.minX - INTERIOR_MAIN_PATH_HALF_WIDTH).toBeGreaterThanOrEqual(INTERIOR_MIN_PATH_WIDTH);
+    expect(coworkSofa.minX - coworkTable.maxX).toBeGreaterThanOrEqual(INTERIOR_MIN_PATH_WIDTH);
+    expect(libraryTable.minX - libraryShelf.maxX).toBeGreaterThanOrEqual(INTERIOR_MIN_PATH_WIDTH);
+    expect(recoveryBench.minX - recoveryTable.maxX).toBeGreaterThanOrEqual(INTERIOR_MIN_PATH_WIDTH);
+  });
+
+  it("leaves collision-free standing pockets at public interactions", () => {
+    const characterRadius = 0.35;
+    const pockets = [
+      { id: "guestbook", point: [-5.6, 6.5] as const, anchor: COMMONS_INTERACTION_ANCHORS.guestbook },
+      { id: "installation", point: [6.6, 3.1] as const, anchor: COMMONS_INTERACTION_ANCHORS.installation },
+      { id: "pbao", point: [0, -3.85] as const, anchor: WORLD_CONFIG.pbaoInteraction },
+    ];
+
+    pockets.forEach(({ id, point, anchor }) => {
+      const distance = Math.hypot(point[0] - anchor[0], point[1] - anchor[2]);
+      expect(distance, `${id} pocket is outside interaction range`).toBeLessThanOrEqual(WORLD_CONFIG.interactionRadius);
+      const blocker = INTERIOR_FURNITURE_COLLIDERS.find((collider) => {
+        const bounds = horizontalBounds(collider);
+        return point[0] >= bounds.minX - characterRadius
+          && point[0] <= bounds.maxX + characterRadius
+          && point[1] >= bounds.minZ - characterRadius
+          && point[1] <= bounds.maxZ + characterRadius;
+      });
+      expect(blocker?.id, `${id} pocket is blocked`).toBeUndefined();
+    });
   });
 
   it("uses stable unique collider and trace identifiers", () => {

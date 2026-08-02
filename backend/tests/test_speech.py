@@ -69,8 +69,8 @@ def test_tts_ticket_hides_text_and_streams_upstream_audio(monkeypatch, tmp_path)
         async def send(self, request, stream=False):
             return httpx.Response(
                 200,
-                headers={"Content-Type": "audio/wav"},
-                content=b"RIFF-fake-streamed-wave",
+                headers={"Content-Type": "audio/raw"},
+                content=b"\x01\x00\x02\x00",
                 request=request,
             )
 
@@ -93,9 +93,12 @@ def test_tts_ticket_hides_text_and_streams_upstream_audio(monkeypatch, tmp_path)
 
     audio = client.get(ticket["audio_url"])
     assert audio.status_code == 200
-    assert audio.headers["content-type"].startswith("audio/wav")
-    assert audio.content == b"RIFF-fake-streamed-wave"
+    assert audio.headers["content-type"].startswith("audio/raw")
+    assert audio.content == b"\x01\x00\x02\x00"
     assert upstream_calls[0][2]["streaming_mode"] == 3
+    assert upstream_calls[0][2]["media_type"] == "raw"
+    assert upstream_calls[0][2]["fragment_interval"] == 0
+    assert upstream_calls[0][2]["text_split_method"] == "cut0"
     assert "batch_size" not in upstream_calls[0][2]
 
 

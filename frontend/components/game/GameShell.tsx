@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AudioDirector } from "@/components/audio/AudioDirector";
 import { CounselReportOverlay } from "@/components/counseling/CounselReportOverlay";
 import { CounselingScreen } from "@/components/counseling/CounselingScreen";
 import { CommonsPanel } from "@/components/commons";
@@ -165,6 +166,7 @@ export function GameShell() {
     );
     if (hasText) {
       if (!voucher.arm()) return;
+      useGameStore.getState().setNearbyInteractable(null);
     } else {
       voucher.discard();
     }
@@ -174,6 +176,7 @@ export function GameShell() {
 
   const armGuestbookVoucher = useCallback(() => {
     setSelectedMemoryId(null);
+    useGameStore.getState().setNearbyInteractable(null);
     closeCommonsStation();
   }, [closeCommonsStation]);
 
@@ -281,6 +284,7 @@ export function GameShell() {
       data-memory-relocation-surface={relocationSurface || ""}
       data-game-error={worldError || ""}
     >
+      <AudioDirector />
       {phase === "entry" ? <EntryScreen onStart={start} /> : null}
       {showCanvas ? (
         <GameCanvas

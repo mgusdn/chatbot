@@ -164,13 +164,6 @@ async function mockCounselingApi(page: Page) {
             resolved_model: "test-gemini",
             profiles: {
               baseline: { api_route: "primary", thinking_level: "low" },
-              optimized: {
-                response_api_route: "primary",
-                response_thinking_level: "minimal",
-                analyzer_api_route: "analyzer",
-                analyzer_thinking_level: "low",
-                analyzer_api_separate: true,
-              },
             },
           },
         },
@@ -186,15 +179,16 @@ async function mockCounselingApi(page: Page) {
       return;
     }
     if (url.pathname === "/api/experiments" && route.request().method() === "POST") {
-      await route.fulfill({ status: 201, json: { experiment_id: "e2e-session", created_at: new Date().toISOString(), greetings: { baseline: "안녕하세요. 오늘 마음은 어떤가요?", optimized: "안녕하세요. 오늘 마음은 어떤가요?" }, states: { baseline: emptyState, optimized: emptyState } } });
+      await route.fulfill({ status: 201, json: { experiment_id: "e2e-session", created_at: new Date().toISOString(), greetings: { baseline: "안녕하세요. 오늘 마음은 어떤가요?" }, states: { baseline: emptyState } } });
       return;
     }
-    if (url.pathname.endsWith("/turns")) {
+    if (url.pathname.endsWith("/turns/stream")) {
       const message = (route.request().postDataJSON() as { message?: string }).message || "";
       completed = message.includes("상담을 마무리");
       safetyBypass = message.includes("긴급 도움");
+      const showValues = message.includes("가치 선택");
       if (message.includes("느린 상담")) await new Promise((resolve) => setTimeout(resolve, 5_000));
-      await route.fulfill({ json: { experiment_id: "e2e-session", comparison_id: "comparison", results: { optimized: safetyBypass ? {
+      const result = safetyBypass ? {
         run_id: "safety-run",
         status: "ok",
         message: "지금은 안전이 가장 중요해요. 즉시 112·119 또는 가까운 응급실에 도움을 요청해 주세요.",
@@ -208,13 +202,27 @@ async function mockCounselingApi(page: Page) {
         safety_bypass: false,
         metrics: { total_ms: 654 },
         state: { ...emptyState, stage: "done", turn_count: 12, filled_slots: ["situation", "emotion", "goal"], pending_slot: null, report_fallback: false },
+      } : showValues ? {
+        run_id: "values-run",
+        status: "ok",
+        message: "지금까지의 이야기를 바탕으로 나를 설명하는 가치를 골라볼까요?",
+        safety_bypass: false,
+        metrics: { total_ms: 420 },
+        state: { ...emptyState, stage: "values", turn_count: 10, filled_slots: ["situation", "emotion", "thought", "behavior", "goal"], pending_slot: null },
       } : {
         status: "ok",
         message: "해야 할 일이 많아 마음이 무거웠군요. 가장 급한 일 하나부터 같이 살펴볼까요?",
         safety_bypass: false,
         metrics: { total_ms: 321 },
         state: { ...emptyState, stage: "loop", turn_count: 1, filled_slots: ["situation", "emotion"], pending_slot: "thought" },
-      } } } });
+      };
+      const comparison = { experiment_id: "e2e-session", comparison_id: "comparison", results: { baseline: result } };
+      const ndjson = [
+        JSON.stringify({ type: "segment", turn_id: result.run_id || "turn-1", comparison_id: "comparison", arm: "baseline", sequence: 1, segment: "reflection", text: String(result.message).split(". ")[0] + ".", elapsed_ms: 40 }),
+        JSON.stringify({ type: "arm_result", turn_id: result.run_id || "turn-1", comparison_id: "comparison", arm: "baseline", sequence: 2, result, speech_continuation: String(result.message).split(". ").slice(1).join(". ") }),
+        JSON.stringify({ type: "complete", ...comparison }),
+      ].join("\n") + "\n";
+      await route.fulfill({ status: 200, contentType: "application/x-ndjson", body: ndjson });
       return;
     }
     if (url.pathname.endsWith("/demo-state")) {
@@ -357,16 +365,15 @@ test("choose a 3D character, reach Pbao, counsel, and return", async ({ page }, 
   const shell = await enterCounselingRoom(page, testInfo);
   await expect(shell).toHaveAttribute("data-player-character", "cloud");
   const counselingScreen = page.getByTestId("counseling-screen");
-  await expect(counselingScreen.getByText("연결됨", { exact: true })).toBeVisible();
-  await expect(counselingScreen.getByText("B · 판단 API 분리", { exact: true })).toBeVisible();
-  await expect(counselingScreen.getByText("개선 Gemini · minimal", { exact: true })).toBeVisible();
-  await expect(counselingScreen.locator(".stage-meta b")).toHaveText("개선 Gemini · minimal · 판단 API 분리");
-  await expect(counselingScreen.getByRole("button", { name: "음성 입력" })).toBeEnabled();
+  await expect(counselingScreen.getByRole("link", { name: "프바오와 나 찾기 홈" })).toBeVisible();
+  await expect(counselingScreen.getByRole("radiogroup", { name: "상담 모델 선택" })).toHaveCount(0);
+  await expect(counselingScreen.getByText("A/B 실험실", { exact: true })).toHaveCount(0);
+  await expect(counselingScreen.getByRole("button", { name: "목소리 대화 시작" })).toBeDisabled();
   await expect(counselingScreen.getByRole("button", { name: "음성 답변 꺼짐" })).toBeDisabled();
 
   const composer = page.getByPlaceholder("예: 해야 할 일이 많은데 자꾸 미루게 돼서 스스로에게 답답해요.");
   await composer.fill("해야 할 일이 많아서 마음이 무거워요.");
-  await page.getByRole("button", { name: "minimal 흐름으로 보내기" }).click();
+  await page.getByRole("button", { name: "프바오에게 전하기" }).click();
   await expect(page.locator(".speech-bubble").getByText("해야 할 일이 많아 마음이 무거웠군요. 가장 급한 일 하나부터 같이 살펴볼까요?")).toBeVisible();
   await expect(page.getByText("해야 할 일이 많음")).toBeVisible();
 
@@ -377,11 +384,46 @@ test("choose a 3D character, reach Pbao, counsel, and return", async ({ page }, 
   await expect(shell).toHaveAttribute("data-player-character", "cloud");
 });
 
+test("value selection stays inside one viewport and paginates nine at a time on mobile", async ({ page }, testInfo) => {
+  await enterCounselingRoom(page, testInfo);
+  const composer = page.getByPlaceholder("예: 해야 할 일이 많은데 자꾸 미루게 돼서 스스로에게 답답해요.");
+  await composer.fill("가치 선택 화면을 보여주세요.");
+  await page.getByRole("button", { name: "프바오에게 전하기" }).click();
+
+  const valueScreen = page.getByTestId("value-selection-screen");
+  await expect(valueScreen.getByRole("heading", { name: "나를 설명하는 5가지 가치를 선택해 주세요" })).toBeVisible();
+  const layout = await valueScreen.evaluate((element) => ({
+    clientHeight: element.clientHeight,
+    scrollHeight: element.scrollHeight,
+    top: element.getBoundingClientRect().top,
+    bottom: element.getBoundingClientRect().bottom,
+    viewportHeight: window.innerHeight,
+  }));
+  expect(layout.scrollHeight).toBeLessThanOrEqual(layout.clientHeight + 1);
+  expect(layout.top).toBeGreaterThanOrEqual(0);
+  expect(layout.bottom).toBeLessThanOrEqual(layout.viewportHeight + 1);
+
+  const valueCards = valueScreen.locator('button[aria-pressed]');
+  const visibleCardCount = await valueCards.evaluateAll((buttons) => buttons.filter((button) => {
+    const style = window.getComputedStyle(button);
+    return style.display !== "none" && button.getBoundingClientRect().height > 0;
+  }).length);
+
+  if (testInfo.project.name.startsWith("mobile")) {
+    expect(visibleCardCount).toBe(9);
+    await valueScreen.getByRole("button", { name: "2", exact: true }).click();
+    await expect(valueScreen.getByRole("button", { name: /자율성/ })).toBeVisible();
+    await expect(valueScreen.getByRole("button", { name: /정의/ })).toBeHidden();
+  } else {
+    expect(visibleCardCount).toBe(27);
+  }
+});
+
 test("completed counseling returns to Pbao, reveals the report, then resumes exploration", async ({ page }, testInfo) => {
   const shell = await enterCounselingRoom(page, testInfo);
   const composer = page.getByPlaceholder("예: 해야 할 일이 많은데 자꾸 미루게 돼서 스스로에게 답답해요.");
   await composer.fill("이제 상담을 마무리하고 싶어요.");
-  await page.getByRole("button", { name: "minimal 흐름으로 보내기" }).click();
+  await page.getByRole("button", { name: "프바오에게 전하기" }).click();
 
   await expect(shell).toHaveAttribute("data-game-phase", "report-active", { timeout: 5_000 });
   await expect(page.getByTestId("counseling-screen")).toBeHidden();
@@ -400,7 +442,7 @@ test("a safety response stays in counseling and never opens the completion repor
   const shell = await enterCounselingRoom(page, testInfo);
   const composer = page.getByPlaceholder("예: 해야 할 일이 많은데 자꾸 미루게 돼서 스스로에게 답답해요.");
   await composer.fill("지금 긴급 도움이 필요해요.");
-  await page.getByRole("button", { name: "minimal 흐름으로 보내기" }).click();
+  await page.getByRole("button", { name: "프바오에게 전하기" }).click();
 
   await expect(shell).toHaveAttribute("data-game-phase", "counsel-active");
   await expect(page.getByTestId("counseling-screen")).toBeVisible();
@@ -412,7 +454,7 @@ test("closing a pending completion cannot leak a stale report into the next visi
   const shell = await enterCounselingRoom(page, testInfo);
   const composer = page.getByPlaceholder("예: 해야 할 일이 많은데 자꾸 미루게 돼서 스스로에게 답답해요.");
   await composer.fill("느린 상담을 마무리하고 싶어요.");
-  await page.getByRole("button", { name: "minimal 흐름으로 보내기" }).click();
+  await page.getByRole("button", { name: "프바오에게 전하기" }).click();
   await page.getByRole("button", { name: "상담소로 돌아가기" }).click();
 
   await expect(shell).toHaveAttribute("data-game-phase", /^(exploring-interior|interaction-ready)$/, { timeout: 5_000 });
@@ -450,7 +492,8 @@ test("visitors can place a persistent memory and install a shared object", async
   await editor.getByRole("button", { name: "꾸미기 완료" }).click();
   await expect(shell).toHaveAttribute("data-commons-station", "");
   await expect(shell).toHaveAttribute("data-guestbook-voucher", "armed");
-  await expect(page.getByTestId("guestbook-voucher-hud")).toContainText("Q 놓기");
+  await expect(page.getByTestId("guestbook-voucher-hud")).toContainText("방명록을 들었어요");
+  await expect(page.getByTestId("guestbook-voucher-hud")).toContainText("책상 주변을 벗어나");
   // The Canvas unpauses and PlayerController rebinds its keyboard listener in
   // passive effects after the editor disappears. Do not drop the first route
   // key into that one-frame handoff.
@@ -459,8 +502,9 @@ test("visitors can place a persistent memory and install a shared object", async
   // The chair blocks a straight route north from the worktable. Step into the
   // center aisle first, then walk inward so the full letter clears the wall,
   // entrance strip, and furniture collider.
-  await moveFor(page, "d", testInfo.project.name.startsWith("mobile") ? 900 : 550);
+  await moveFor(page, "d", testInfo.project.name.startsWith("mobile") ? 1_700 : 1_000);
   await moveFor(page, "w", testInfo.project.name.startsWith("mobile") ? 1_050 : 650);
+  await expect(page.getByTestId("guestbook-voucher-hud")).toContainText("Q 놓기");
   if (testInfo.project.name.startsWith("mobile")) {
     await page.getByTestId("mobile-guestbook-place").click();
   } else {
@@ -485,10 +529,9 @@ test("visitors can place a persistent memory and install a shared object", async
   if (testInfo.project.name.startsWith("mobile")) {
     await walkUntilPrompt(page, "흔적 설치하기", 12_000, "d");
   } else {
-    // Reach the east edge first, then sweep south through the installation
-    // interaction radius. This stays stable even when a collider nudges the
-    // long horizontal run a little north or south.
-    await moveFor(page, "d", 3_000);
+    // Enter the open east gallery lane, then sweep south through the console's
+    // interaction radius without overshooting into the wall approach band.
+    await moveFor(page, "d", 1_700);
     await walkUntilPrompt(page, "흔적 설치하기", 8_000, "s");
   }
   await interact(page, testInfo);

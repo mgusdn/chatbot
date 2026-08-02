@@ -15,8 +15,10 @@
     "@react-three/drei": "latest",
     "@react-three/fiber": "latest",
     "@react-three/rapier": "latest",
+    "@ricky0123/vad-web": "^0.0.29",
     "framer-motion": "latest",
-    "next": "latest",
+    "next": "^16.2.12",
+    "onnxruntime-web": "^1.22.0",
     "react": "latest",
     "react-dom": "latest",
     "three": "latest",
@@ -41,7 +43,7 @@
   },
   "overrides": {
     "next": {
-      "postcss": "8.5.10"
+      "postcss": "8.5.25"
     }
   }
 }

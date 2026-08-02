@@ -201,7 +201,7 @@ describe("guestbook placement validation", () => {
   });
 
   it("protects the entrance and spawn route even when the letter fits inside the walls", () => {
-    const result = evaluateGuestbookPlacement({ x: 0, z: 4.8, yaw: 0 });
+    const result = evaluateGuestbookPlacement({ x: 0, z: 6.4, yaw: 0 });
     expect(result.candidate.corners.every((corner) =>
       corner.z < GUESTBOOK_FLOOR_INNER_BOUNDS.maxZ)).toBe(true);
     expect(result.validation).toEqual({
@@ -225,7 +225,7 @@ describe("guestbook placement validation", () => {
   });
 
   it("uses a rotated OBB instead of an axis-aligned approximation", () => {
-    const pose = { x: -2.5, z: -1.05, yaw: 0 };
+    const pose = { x: -2.35, z: -1.05, yaw: 0 };
     const axisAligned = evaluateGuestbookPlacement(pose);
     const diagonal = evaluateGuestbookPlacement(pose, { rotationOffsetDeg: 45 });
 

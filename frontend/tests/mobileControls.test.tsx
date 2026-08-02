@@ -94,6 +94,7 @@ describe("mobile controls", () => {
     useGameStore.setState({ phase: "exploring-interior", scene: "interior" });
     useGuestbookVoucherStore.setState({
       status: "armed",
+      placement_ready: true,
       placement_preview: {
         surface_id: "wall.interior.west",
         kind: "wall",
@@ -114,6 +115,7 @@ describe("mobile controls", () => {
     useGameStore.setState({ phase: "exploring-interior", scene: "interior" });
     useGuestbookVoucherStore.setState({
       status: "armed",
+      placement_ready: true,
       placement_preview: {
         surface_id: "wall.interior.north",
         kind: "wall",
@@ -126,5 +128,24 @@ describe("mobile controls", () => {
 
     expect(screen.getByTestId("mobile-guestbook-place")).toHaveTextContent("벽에 붙이기");
     expect(screen.getByTestId("mobile-guestbook-place")).toBeDisabled();
+  });
+
+  it("keeps only movement active while a fresh voucher is carried away from the station", () => {
+    useGameStore.setState({
+      phase: "exploring-interior",
+      scene: "interior",
+      nearbyInteractable: "guestbook",
+    });
+    useGuestbookVoucherStore.setState({
+      status: "armed",
+      placement_ready: false,
+      placement_preview: null,
+    });
+
+    render(<MobileControls />);
+
+    expect(screen.getByTestId("mobile-interaction-button")).toBeDisabled();
+    expect(screen.getByTestId("mobile-guestbook-place")).toBeDisabled();
+    expect(screen.getByTestId("mobile-guestbook-place").parentElement).not.toHaveClass("is-visible");
   });
 });

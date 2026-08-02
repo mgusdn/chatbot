@@ -58,7 +58,7 @@ SLOT_FALLBACK_QUESTIONS = {
 # prevents the visible question from drifting away from the pending slot while
 # the response model focuses only on warmth and conversational texture.
 SLOT_DETAIL_QUESTIONS = {
-    "situation": "최근 가장 먼저 떠오르는 장면 하나를 편하게 들려주실 수 있나요?",
+    "situation": "최근 가장 먼저 떠오르는 경험 하나를 편하게 들려주실 수 있나요?",
     "emotion": "그 순간 마음에 가장 가까웠던 감정을 하나 떠올려보실 수 있나요?",
     "thought": "그때 스스로에 대해 어떤 생각이 가장 먼저 떠올랐나요?",
     "cause": "그런 감정과 생각이 생긴 이유로 떠오르는 것이 있나요?",

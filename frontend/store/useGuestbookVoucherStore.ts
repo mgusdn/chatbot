@@ -52,6 +52,7 @@ export type GuestbookVoucherState = {
   client_request_id: string | null;
   ownership_token: string | null;
   rotation_offset_deg: number;
+  placement_ready: boolean;
   placement_preview: GuestbookVoucherPlacementPreview | null;
   error: string | null;
   hydrate: (storage?: Storage) => void;
@@ -62,6 +63,7 @@ export type GuestbookVoucherState = {
   fail: (message: string) => void;
   complete: () => void;
   discard: () => void;
+  enablePlacement: () => boolean;
   rotate: (deltaDeg: number) => void;
   setPlacementPreview: (preview: GuestbookVoucherPlacementPreview | null) => void;
 };
@@ -73,6 +75,7 @@ const EMPTY_STATE = {
   client_request_id: null,
   ownership_token: null,
   rotation_offset_deg: 0,
+  placement_ready: false,
   placement_preview: null,
   error: null,
 };
@@ -268,6 +271,7 @@ export const useGuestbookVoucherStore = create<GuestbookVoucherState>((set, get)
         client_request_id: snapshot.client_request_id,
         ownership_token: snapshot.ownership_token,
         rotation_offset_deg: snapshot.rotation_offset_deg,
+        placement_ready: false,
         placement_preview: null,
         error: snapshot.error,
       });
@@ -282,6 +286,7 @@ export const useGuestbookVoucherStore = create<GuestbookVoucherState>((set, get)
         design: current.design || createDefaultGuestbookDesign(),
         client_request_id: current.client_request_id || makeClientRequestId(),
         ownership_token: current.ownership_token || makeOwnershipToken(),
+        placement_ready: false,
         placement_preview: null,
         error: null,
       });
@@ -306,6 +311,7 @@ export const useGuestbookVoucherStore = create<GuestbookVoucherState>((set, get)
           design,
           client_request_id: current.client_request_id || makeClientRequestId(),
           ownership_token: current.ownership_token || makeOwnershipToken(),
+          placement_ready: false,
           placement_preview: null,
           error: null,
         });
@@ -320,7 +326,11 @@ export const useGuestbookVoucherStore = create<GuestbookVoucherState>((set, get)
     },
 
     setSubmitting: () => {
-      if (!getGuestbookVoucherSubmission(get()) || get().status === "submitting") return false;
+      if (
+        !get().placement_ready
+        || !getGuestbookVoucherSubmission(get())
+        || get().status === "submitting"
+      ) return false;
       commit({ status: "submitting", error: null });
       return true;
     },
@@ -343,14 +353,31 @@ export const useGuestbookVoucherStore = create<GuestbookVoucherState>((set, get)
       clearStoredVoucher();
     },
 
+    enablePlacement: () => {
+      const current = get();
+      if (
+        current.placement_ready
+        || !["armed", "error"].includes(current.status)
+        || !current.design
+      ) return false;
+      // This is a live world-state transition, not part of the durable voucher.
+      // A restored voucher unlocks again once the player is outside the station.
+      set({ placement_ready: true, placement_preview: null });
+      return true;
+    },
+
     rotate: (deltaDeg) => {
-      if (get().status === "empty" || !Number.isFinite(deltaDeg)) return;
+      if (!get().placement_ready || get().status === "empty" || !Number.isFinite(deltaDeg)) return;
       commit({
         rotation_offset_deg: normalizeGuestbookRotation(get().rotation_offset_deg + deltaDeg),
       });
     },
 
     setPlacementPreview: (preview) => {
+      if (!get().placement_ready) {
+        if (get().placement_preview) set({ placement_preview: null });
+        return;
+      }
       const current = get().placement_preview;
       if (
         current?.surface_id === preview?.surface_id
