@@ -257,7 +257,7 @@ export function CounselingScreen({ isOpen, shouldPrepare }: { isOpen: boolean; s
 
         <section className="composer-card" aria-labelledby="composerTitle">
           <div className="composer-heading">
-            <div><span className="section-kicker">TELL ME YOUR STORY</span><h2 id="composerTitle">지금 마음에 걸리는 일을 말해 주세요</h2></div>
+            <div><span className="section-kicker">TELL ME YOUR STORY</span><h2 id="composerTitle">당신의 이야기를 펀하게 들려주세요</h2></div>
             <p>Enter로 전송 · Shift + Enter로 줄바꿈</p>
           </div>
           <div className="input-shell">
