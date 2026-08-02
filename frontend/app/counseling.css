@@ -960,16 +960,16 @@ textarea:disabled { cursor: wait; opacity: 0.58; }
 .prompt-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 9px;
 }
 
 .prompt-chips button {
-  padding: 12px 20px;
+  padding: 9px 15px;
   border: 1px solid #e3e2db;
   border-radius: 999px;
   color: #657068;
   background: #f5f3ed;
-  font-size: 24px;
+  font-size: 17px;
   font-weight: 750;
 }
 
