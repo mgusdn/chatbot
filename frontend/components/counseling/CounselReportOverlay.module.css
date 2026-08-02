@@ -131,6 +131,13 @@
   letter-spacing: -0.025em;
 }
 
+/* Satir iceberg model sections: color deepens from sky blue at the
+   surface to navy at the deepest layer, mirroring the iceberg metaphor. */
+.content h3:nth-of-type(1) { color: #4fc3e8; }
+.content h3:nth-of-type(2) { color: #2e9bd6; }
+.content h3:nth-of-type(3) { color: #1f5fa8; }
+.content h3:nth-of-type(4) { color: #14285c; }
+
 .content h3:first-child {
   margin-top: 0;
 }
