@@ -257,7 +257,7 @@ export function CounselingScreen({ isOpen, shouldPrepare }: { isOpen: boolean; s
               }</strong></div>
               <div className="speech-area">
                 <span className="name-tag"><i aria-hidden="true"></i>프바오</span>
-                <div className="speech-bubble"><p aria-live="polite">{session.responseText}</p><span className="bubble-tail" aria-hidden="true"></span></div>
+                <div className="speech-bubble"><div className="speech-bubble-scroll"><p aria-live="polite">{session.responseText}</p></div><span className="bubble-tail" aria-hidden="true"></span></div>
               </div>
             </div>
           </section>

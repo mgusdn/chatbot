@@ -456,17 +456,25 @@ button { cursor: pointer; }
 
 .speech-bubble {
   position: relative;
+  display: flex;
+  flex-direction: column;
   width: min(790px, 82%);
   max-height: 176px;
   padding: 24px 32px 25px;
-  overflow-y: auto;
+  overflow: hidden;
   border: 1px solid rgba(116, 91, 54, 0.13);
   border-radius: 34px 34px 34px 12px;
   color: #3b3d34;
   background: rgba(255, 250, 224, 0.96);
   box-shadow: 0 17px 45px rgba(54, 38, 23, 0.24);
-  scrollbar-width: thin;
   backdrop-filter: blur(10px);
+}
+
+.speech-bubble-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 .speech-bubble p {
