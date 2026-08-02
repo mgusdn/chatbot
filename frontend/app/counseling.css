@@ -870,7 +870,7 @@ textarea {
   width: 100%;
   min-height: 74px;
   padding: 8px 0;
-  resize: vertical;
+  resize: none;
   border: 0;
   border-radius: 14px;
   outline: 0;
