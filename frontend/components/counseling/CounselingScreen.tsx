@@ -69,6 +69,29 @@ const SLOT_EXAMPLES: Record<string, readonly (readonly [string, string])[]> = {
 
 const DEFAULT_EXAMPLES = SLOT_EXAMPLES.situation;
 
+const RAPPORT_EXAMPLES: Record<string, readonly (readonly [string, string])[]> = {
+  greeting: [
+    ["예시 답안", "안녕하세요, 저도 만나서 반가워요."],
+    ["예시 답안", "네 안녕하세요! 오늘 처음 와봐요."],
+    ["예시 답안", "안녕하세요, 잘 부탁드려요."],
+  ],
+  mood: [
+    ["예시 답안", "오늘은 그냥 그런 것 같아요."],
+    ["예시 답안", "좀 피곤하긴 한데 나쁘지 않아요."],
+    ["예시 답안", "요즘 마음이 좀 복잡해요."],
+  ],
+  how: [
+    ["예시 답안", "네, 편하게 왔어요."],
+    ["예시 답안", "조금 정신없었는데 괜찮아요."],
+    ["예시 답안", "네, 나쁘지 않았어요."],
+  ],
+  who: [
+    ["예시 답안", "친구가 추천해줘서 알게 됐어요."],
+    ["예시 답안", "인터넷 보다가 우연히 알게 됐어요."],
+    ["예시 답안", "그냥 검색하다가 찾아봤어요."],
+  ],
+} as const;
+
 export function CounselingScreen({ isOpen, shouldPrepare }: { isOpen: boolean; shouldPrepare: boolean }) {
   const [speechHealth, setSpeechHealth] = useState<SpeechHealth | null>(null);
   const [lastSttMs, setLastSttMs] = useState<number | null>(null);
@@ -77,7 +100,9 @@ export function CounselingScreen({ isOpen, shouldPrepare }: { isOpen: boolean; s
   );
   const speechOutput = useSpeechOutput({ available: ttsAvailable });
   const session = useCounselingSession(shouldPrepare, speechOutput.enqueue);
-  const currentExamples = SLOT_EXAMPLES[session.runState.pending_slot ?? ""] ?? DEFAULT_EXAMPLES;
+  const currentExamples = session.runState.stage === "rapport"
+    ? RAPPORT_EXAMPLES[session.runState.rapport_step ?? ""] ?? DEFAULT_EXAMPLES
+    : SLOT_EXAMPLES[session.runState.pending_slot ?? ""] ?? DEFAULT_EXAMPLES;
   const closeCounsel = useGameStore((state) => state.closeCounsel);
   const completeCounsel = useGameStore((state) => state.completeCounsel);
   const [message, setMessage] = useState("");
@@ -289,7 +314,7 @@ export function CounselingScreen({ isOpen, shouldPrepare }: { isOpen: boolean; s
           <div className="composer-footer">
             <div className="prompt-chips" aria-label="상담 예시">
               {currentExamples.map(([label, example]) => (
-                <button key={label} type="button" disabled={session.busy || session.done} onClick={() => { setMessage(example); inputRef.current?.focus(); }}>{label}</button>
+                <button key={example} type="button" disabled={session.busy || session.done} onClick={() => { setMessage(example); inputRef.current?.focus(); }}>{label}</button>
               ))}
             </div>
             <div className="speech-controls">
