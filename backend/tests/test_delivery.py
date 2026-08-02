@@ -365,14 +365,14 @@ def test_slow_opening_publishes_bounded_reviewed_lead(monkeypatch):
     worker.start()
 
     assert lead_published.wait(0.5)
-    assert events[0]["text"] == "마음에 걸린 일을 혼자 안고 오느라 많이 무거우셨겠어요."
+    assert events[0]["text"] == "어떤 이야기인지 편하게 들려주셨네요."
     release_opening.set()
     worker.join(timeout=2)
     assert not worker.is_alive()
 
     result = result_box["result"]
     assert result["message"].startswith(
-        "마음에 걸린 일을 혼자 안고 오느라 많이 무거우셨겠어요."
+        "어떤 이야기인지 편하게 들려주셨네요."
     )
     assert "모델이 뒤늦게 만든 공감" not in result["message"]
     state = store._get(experiment_id).arms["baseline"].state
