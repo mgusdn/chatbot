@@ -527,7 +527,8 @@ button { cursor: pointer; }
 
 .mind-card {
   display: flex;
-  min-height: 100%;
+  min-height: 0;
+  max-height: 650px;
   flex-direction: column;
   padding: 24px;
   overflow-y: auto;
