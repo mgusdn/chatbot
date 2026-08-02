@@ -530,6 +530,7 @@ button { cursor: pointer; }
   min-height: 100%;
   flex-direction: column;
   padding: 24px;
+  overflow-y: auto;
 }
 
 .mind-header {
