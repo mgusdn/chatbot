@@ -259,6 +259,7 @@ button { cursor: pointer; }
 .demo-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.72fr) minmax(330px, 0.72fr);
+  align-items: start;
   gap: 14px;
 }
 
@@ -527,11 +528,9 @@ button { cursor: pointer; }
 
 .mind-card {
   display: flex;
-  min-height: 0;
-  max-height: 650px;
+  min-height: 100%;
   flex-direction: column;
   padding: 24px;
-  overflow-y: auto;
 }
 
 .mind-header {
