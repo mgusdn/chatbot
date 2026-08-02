@@ -9,11 +9,80 @@ import { useGameStore } from "@/store/useGameStore";
 import { MindMap } from "./MindMap";
 import { ValueSelectionScreen } from "./ValueSelectionScreen";
 
-const EXAMPLES = [
-  ["미루는 습관", "요즘 해야 할 일이 많은데 자꾸 미루게 돼서 스스로에게 답답해요."],
-  ["관계 걱정", "사람들을 만나고 나면 제가 이상하게 말한 것 같아서 계속 걱정돼요."],
-  ["잠들기 어려움", "밤에 생각이 많아져서 잠들기가 어렵고 다음 날 너무 피곤해요."],
-] as const;
+const SLOT_EXAMPLES: Record<string, readonly (readonly [string, string])[]> = {
+  situation: [
+    ["미루는 습관", "요즘 해야 할 일이 많은데 자꾸 미루게 돼서 스스로에게 답답해요."],
+    ["관계 걱정", "사람들을 만나고 나면 제가 이상하게 말한 것 같아서 계속 걱정돼요."],
+    ["잠들기 어려움", "밤에 생각이 많아져서 잠들기가 어렵고 다음 날 너무 피곤해요."],
+  ],
+  emotion: [
+    ["미루는 습관", "일을 또 미뤘다는 생각에 답답하고 저 자신한테 실망스러워요."],
+    ["관계 걱정", "그 자리를 떠올리면 창피하고 불안한 마음이 들어요."],
+    ["잠들기 어려움", "잠을 설치고 나면 무기력하고 예민해져요."],
+  ],
+  thought: [
+    ["미루는 습관", "나는 왜 항상 이렇게 미루기만 할까 하는 생각이 들어요."],
+    ["관계 걱정", "다들 나를 이상하게 봤을 것 같다는 생각이 계속 들어요."],
+    ["잠들기 어려움", "내일도 못 잘까봐 걱정하는 생각이 머릿속을 떠나지 않아요."],
+  ],
+  cause: [
+    ["미루는 습관", "완벽하게 하지 못할 바엔 시작을 미루는 게 편해서 그런 것 같아요."],
+    ["관계 걱정", "예전에 말실수했던 기억이 자꾸 떠올라서 그런 것 같아요."],
+    ["잠들기 어려움", "낮 동안 정리 못 한 걱정거리들이 밤에 한꺼번에 떠올라서 그런 것 같아요."],
+  ],
+  behavior: [
+    ["미루는 습관", "마감이 코앞에 닥쳐야 겨우 시작하고, 그전까진 계속 딴짓을 해요."],
+    ["관계 걱정", "사람 만나는 자리를 이런저런 핑계로 피하게 돼요."],
+    ["잠들기 어려움", "잠들려고 누워서도 계속 휴대폰을 들여다보게 돼요."],
+  ],
+  duration: [
+    ["미루는 습관", "한 학기 내내 그랬고, 마감 있는 일마다 매번 반복돼요."],
+    ["관계 걱정", "두어 달 전부터 사람 만난 다음 날마다 그래요."],
+    ["잠들기 어려움", "3주 정도 됐고, 거의 매일 밤 그래요."],
+  ],
+  impact: [
+    ["미루는 습관", "마감 직전에 몰아서 하다 보니 결과물 퀄리티도 떨어지고 스트레스도 심해져요."],
+    ["관계 걱정", "만남 자체가 부담스러워져서 약속을 점점 줄이게 돼요."],
+    ["잠들기 어려움", "다음 날 계속 피곤해서 일에 집중이 잘 안 돼요."],
+  ],
+  relationship: [
+    ["미루는 습관", "팀원들한테 계속 민폐를 끼치는 것 같아서 눈치가 보여요."],
+    ["관계 걱정", "친했던 친구들과도 점점 연락이 뜸해졌어요."],
+    ["잠들기 어려움", "예민해져서 가족들한테 괜히 짜증을 내게 돼요."],
+  ],
+  coping: [
+    ["미루는 습관", "할 일 목록을 만들어봤는데 그때뿐이고 오래가지 않아요."],
+    ["관계 걱정", "만나기 전에 할 말을 미리 연습해봤는데 크게 도움은 안 됐어요."],
+    ["잠들기 어려움", "자기 전에 휴대폰을 안 보려고 해봤는데 잘 지켜지지 않아요."],
+  ],
+  goal: [
+    ["미루는 습관", "미리미리 시작해서 여유 있게 마무리하고 싶어요."],
+    ["관계 걱정", "만남 후에 곱씹지 않고 편하게 넘길 수 있으면 좋겠어요."],
+    ["잠들기 어려움", "누우면 금방 잠들 수 있으면 좋겠어요."],
+  ],
+  self_message: [
+    ["미루는 습관", "완벽하지 않아도 괜찮으니 일단 시작해보자고 말해주고 싶어요."],
+    ["관계 걱정", "그 정도 실수는 아무도 신경 안 쓴다고 말해주고 싶어요."],
+    ["잠들기 어려움", "오늘 하루도 충분히 애썼다고, 이제 마음 편히 쉬어도 된다고 말해주고 싶어요."],
+  ],
+} as const;
+
+const DEFAULT_EXAMPLES = SLOT_EXAMPLES.situation;
+
+const RAPPORT_EXAMPLES: Record<string, readonly (readonly [string, string])[]> = {
+  greeting: [
+    ["예시 답안", "안녕하세요, 저도 만나서 반가워요."],
+  ],
+  mood: [
+    ["예시 답안", "오늘은 그냥 그런 것 같아요."],
+  ],
+  how: [
+    ["예시 답안", "네, 편하게 왔어요."],
+  ],
+  who: [
+    ["예시 답안", "친구가 추천해줘서 알게 됐어요."],
+  ],
+} as const;
 
 export function CounselingScreen({ isOpen, shouldPrepare }: { isOpen: boolean; shouldPrepare: boolean }) {
   const [speechHealth, setSpeechHealth] = useState<SpeechHealth | null>(null);
@@ -23,6 +92,9 @@ export function CounselingScreen({ isOpen, shouldPrepare }: { isOpen: boolean; s
   );
   const speechOutput = useSpeechOutput({ available: ttsAvailable });
   const session = useCounselingSession(shouldPrepare, speechOutput.enqueue);
+  const currentExamples = session.runState.stage === "rapport"
+    ? RAPPORT_EXAMPLES[session.runState.rapport_step ?? ""] ?? DEFAULT_EXAMPLES
+    : SLOT_EXAMPLES[session.runState.pending_slot ?? ""] ?? DEFAULT_EXAMPLES;
   const closeCounsel = useGameStore((state) => state.closeCounsel);
   const completeCounsel = useGameStore((state) => state.completeCounsel);
   const [message, setMessage] = useState("");
@@ -194,7 +266,7 @@ export function CounselingScreen({ isOpen, shouldPrepare }: { isOpen: boolean; s
               rows={3}
               maxLength={4000}
               value={message}
-              placeholder="예: 해야 할 일이 많은데 자꾸 미루게 돼서 스스로에게 답답해요."
+              placeholder={`예: ${currentExamples[0][1]}`}
               aria-describedby="formStatus"
               disabled={controlsDisabled}
               onChange={(event) => setMessage(event.target.value)}
@@ -233,8 +305,8 @@ export function CounselingScreen({ isOpen, shouldPrepare }: { isOpen: boolean; s
           </div>
           <div className="composer-footer">
             <div className="prompt-chips" aria-label="상담 예시">
-              {EXAMPLES.map(([label, example]) => (
-                <button key={label} type="button" disabled={session.busy || session.done} onClick={() => { setMessage(example); inputRef.current?.focus(); }}>{label}</button>
+              {currentExamples.map(([label, example]) => (
+                <button key={example} type="button" disabled={session.busy || session.done} onClick={() => { setMessage(example); inputRef.current?.focus(); }}>{label}</button>
               ))}
             </div>
             <div className="speech-controls">
