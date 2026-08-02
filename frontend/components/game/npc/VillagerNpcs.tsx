@@ -61,7 +61,7 @@ function VillagerNpc({
         <VillagerSprite texture={texture} width={width} />
       </Billboard>
       {nearby ? (
-        <Html position={[width / 2 + 0.35, NPC_SPRITE_HEIGHT * 0.82, 0]} center={false} occlude={false}>
+        <Html position={[width / 2 + 0.12, NPC_SPRITE_HEIGHT * 0.82, 0]} center={false} occlude={false}>
           <div className="npc-speech-bubble">{npc.line}</div>
         </Html>
       ) : null}
