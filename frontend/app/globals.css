@@ -539,6 +539,38 @@ textarea:focus-visible,
 }
 @keyframes promptRise { from { opacity: 0; transform: translate(-50%, 9px); } }
 
+.npc-speech-bubble {
+  position: relative;
+  width: max-content;
+  padding: 9px 15px;
+  border: 1px solid rgba(62, 85, 71, 0.14);
+  border-radius: 999px;
+  background: #fffdf3;
+  box-shadow: 0 10px 26px rgba(37, 46, 39, 0.18);
+  color: #3e5547;
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.4;
+  white-space: nowrap;
+  text-align: center;
+  pointer-events: none;
+  transform: translateY(-50%);
+  animation: npcBubbleRise 220ms ease both;
+}
+.npc-speech-bubble::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -6px;
+  width: 14px;
+  height: 14px;
+  background: inherit;
+  border-left: inherit;
+  border-bottom: inherit;
+  transform: translateY(-50%) rotate(45deg);
+}
+@keyframes npcBubbleRise { from { opacity: 0; transform: translateY(-50%) translateX(6px); } }
+
 .guestbook-voucher-hud,
 .memory-relocation-hud {
   position: absolute;

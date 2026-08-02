@@ -44,6 +44,7 @@ import type { RoomMemory } from "@/types/memoryRoom";
 import { ExteriorWorld } from "./exterior/ExteriorWorld";
 import { getCoastCameraReveal, softenVelocityAtCoast } from "./exterior/exteriorLayout";
 import { InteriorScene, preloadInteriorScene } from "./interior/InteriorScene";
+import { VillagerNpcs, type PlayerPositionRef } from "./npc/VillagerNpcs";
 
 const isTypingControl = (target: EventTarget | null) => {
   const element = target as HTMLElement | null;
@@ -97,11 +98,13 @@ function PlayerController({
   onPlaceGuestbook,
   onOpenGuestbookEditor,
   onCommitMemoryRelocation,
+  playerPositionRef,
 }: {
   characterId: CharacterId;
   onPlaceGuestbook?: (placement: MemoryPlacementInput) => void;
   onOpenGuestbookEditor?: () => void;
   onCommitMemoryRelocation?: () => void;
+  playerPositionRef?: PlayerPositionRef;
 }) {
   const body = useRef<RapierRigidBody>(null);
   const visual = useRef<Group>(null);
@@ -380,6 +383,10 @@ function PlayerController({
     if (!body.current) return;
     const velocity = body.current.linvel();
     const playerPosition = body.current.translation();
+    if (playerPositionRef) {
+      playerPositionRef.current.x = playerPosition.x;
+      playerPositionRef.current.z = playerPosition.z;
+    }
     const canPreviewRelocation = scene === "interior"
       && !activeCommonsStation
       && relocationActive
@@ -616,6 +623,7 @@ export function WorldScene({
   const scene = useGameStore((state) => state.scene);
   const phase = useGameStore((state) => state.phase);
   const activeCommonsStation = useGameStore((state) => state.activeCommonsStation);
+  const npcPlayerPositionRef = useRef({ x: 0, z: 0 });
   const commonsTraces = useCommonsStore((state) => state.traces);
   const installationTraces = useMemo(
     () => commonsTraces.filter((trace) => trace.kind === "installation"),
@@ -654,6 +662,7 @@ export function WorldScene({
                 selectedMemoryId={selectedMemoryId}
                 onSelectMemory={onSelectMemory}
               />
+              <VillagerNpcs playerPositionRef={npcPlayerPositionRef} />
             </>
           )}
           <PlayerController
@@ -662,6 +671,7 @@ export function WorldScene({
             onPlaceGuestbook={onPlaceGuestbook}
             onOpenGuestbookEditor={onOpenGuestbookEditor}
             onCommitMemoryRelocation={onCommitMemoryRelocation}
+            playerPositionRef={npcPlayerPositionRef}
           />
         </Physics>
       </Suspense>

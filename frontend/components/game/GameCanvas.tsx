@@ -10,6 +10,7 @@ import type { MemoryPlacementController } from "@/hooks/useMemoryPlacement";
 import type { MemoryPlacementInput, RoomMemory } from "@/types/memoryRoom";
 import { CharacterPreviewScene } from "./CharacterPreviewScene";
 import { EXTERIOR_PERFORMANCE_BUDGETS } from "./exterior/exteriorLayout";
+import { preloadVillagerNpcSprites } from "./npc/VillagerNpcs";
 import { WorldScene } from "./WorldScene";
 
 type GameCanvasProps = {
@@ -29,6 +30,13 @@ function WorldAssetGate() {
   const setError = useGameStore((state) => state.setError);
   const { active, loaded, total, progress, errors } = useProgress();
   const startedAt = useRef(0);
+
+  useEffect(() => {
+    // Warm the villager sprites as early as possible so they're cached well
+    // before WorldScene mounts them, keeping this loading-progress gate
+    // accurate and avoiding a render-time cache miss in VillagerSprite.
+    preloadVillagerNpcSprites();
+  }, []);
 
   useEffect(() => {
     if (phase !== "preloading") {
