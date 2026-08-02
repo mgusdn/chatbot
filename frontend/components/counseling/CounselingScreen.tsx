@@ -266,7 +266,7 @@ export function CounselingScreen({ isOpen, shouldPrepare }: { isOpen: boolean; s
               rows={3}
               maxLength={4000}
               value={message}
-              placeholder="예: 해야 할 일이 많은데 자꾸 미루게 돼서 스스로에게 답답해요."
+              placeholder={`예: ${currentExamples[0][1]}`}
               aria-describedby="formStatus"
               disabled={controlsDisabled}
               onChange={(event) => setMessage(event.target.value)}
