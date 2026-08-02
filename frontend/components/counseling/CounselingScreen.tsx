@@ -167,7 +167,7 @@ export function CounselingScreen({ isOpen, shouldPrepare }: { isOpen: boolean; s
     void speechOutput.prime();
     const outcome = await session.sendMessage(message);
     if (outcome.accepted) setMessage("");
-    else inputRef.current?.focus();
+    window.setTimeout(() => inputRef.current?.focus(), 0);
     if (outcome.accepted && outcome.kind === "complete") completeCounsel(outcome.report);
   };
 
