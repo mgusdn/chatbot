@@ -227,14 +227,6 @@ function WelcomeProps() {
           <boxGeometry args={[0.92, 0.5, 0.12]} />
           <meshStandardMaterial color="#f4e3b2" roughness={0.86} />
         </mesh>
-        <mesh position={[-0.17, 0.95, 0.075]} rotation={[0, 0, -0.55]}>
-          <capsuleGeometry args={[0.06, 0.13, 4, 8]} />
-          <meshStandardMaterial color="#68a15c" roughness={0.86} />
-        </mesh>
-        <mesh position={[0.2, 0.92, 0.075]} rotation={[0, 0, 0.55]}>
-          <capsuleGeometry args={[0.055, 0.11, 4, 8]} />
-          <meshStandardMaterial color="#ef9d6c" roughness={0.86} />
-        </mesh>
       </group>
 
       <group position={[1.55, 0, 1.55]}>
@@ -304,7 +296,7 @@ function FloatingPollen({ reducedMotion }: SceneProps) {
 
 function LandingPbao() {
   return (
-    <group name="landing-pbao-moment" position={[0.18, 0.54, 2.15]} rotation={[0, Math.PI * 0.86, 0]} scale={0.67}>
+    <group name="landing-pbao-moment" position={[0.18, 0.54, 2.15]} rotation={[0, 0, 0]} scale={0.67}>
       <PbaoModel animation="idle" />
     </group>
   );

@@ -470,8 +470,8 @@ textarea:focus-visible,
 }
 .world-location span,
 .world-location strong { display: block; }
-.world-location span { margin-bottom: 2px; color: #dce9d7; font-size: 9px; font-weight: 800; letter-spacing: 0.08em; }
-.world-location strong { font-size: 13px; }
+.world-location span { margin-bottom: 2px; color: #dce9d7; font-size: 18px; font-weight: 800; letter-spacing: 0.08em; }
+.world-location strong { font-size: 26px; }
 
 .world-actions {
   display: flex;
@@ -481,13 +481,13 @@ textarea:focus-visible,
   pointer-events: auto;
 }
 .world-actions button {
-  min-height: 38px;
-  padding: 0 12px;
+  min-height: 46px;
+  padding: 0 16px;
   border: 0;
   border-radius: 11px;
   color: white;
   background: rgba(255, 255, 255, 0.1);
-  font-size: 10px;
+  font-size: 20px;
   font-weight: 800;
 }
 .world-actions button:hover { background: rgba(255, 255, 255, 0.2); }
@@ -502,17 +502,17 @@ textarea:focus-visible,
   padding: 8px 10px;
   border-radius: 13px;
   color: white;
-  font-size: 9px;
+  font-size: 18px;
 }
 .desktop-help kbd,
 .interaction-prompt kbd {
   display: inline-grid;
-  min-width: 26px;
-  height: 26px;
-  padding: 0 5px;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 8px;
   place-items: center;
   border: 1px solid rgba(255, 255, 255, 0.36);
-  border-radius: 8px;
+  border-radius: 10px;
   color: #34493d;
   background: #fff7da;
   box-shadow: inset 0 -2px 0 rgba(73, 67, 45, 0.16);
@@ -527,11 +527,11 @@ textarea:focus-visible,
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 50px;
-  padding: 7px 18px 7px 8px;
-  border-radius: 18px;
+  min-height: 62px;
+  padding: 7px 22px 7px 8px;
+  border-radius: 22px;
   color: #fff;
-  font-size: 12px;
+  font-size: 24px;
   font-weight: 850;
   pointer-events: auto;
   transform: translateX(-50%);
@@ -579,7 +579,7 @@ textarea:focus-visible,
   display: flex;
   align-items: center;
   gap: 14px;
-  max-width: min(430px, calc(100vw - 44px));
+  max-width: min(560px, calc(100vw - 44px));
   padding: 12px 12px 12px 15px;
   border: 1px solid rgba(255, 245, 199, 0.72);
   border-radius: 17px;
@@ -594,31 +594,31 @@ textarea:focus-visible,
 .guestbook-voucher-hud span,
 .memory-relocation-hud span {
   color: #f8d985;
-  font-size: 9px;
+  font-size: 18px;
   font-weight: 950;
   letter-spacing: 0.1em;
 }
 .memory-relocation-hud span { color: #cfe8b5; }
 .guestbook-voucher-hud strong,
-.memory-relocation-hud strong { font-size: 12px; }
+.memory-relocation-hud strong { font-size: 24px; }
 .guestbook-voucher-hud small,
 .memory-relocation-hud small {
   overflow: hidden;
   color: #efe2c8;
-  font-size: 10px;
+  font-size: 20px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .guestbook-voucher-hud button,
 .memory-relocation-hud button {
   flex: 0 0 auto;
-  min-height: 34px;
-  padding: 0 11px;
+  min-height: 44px;
+  padding: 0 16px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   color: #fff9e9;
   background: rgba(255, 255, 255, 0.09);
-  font-size: 9px;
+  font-size: 18px;
   font-weight: 850;
 }
 .guestbook-voucher-hud.is-error {
@@ -696,7 +696,7 @@ textarea:focus-visible,
   .desktop-help { display: none; }
   .world-topbar { top: max(10px, env(safe-area-inset-top)); right: 10px; left: 10px; }
   .world-actions button:first-child { display: none; }
-  .world-actions button { padding: 0 10px; font-size: 9px; }
+  .world-actions button { padding: 0 14px; font-size: 18px; }
   .world-location { padding: 9px 11px; }
   .interaction-prompt { display: none; }
   .mobile-controls { position: absolute; inset: 0; display: block; pointer-events: none; }
@@ -765,9 +765,9 @@ textarea:focus-visible,
     padding: 9px 10px 9px 12px;
   }
   .guestbook-voucher-hud strong,
-  .memory-relocation-hud strong { font-size: 10px; }
+  .memory-relocation-hud strong { font-size: 20px; }
   .guestbook-voucher-hud small,
-  .memory-relocation-hud small { font-size: 9px; }
+  .memory-relocation-hud small { font-size: 18px; }
   .mobile-guestbook-controls {
     position: absolute;
     right: 16px;

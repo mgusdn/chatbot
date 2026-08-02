@@ -1,38 +1,11 @@
 "use client";
 
 import { ContactShadows, OrbitControls } from "@react-three/drei";
-import { useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useRef } from "react";
-import type { Group } from "three";
+import { useThree } from "@react-three/fiber";
+import { useEffect } from "react";
 import { CHARACTER_BY_ID } from "@/constants/characterCatalog";
 import type { CharacterId } from "@/types/character";
 import { CharacterRenderer } from "./CharacterRenderer";
-
-function PreviewAccents() {
-  const accents = useRef<Group>(null);
-
-  useFrame(({ clock }) => {
-    if (!accents.current) return;
-    accents.current.rotation.y = clock.elapsedTime * 0.08;
-  });
-
-  return (
-    <group ref={accents} position={[0, 0.1, 0]}>
-      <mesh position={[-1.38, 0.44, 0.05]} rotation={[0.2, 0.3, -0.6]}>
-        <sphereGeometry args={[0.1, 12, 8]} />
-        <meshStandardMaterial color="#f0d473" roughness={0.8} />
-      </mesh>
-      <mesh position={[1.45, 0.74, -0.1]} rotation={[-0.2, 0.1, 0.5]} scale={[0.65, 1.4, 0.5]}>
-        <sphereGeometry args={[0.11, 12, 8]} />
-        <meshStandardMaterial color="#89a970" roughness={0.86} />
-      </mesh>
-      <mesh position={[-1.62, 1.25, -0.45]} scale={0.65}>
-        <octahedronGeometry args={[0.08, 0]} />
-        <meshBasicMaterial color="#fff1a8" />
-      </mesh>
-    </group>
-  );
-}
 
 export function CharacterPreviewScene({ characterId }: { characterId: CharacterId }) {
   const camera = useThree((state) => state.camera);
@@ -67,7 +40,6 @@ export function CharacterPreviewScene({ characterId }: { characterId: CharacterI
         <CharacterRenderer key={characterId} character={character} preview />
       </group>
 
-      <PreviewAccents />
       <ContactShadows position={[0, 0.01, 0]} opacity={0.34} scale={4.1} blur={2.2} far={3.2} color="#3c5140" />
       <OrbitControls
         makeDefault

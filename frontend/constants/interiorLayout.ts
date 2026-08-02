@@ -122,7 +122,7 @@ export const INTERIOR_FURNITURE_LAYOUT = {
   guestbookChairNorth: {
     id: "guestbook-chair-north",
     position: [-5.6, 0, 4.15],
-    halfExtents: [0.36, 0.5, 0.38],
+    halfExtents: [0.72, 1, 0.76],
   },
   guestbookLowShelf: {
     id: "guestbook-low-shelf",
@@ -134,80 +134,19 @@ export const INTERIOR_FURNITURE_LAYOUT = {
     position: [-7.5, 0, 7.15],
     halfExtents: [0.58, 0.8, 0.1],
   },
-  coworkTable: {
-    id: "cowork-table",
-    position: [4.75, 0, 5.55],
-    halfExtents: [1.3, 0.74, 0.68],
-  },
-  coworkChairNorthWest: {
-    id: "cowork-chair-north-west",
-    position: [4.05, 0, 4.48],
-    halfExtents: [0.38, 0.5, 0.38],
-  },
-  coworkChairNorthEast: {
-    id: "cowork-chair-north-east",
-    position: [5.45, 0, 4.48],
-    halfExtents: [0.38, 0.5, 0.38],
-  },
-  coworkChairSouth: {
-    id: "cowork-chair-south",
-    position: [4.75, 0, 6.65],
-    halfExtents: [0.38, 0.5, 0.38],
-  },
+  // The sofa's visual is no longer rendered, but the collider stays so this
+  // spot keeps blocking guestbook/memory placement the same as before.
   coworkSofa: {
     id: "cowork-sofa",
     position: [8.05, 0, 5.55],
     halfExtents: [0.5, 0.48, 1.15],
   },
-  coworkFloorLamp: {
-    id: "cowork-floor-lamp",
-    position: [8.1, 0, 7.15],
-    halfExtents: [0.32, 1.05, 0.32],
-  },
+  // The console's visual is no longer rendered, but its position still backs
+  // the "installation" interaction anchor below.
   installationConsole: {
     id: "installation-console",
     position: [8.1, 0, 3.1],
     halfExtents: [0.42, 1.05, 0.42],
-  },
-  libraryBookcaseWest: {
-    id: "library-bookcase-west",
-    position: [-8, 0, -0.3],
-    halfExtents: [0.32, 1.15, 1.7],
-  },
-  libraryLowBookcaseWest: {
-    id: "library-low-bookcase-west",
-    position: [-8, 0, -4],
-    halfExtents: [0.34, 0.62, 1.25],
-  },
-  archiveBookcase: {
-    id: "archive-bookcase",
-    position: [-6.7, 0, -7.02 + INTERIOR_WALL_NORMAL_SHIFT.north],
-    halfExtents: [1.35, 1.05, 0.3],
-  },
-  libraryWorktable: {
-    id: "library-worktable",
-    position: [-4.95, 0, -0.15],
-    halfExtents: [1.3, 0.74, 0.68],
-  },
-  libraryChairSouth: {
-    id: "library-chair-south",
-    position: [-4.95, 0, 0.95],
-    halfExtents: [0.36, 0.5, 0.38],
-  },
-  recoveryBench: {
-    id: "recovery-bench",
-    position: [8.05, 0, -1.2],
-    halfExtents: [0.48, 0.42, 1.05],
-  },
-  recoveryProjectTable: {
-    id: "recovery-project-table",
-    position: [5.15, 0, -1.3],
-    halfExtents: [0.8, 0.38, 0.8],
-  },
-  recoveryChairNorth: {
-    id: "recovery-chair-north",
-    position: [5.15, 0, -2.45],
-    halfExtents: [0.38, 0.5, 0.38],
   },
   plantLabIsland: {
     id: "plant-lab-island",
@@ -224,21 +163,12 @@ export const INTERIOR_FURNITURE_LAYOUT = {
     position: [-2.75, 0, -4],
     halfExtents: [0.4, 0.5, 0.4],
   },
-  pbaoChairEast: {
-    id: "pbao-chair-east",
-    position: [2.75, 0, -4],
-    halfExtents: [0.4, 0.5, 0.4],
-  },
 } satisfies Record<string, InteriorFurniturePlacement>;
 
 export const COMMONS_INTERACTION_ANCHORS = {
-  // Meet the worktable from its open entrance-facing edge. Keeping the prompt
-  // off the tabletop makes the station reachable straight from the boulevard.
-  guestbook: [
-    INTERIOR_FURNITURE_LAYOUT.guestbookWorktable.position[0],
-    0,
-    INTERIOR_FURNITURE_LAYOUT.guestbookWorktable.position[2] + 1.2,
-  ],
+  // Sit at the chair (not the tabletop) to start writing — the chair is
+  // already on the boulevard-facing side of the table, so no offset is needed.
+  guestbook: [...INTERIOR_FURNITURE_LAYOUT.guestbookChairNorth.position],
   // Stand in the open gallery aisle instead of squeezing against the console.
   installation: [
     INTERIOR_FURNITURE_LAYOUT.installationConsole.position[0] - 1.5,

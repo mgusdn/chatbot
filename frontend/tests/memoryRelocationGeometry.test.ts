@@ -257,13 +257,15 @@ describe("relocation candidate validation", () => {
     expect(open.validation).toEqual({ valid: true, reason: null, blockerId: null });
   });
 
-  it("opens the west wall after moving shelves inward while preserving north fixtures", () => {
+  it("opens the west wall after moving shelves inward", () => {
     const openWestWall = evaluateMemoryRelocation({
       x: WEST_APPROACH_X,
       z: 4.5,
       yaw: -Math.PI / 2,
     });
-    const inFrontOfArchive = evaluateMemoryRelocation({
+    // The archive bookcase that used to sit here was removed along with its
+    // wall-fixture exclusion zone, so this spot on the north wall is now open too.
+    const formerArchiveSpot = evaluateMemoryRelocation({
       x: -6.7,
       z: NORTH_APPROACH_Z,
       yaw: Math.PI,
@@ -272,11 +274,7 @@ describe("relocation candidate validation", () => {
     expect(openWestWall.candidate.surfaceId).toBe("wall.interior.west");
     expect(openWestWall.candidate.height).toBe(1.5);
     expect(openWestWall.validation).toEqual({ valid: true, reason: null, blockerId: null });
-    expect(inFrontOfArchive.validation).toEqual({
-      valid: false,
-      reason: "wall-fixture-collision",
-      blockerId: "archive-bookcase",
-    });
+    expect(formerArchiveSpot.validation).toEqual({ valid: true, reason: null, blockerId: null });
   });
 
   it("rejects furniture and the protected entrance on the floor", () => {

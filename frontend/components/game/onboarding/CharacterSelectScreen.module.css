@@ -76,19 +76,6 @@
   backdrop-filter: blur(24px);
 }
 
-.heading > span {
-  display: inline-flex;
-  align-items: center;
-  min-height: 26px;
-  padding: 0 10px;
-  border-radius: 9px 9px 9px 3px;
-  color: #f9f7df;
-  background: #648065;
-  font-size: 9px;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-}
-
 .heading h1 {
   margin: 10px 0 8px;
   color: #263e32;
@@ -102,7 +89,7 @@
 .heading p {
   margin: 0;
   color: #748178;
-  font-size: 11px;
+  font-size: 28px;
   line-height: 1.55;
 }
 
@@ -126,10 +113,15 @@
   font-weight: 900;
 }
 
-.nicknameField > span > small,
-.residentHeader span {
+.nicknameField > span > small {
   color: #879188;
   font-size: 9px;
+  font-weight: 750;
+}
+
+.residentHeader span {
+  color: #879188;
+  font-size: 18px;
   font-weight: 750;
 }
 
@@ -186,7 +178,7 @@
   min-height: 14px;
   margin-top: 5px;
   color: #89938c;
-  font-size: 8px;
+  font-size: 16px;
 }
 .hasError + .nicknameHint { color: #af6858; }
 
@@ -194,7 +186,7 @@
 
 .characterGrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 7px;
   min-height: 0;
 }
@@ -202,12 +194,12 @@
 .characterCard {
   position: relative;
   display: grid;
-  grid-template-columns: 42px minmax(0, 1fr);
-  gap: 8px;
+  grid-template-columns: 63px minmax(0, 1fr);
+  gap: 12px;
   align-items: center;
   min-width: 0;
-  min-height: 60px;
-  padding: 7px 8px;
+  min-height: 90px;
+  padding: 11px 12px;
   border: 2px solid transparent;
   border-radius: 16px;
   color: #3a4d42;
@@ -236,8 +228,8 @@
   --portrait-accent: #f1d274;
   position: relative;
   display: grid;
-  width: 42px;
-  height: 44px;
+  width: 63px;
+  height: 66px;
   overflow: hidden;
   place-items: center;
   border-radius: 14px 14px 12px 12px;
@@ -346,10 +338,7 @@
 .portrait[data-kind="animal"] b { display: none; }
 
 .characterCopy { min-width: 0; }
-.characterCopy strong,
-.characterCopy small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.characterCopy strong { font-size: 11px; font-weight: 900; }
-.characterCopy small { margin-top: 2px; color: #8b948d; font-size: 7px; font-weight: 700; }
+.characterCopy strong { display: block; overflow: hidden; font-size: 17px; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
 
 .selectionMark {
   position: absolute;
@@ -492,7 +481,7 @@
   align-items: center;
   justify-content: space-between;
   color: rgba(43, 70, 51, 0.68);
-  font-size: 8px;
+  font-size: 20px;
   font-weight: 900;
   letter-spacing: 0.16em;
   pointer-events: none;
@@ -554,9 +543,9 @@
 
 .namePlate > span {
   display: inline-block;
-  margin-bottom: 2px;
+  margin-bottom: 6px;
   color: #70836f;
-  font-size: 8px;
+  font-size: 20px;
   font-weight: 900;
   letter-spacing: 0.1em;
 }
@@ -573,16 +562,6 @@
   white-space: nowrap;
 }
 
-.namePlate small {
-  display: block;
-  overflow: hidden;
-  margin-top: 3px;
-  color: #7c897e;
-  font-size: 8px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .dragHint {
   position: absolute;
   z-index: 5;
@@ -591,13 +570,13 @@
   left: 0;
   margin: 0;
   color: rgba(45, 76, 53, 0.62);
-  font-size: 8px;
+  font-size: 24px;
   font-weight: 800;
   text-align: center;
   pointer-events: none;
 }
 
-.dragHint span { margin-right: 4px; font-size: 13px; vertical-align: -1px; }
+.dragHint span { margin-right: 4px; font-size: 39px; vertical-align: -1px; }
 
 @media (max-width: 1120px) {
   .layout { grid-template-columns: minmax(390px, 0.95fr) minmax(380px, 1.05fr); }
@@ -622,7 +601,6 @@
   .controlPanel { padding: 20px 14px 16px; }
   .characterGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .characterCard { min-height: 56px; }
-  .characterCopy small { display: none; }
   .previewPanel { min-height: 520px; }
   .arrowButton { flex-basis: 46px; }
   .confirmButton { font-size: 11px; }

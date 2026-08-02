@@ -51,7 +51,7 @@
   top: max(3.5vh, calc(env(safe-area-inset-top) + 14px));
   right: 0;
   left: 0;
-  width: min(42vw, 600px);
+  width: min(39vw, 520px);
   margin: 0 auto;
   text-align: center;
 }
@@ -100,10 +100,10 @@
 }
 
 .titleTop .titleGlyph {
-  height: clamp(64px, 7.8vw, 112px);
+  height: clamp(64px, 7.7vw, 110px);
   padding-bottom: 0.04em;
   color: #f7dd54;
-  font-size: clamp(38px, 4.8vw, 70px);
+  font-size: clamp(37px, 4.7vw, 68px);
   -webkit-text-stroke: 0.6px rgba(244, 224, 102, 0.72);
   text-shadow:
     0 3px 0 #275d3d,
@@ -161,10 +161,10 @@
 }
 
 .titleBottom .titleGlyph {
-  height: clamp(86px, 11.5vw, 166px);
+  height: clamp(85px, 11.3vw, 163px);
   padding-bottom: 0.035em;
   color: #fff7d7;
-  font-size: clamp(52px, 6.8vw, 98px);
+  font-size: clamp(51px, 6.7vw, 96px);
   -webkit-text-stroke: 0.8px rgba(255, 251, 224, 0.86);
   text-shadow:
     0 4px 0 rgba(33, 69, 45, 0.42),
@@ -193,7 +193,7 @@
 }
 
 .bottomGlyph4 {
-  height: clamp(96px, 12.8vw, 184px) !important;
+  height: clamp(95px, 12.7vw, 180px) !important;
   margin-left: -3%;
   border-radius: 55% 45% 52% 48% / 44% 56% 46% 54%;
   background: #27874f;
@@ -228,7 +228,7 @@
   position: absolute;
   z-index: 5;
   top: 39%;
-  left: 4%;
+  left: calc(4% - 2cm);
   padding: 0.48em 0.76em 0.55em;
   border: 2px solid rgba(128, 76, 46, 0.34);
   border-radius: 46% 54% 43% 57% / 54% 43% 57% 46%;
@@ -236,7 +236,7 @@
   background: #ed9661;
   box-shadow: 0 5px 0 rgba(132, 79, 45, 0.34), 0 9px 15px rgba(43, 73, 43, 0.16);
   font-family: "Bagel Fat One", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-  font-size: clamp(11px, 1.35vw, 18px);
+  font-size: clamp(20px, 2.7vw, 35px);
   font-weight: 400;
   letter-spacing: 0;
   line-height: 1;
@@ -259,17 +259,17 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
-  min-width: 180px;
-  min-height: 44px;
-  padding: 5px 12px;
+  gap: 12px;
+  min-width: 240px;
+  min-height: 60px;
+  padding: 8px 22px;
   border: 0;
   border-radius: 999px;
   color: #fffbe1;
   background: transparent;
   text-shadow: 0 2px 4px rgba(25, 55, 35, 0.72);
   font: inherit;
-  font-size: clamp(14px, 1.15vw, 17px);
+  font-size: clamp(21px, 2vw, 28px);
   font-weight: 900;
   cursor: pointer;
   transition: transform 180ms ease, opacity 180ms ease;
@@ -277,9 +277,9 @@
 
 .startButton kbd {
   display: inline-grid;
-  width: 30px;
-  height: 30px;
-  flex: 0 0 30px;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
   place-items: center;
   border: 2px solid rgba(255, 255, 240, 0.94);
   border-radius: 50%;
@@ -288,7 +288,7 @@
   box-shadow: 0 2px 0 rgba(36, 75, 45, 0.5), 0 5px 10px rgba(32, 64, 39, 0.18);
   text-shadow: none;
   font: inherit;
-  font-size: 17px;
+  font-size: 23px;
   font-weight: 950;
   line-height: 1;
 }
@@ -326,18 +326,18 @@
   .titleBottom { gap: 5px; margin-top: 8px; }
 
   .titleTop .titleGlyph {
-    height: clamp(58px, 18vw, 78px);
-    font-size: clamp(35px, 11vw, 47px);
+    height: clamp(47px, 13.3vw, 63px);
+    font-size: clamp(28px, 8.7vw, 39px);
     box-shadow: 0 5px 0 #286442, 0 9px 14px rgba(27, 66, 38, 0.17);
   }
 
   .titleBottom .titleGlyph {
-    height: clamp(76px, 24vw, 103px);
-    font-size: clamp(46px, 14vw, 60px);
+    height: clamp(61px, 18vw, 83px);
+    font-size: clamp(37px, 10.7vw, 49px);
   }
 
   .bottomGlyph4 {
-    height: clamp(84px, 27vw, 116px) !important;
+    height: clamp(68px, 20vw, 93px) !important;
   }
 
   .titleRibbon {
@@ -345,7 +345,7 @@
     left: 1%;
     padding: 0.48em 0.7em 0.54em;
     border-width: 1.5px;
-    font-size: clamp(9px, 2.8vw, 11px);
+    font-size: clamp(15px, 4.4vw, 19px);
   }
 
   .startArea {
@@ -354,7 +354,7 @@
 
   .startButton {
     width: min(280px, calc(100vw - 40px));
-    min-height: 54px;
+    min-height: 60px;
     border: 2px solid rgba(255, 255, 239, 0.9);
     color: #2d5d40;
     background: rgba(255, 248, 218, 0.9);
@@ -369,21 +369,21 @@
 
 @media (max-width: 360px) and (orientation: portrait) {
   .titleBlock { width: calc(100vw - 24px); }
-  .titleTop .titleGlyph { height: 58px; font-size: 34px; }
-  .titleBottom .titleGlyph { height: 73px; font-size: 43px; }
-  .bottomGlyph4 { height: 82px !important; }
-  .titleRibbon { left: 0; font-size: 9px; }
+  .titleTop .titleGlyph { height: 47px; font-size: 27px; }
+  .titleBottom .titleGlyph { height: 59px; font-size: 35px; }
+  .bottomGlyph4 { height: 66px !important; }
+  .titleRibbon { left: 0; font-size: 15px; }
 }
 
 @media (max-height: 650px) and (orientation: landscape) {
   .titleBlock {
     top: max(8px, calc(env(safe-area-inset-top) + 5px));
-    width: min(42vw, 430px);
+    width: min(37.3vw, 373px);
   }
 
   .titleTop .titleGlyph {
-    height: clamp(52px, 13.5vh, 72px);
-    font-size: clamp(31px, 8.5vh, 45px);
+    height: clamp(43px, 11vh, 59px);
+    font-size: clamp(25px, 7vh, 37px);
   }
 
   .titleBottom {
@@ -392,19 +392,19 @@
   }
 
   .titleBottom .titleGlyph {
-    height: clamp(67px, 20.5vh, 96px);
-    font-size: clamp(41px, 13.5vh, 60px);
+    height: clamp(56px, 17vh, 80px);
+    font-size: clamp(34px, 11.3vh, 50px);
   }
 
   .bottomGlyph4 {
-    height: clamp(74px, 22.5vh, 106px) !important;
+    height: clamp(61px, 18.7vh, 88px) !important;
   }
 
   .titleRibbon {
     top: 38%;
     left: 0;
     padding: 5px 8px 6px;
-    font-size: clamp(8px, 2.3vh, 10px);
+    font-size: clamp(13px, 3.7vh, 17px);
   }
 
   .startArea {
@@ -412,16 +412,16 @@
   }
 
   .startButton {
-    min-width: 190px;
-    min-height: 42px;
-    font-size: 13px;
+    min-width: 220px;
+    min-height: 50px;
+    font-size: 18px;
   }
 
   .startButton kbd {
-    width: 27px;
-    height: 27px;
-    flex-basis: 27px;
-    font-size: 15px;
+    width: 34px;
+    height: 34px;
+    flex-basis: 34px;
+    font-size: 19px;
   }
 
   .cornerMark { display: none; }

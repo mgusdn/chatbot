@@ -313,7 +313,7 @@ export function GameShell() {
         </motion.div>
       )}
 
-      {showWorldHud && !activeCommonsStation && <WorldHud nickname={nickname} />}
+      {showWorldHud && !activeCommonsStation && <WorldHud />}
       {transitionActive && <div className={`scene-transition ${phase}`} aria-hidden="true"><span></span></div>}
 
       <AnimatePresence>

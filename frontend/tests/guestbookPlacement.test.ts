@@ -225,7 +225,7 @@ describe("guestbook placement validation", () => {
   });
 
   it("uses a rotated OBB instead of an axis-aligned approximation", () => {
-    const pose = { x: -2.35, z: -1.05, yaw: 0 };
+    const pose = { x: 6.16, z: 4.65, yaw: 0 };
     const axisAligned = evaluateGuestbookPlacement(pose);
     const diagonal = evaluateGuestbookPlacement(pose, { rotationOffsetDeg: 45 });
 
@@ -233,7 +233,7 @@ describe("guestbook placement validation", () => {
     expect(diagonal.validation).toEqual({
       valid: false,
       reason: "furniture-collision",
-      blockerId: "library-worktable",
+      blockerId: "cowork-sofa",
     });
   });
 });

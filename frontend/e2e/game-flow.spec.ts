@@ -299,7 +299,7 @@ async function enterCommons(page: Page, testInfo: TestInfo) {
   await page.getByTestId("start-button").click();
   await expect(page.getByRole("radiogroup", { name: "플레이어 캐릭터 선택" })).toBeVisible();
   await page.getByRole("textbox", { name: /닉네임/ }).fill("마음산책자");
-  await page.getByRole("radio", { name: /구름/ }).click();
+  await page.getByRole("radio", { name: /나비/ }).click();
   await page.getByTestId("confirm-character").click();
 
   const shell = page.locator(".game-shell");
@@ -352,7 +352,7 @@ test("landing introduces Pbao and onboarding offers eleven residents with a nick
   await page.getByTestId("start-button").click();
 
   const residents = page.getByRole("radiogroup", { name: "플레이어 캐릭터 선택" }).getByRole("radio");
-  await expect(residents).toHaveCount(11);
+  await expect(residents).toHaveCount(6);
   await expect(page.getByTestId("confirm-character")).toBeDisabled();
 
   await page.getByRole("textbox", { name: /닉네임/ }).fill("초록마음");
@@ -363,7 +363,7 @@ test("landing introduces Pbao and onboarding offers eleven residents with a nick
 
 test("choose a 3D character, reach Pbao, counsel, and return", async ({ page }, testInfo) => {
   const shell = await enterCounselingRoom(page, testInfo);
-  await expect(shell).toHaveAttribute("data-player-character", "cloud");
+  await expect(shell).toHaveAttribute("data-player-character", "cat");
   const counselingScreen = page.getByTestId("counseling-screen");
   await expect(counselingScreen.getByRole("link", { name: "프바오와 나 찾기 홈" })).toBeVisible();
   await expect(counselingScreen.getByRole("radiogroup", { name: "상담 모델 선택" })).toHaveCount(0);
@@ -381,7 +381,7 @@ test("choose a 3D character, reach Pbao, counsel, and return", async ({ page }, 
   await expect(shell).toHaveAttribute("data-game-phase", /^(exploring-interior|interaction-ready)$/, { timeout: 5_000 });
   await expect(page.getByTestId("counseling-screen")).toBeHidden();
   await expect(page.getByTestId("counsel-report-overlay")).toHaveCount(0);
-  await expect(shell).toHaveAttribute("data-player-character", "cloud");
+  await expect(shell).toHaveAttribute("data-player-character", "cat");
 });
 
 test("value selection stays inside one viewport and paginates nine at a time on mobile", async ({ page }, testInfo) => {
@@ -470,11 +470,11 @@ test("closing a pending completion cannot leak a stale report into the next visi
 test("stored character is preselected but still requires confirmation", async ({ page }) => {
   await page.getByTestId("start-button").click();
   await page.getByRole("textbox", { name: /닉네임/ }).fill("다시온마음");
-  await page.getByRole("radio", { name: /도토리/ }).click();
+  await page.getByRole("radio", { name: /파도/ }).click();
   await page.getByTestId("confirm-character").click();
   await page.reload();
   await page.getByTestId("start-button").click();
-  await expect(page.getByRole("radio", { name: /도토리/ })).toHaveAttribute("aria-checked", "true");
+  await expect(page.getByRole("radio", { name: /파도/ })).toHaveAttribute("aria-checked", "true");
   await expect(page.getByRole("textbox", { name: /닉네임/ })).toHaveValue("다시온마음");
   await expect(page.getByTestId("confirm-character")).toBeVisible();
 });
@@ -482,7 +482,7 @@ test("stored character is preselected but still requires confirmation", async ({
 test("visitors can place a persistent memory and install a shared object", async ({ page }, testInfo) => {
   const shell = await enterCommons(page, testInfo);
 
-  await walkUntilPrompt(page, "프로메테우스 추억방 열기", 15_000, "a");
+  await walkUntilPrompt(page, "방명록 작성", 15_000, "a");
   await interact(page, testInfo);
   await expect(shell).toHaveAttribute("data-commons-station", "guestbook");
   const editor = page.getByTestId("guestbook-letter-editor-modal");

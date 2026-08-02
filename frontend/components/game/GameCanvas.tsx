@@ -101,7 +101,7 @@ export default function GameCanvas({
 }: GameCanvasProps) {
   const setError = useGameStore((state) => state.setError);
   const phase = useGameStore((state) => state.phase);
-  const selected = useGameStore((state) => state.selectedCharacterId) || "sprout";
+  const selected = useGameStore((state) => state.selectedCharacterId) || "cat";
   const confirmed = useGameStore((state) => state.confirmedCharacterId) || selected;
   const isPreview = phase === "character-select" || phase === "preloading";
   const constrainedRenderBudget = typeof window !== "undefined" && (

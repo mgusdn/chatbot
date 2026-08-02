@@ -37,13 +37,6 @@ function getPreviewFields(character: CharacterDefinition) {
   };
 }
 
-function residentTypeLabel(character: CharacterDefinition) {
-  if (character.bodyFamily === "pet") return "작은 펫";
-  if (character.bodyFamily === "biped-animal") return "동물 주민";
-  if (character.bodyFamily === "mini-human") return "꼬마 주민";
-  return "사람 주민";
-}
-
 function CharacterPortrait({ character }: { character: CharacterDefinition }) {
   const { kind, color, imageUrl } = getPreviewFields(character);
 
@@ -169,9 +162,8 @@ export function CharacterSelectScreen({ initialNickname = "", onConfirm }: Props
           }}
         >
           <header className={styles.heading}>
-            <span>오늘의 주민 등록</span>
-            <h1 id="characterSelectTitle">어떤 모습으로<br />숲을 걸어볼까요?</h1>
-            <p>마음에 드는 주민과 불리고 싶은 이름을 골라주세요.</p>
+            <h1 id="characterSelectTitle">누구와 함께<br />숲을 걸어볼까요?</h1>
+            <p>마음에 드는 캐릭터를 고르고 닉네임을 입력해주세요.</p>
           </header>
 
           <label className={styles.nicknameField} htmlFor="playerNickname">
@@ -227,7 +219,6 @@ export function CharacterSelectScreen({ initialNickname = "", onConfirm }: Props
                   <CharacterPortrait character={character} />
                   <span className={styles.characterCopy}>
                     <strong>{character.name}</strong>
-                    <small>{residentTypeLabel(character)}</small>
                   </span>
                   <i className={styles.selectionMark} aria-hidden="true">✓</i>
                 </button>
@@ -282,7 +273,6 @@ export function CharacterSelectScreen({ initialNickname = "", onConfirm }: Props
           >
             <span>{selectedCharacter?.name ?? "주민을 고르는 중"}</span>
             <strong>{normalizedNickname || "이름을 기다리고 있어요"}</strong>
-            <small>{selectedCharacter ? `${selectedCharacter.description}` : "오늘의 숲 주민"}</small>
           </motion.div>
 
           <p className={styles.dragHint}><span aria-hidden="true">↔</span> 드래그해서 천천히 둘러보세요</p>

@@ -15,7 +15,7 @@ describe("world HUD guestbook placement", () => {
     useGameStore.setState({
       phase: "exploring-interior",
       scene: "interior",
-      confirmedCharacterId: "sprout",
+      confirmedCharacterId: "cat",
     });
     resetMemoryRelocationStore();
     useGuestbookVoucherStore.getState().discard();
@@ -33,7 +33,7 @@ describe("world HUD guestbook placement", () => {
       },
     });
 
-    render(<WorldHud nickname="초록마음" />);
+    render(<WorldHud />);
 
     const voucher = within(screen.getByTestId("guestbook-voucher-hud"));
     expect(voucher.getByText("현재: 상담실 서쪽 벽")).toBeVisible();

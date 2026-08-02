@@ -8,40 +8,39 @@ import {
   SELECTABLE_CHARACTER_CATALOG,
 } from "@/constants/characterCatalog";
 
-const LEGACY_PERSISTED_IDS = [
-  "sprout", "cloud", "acorn", "rabbit", "cat", "fox", "deer", "koala", "penguin", "monkey", "mira", "pug",
+const CURRENT_PERSISTED_IDS = [
+  "rabbit", "cat", "fox", "deer", "koala", "penguin", "monkey",
 ] as const;
 
 describe("character catalog", () => {
-  it("contains the agreed six-animal and six-human roster", () => {
-    expect(CHARACTER_CATALOG).toHaveLength(12);
-    expect(new Set(CHARACTER_CATALOG.map((character) => character.id)).size).toBe(12);
-    expect(CHARACTER_CATALOG.filter((character) => character.kind === "animal")).toHaveLength(6);
-    expect(CHARACTER_CATALOG.filter((character) => character.kind === "human")).toHaveLength(6);
+  it("contains the trimmed seven-animal roster", () => {
+    expect(CHARACTER_CATALOG).toHaveLength(7);
+    expect(new Set(CHARACTER_CATALOG.map((character) => character.id)).size).toBe(7);
+    expect(CHARACTER_CATALOG.filter((character) => character.kind === "animal")).toHaveLength(7);
+    expect(CHARACTER_CATALOG.filter((character) => character.kind === "human")).toHaveLength(0);
 
     const animalNames = CHARACTER_CATALOG
       .filter((character) => character.kind === "animal")
       .map((character) => character.name);
-    const humanNames = CHARACTER_CATALOG
-      .filter((character) => character.kind === "human")
-      .map((character) => character.name);
 
-    expect(animalNames).toEqual(["나비", "파도", "콩이", "마스터", "여울", "비앙카"]);
-    expect(humanNames).toEqual(["새싹이", "구름이", "도토리", "마루", "미라", "하루"]);
+    expect(animalNames).toEqual(["나비", "파도", "콩이", "마스터", "여울", "비앙카", "마루"]);
   });
 
-  it("retires Master from the visible eleven-resident picker without breaking legacy ids", () => {
-    expect(SELECTABLE_CHARACTER_CATALOG).toHaveLength(11);
-    expect(SELECTABLE_CHARACTER_CATALOG.filter((character) => character.kind === "animal")).toHaveLength(5);
-    expect(SELECTABLE_CHARACTER_CATALOG.filter((character) => character.kind === "human")).toHaveLength(6);
+  it("retires Master from the visible six-resident picker without breaking legacy ids", () => {
+    expect(SELECTABLE_CHARACTER_CATALOG).toHaveLength(6);
+    expect(SELECTABLE_CHARACTER_CATALOG.filter((character) => character.kind === "animal")).toHaveLength(6);
     expect(SELECTABLE_CHARACTER_CATALOG.some((character) => character.id === "rabbit")).toBe(false);
     expect(resolveSelectableCharacterId("rabbit")).toBe("fox");
     expect(resolveSelectableCharacterId("deer")).toBe("deer");
     expect(resolveSelectableCharacterId(null)).toBeNull();
   });
 
-  it("keeps every persisted v1/v2 id valid across the art-direction migration", () => {
-    for (const id of LEGACY_PERSISTED_IDS) expect(isCharacterId(id)).toBe(true);
+  it("keeps every currently persisted id valid; fully-retired ids fall back to reselection", () => {
+    for (const id of CURRENT_PERSISTED_IDS) expect(isCharacterId(id)).toBe(true);
+    // sprout/cloud/acorn/mira/pug were removed outright (not just re-skinned), so a
+    // profile saved under one of those ids no longer resolves — the player is
+    // simply asked to pick again, same as any other unrecognized id.
+    expect(isCharacterId("sprout")).toBe(false);
     expect(isCharacterId("master")).toBe(false);
     expect(isCharacterId("pbao")).toBe(false);
     expect(isCharacterId(null)).toBe(false);
@@ -81,16 +80,18 @@ describe("character catalog", () => {
     }
   });
 
-  it("renders visible Yeoul and Bianca from the downloaded Cute Bunny GLB", () => {
-    const replacements = SELECTABLE_CHARACTER_CATALOG.filter(({ id }) => ["fox", "deer"].includes(id));
-    expect(replacements).toHaveLength(2);
-    expect(new Set(replacements.map(({ modelUrl }) => modelUrl))).toEqual(new Set([
-      "/models/characters/cgtrader-cute-bunny/cute-bunny.glb",
-    ]));
-    expect(replacements.map(({ renderer }) => renderer)).toEqual(["gltf", "gltf"]);
-    expect(replacements.every(({ source }) => source.creator === "Minimoku")).toBe(true);
-    expect(replacements.every(({ source }) => source.license === "CGTrader-Royalty-Free-No-AI")).toBe(true);
-    expect(replacements.every(({ allowsStaticPose }) => allowsStaticPose)).toBe(true);
+  it("renders Yeoul, Bianca, and Maru as their own distinct Cube Pets GLBs", () => {
+    const replacements = SELECTABLE_CHARACTER_CATALOG.filter(({ id }) => ["fox", "deer", "koala"].includes(id));
+    expect(replacements).toHaveLength(3);
+    // Each gets its own model file now, unlike the old shared-bunny placeholder.
+    expect(new Set(replacements.map(({ modelUrl }) => modelUrl)).size).toBe(3);
+    expect(replacements.map(({ renderer }) => renderer)).toEqual(["gltf", "gltf", "gltf"]);
+    expect(replacements.every(({ bodyFamily }) => bodyFamily === "pet")).toBe(true);
+    expect(replacements.every(({ source }) => source.creator === "Kenney")).toBe(true);
+    expect(replacements.every(({ source }) => source.license === "CC0-1.0")).toBe(true);
+    replacements.forEach(({ id, modelUrl }) => {
+      expect(modelUrl).toBe(`/models/characters/kenney-cube-pets/animal-${id}.glb`);
+    });
   });
 
   it("keeps cosmetic selection fair with one shared movement collider", () => {

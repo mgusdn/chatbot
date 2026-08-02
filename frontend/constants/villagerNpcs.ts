@@ -29,11 +29,9 @@ export const VILLAGER_NPCS: readonly VillagerNpcDefinition[] = [
     id: "npc-2",
     spriteUrl: "/images/characters/npc-girl.png",
     spriteAlt: "소녀 주민",
-    // Along the central boulevard everyone walks down toward Pbao, so she's
-    // easy to run into rather than tucked away in the cowork-cafe corner.
-    // Pulled further south (toward the entrance) so her larger sprite clears
-    // npc-hamster, who sits further along the same path at z -0.5.
-    position: [1.8, 0, 3],
+    // Left-center of the central-forum boulevard, clear of npc-dog to the
+    // south-west and any furniture colliders.
+    position: [-1.8, 0, 0],
     line: "당신을 좋아하지 않을 사람은 없어요.",
   },
   {

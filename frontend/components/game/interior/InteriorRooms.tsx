@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  COMMONS_TRACE_ANCHORS,
   INTERIOR_FURNITURE_LAYOUT,
   INTERIOR_WALL_NORMAL_SHIFT,
 } from "@/constants/interiorLayout";
@@ -73,69 +72,6 @@ function TodayWall() {
   );
 }
 
-function InstallationConsole() {
-  const pulseColors = ["#d5a65f", "#7da08b", "#c87769", "#8099ad"];
-  return (
-    <group name="installation-console" position={LAYOUT.installationConsole.position}>
-      <mesh castShadow position={[0, 0.12, 0]}>
-        <cylinderGeometry args={[0.55, 0.62, 0.24, 24]} />
-        <meshStandardMaterial color="#4f5d59" metalness={0.16} roughness={0.66} />
-      </mesh>
-      <mesh castShadow position={[0, 1.08, 0]}>
-        <cylinderGeometry args={[0.055, 0.075, 1.9, 12]} />
-        <meshStandardMaterial color="#596965" metalness={0.2} roughness={0.56} />
-      </mesh>
-      {[0.68, 1.12, 1.58].map((y, index) => (
-        <group key={y} position={[0, y, 0]} rotation={[0.35 + index * 0.28, index * 0.8, 0.18]}>
-          <mesh castShadow>
-            <torusGeometry args={[0.34 + index * 0.06, 0.045, 8, 24]} />
-            <meshStandardMaterial
-              color={pulseColors[index]}
-              emissive={pulseColors[index]}
-              emissiveIntensity={0.16}
-              metalness={0.08}
-              roughness={0.55}
-            />
-          </mesh>
-        </group>
-      ))}
-      {pulseColors.map((color, index) => {
-        const angle = index * Math.PI * 0.5 + 0.35;
-        return (
-          <mesh key={color} castShadow position={[Math.cos(angle) * 0.45, 0.72 + index * 0.32, Math.sin(angle) * 0.45]}>
-            <sphereGeometry args={[0.1 + index * 0.012, 14, 10]} />
-            <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.12} roughness={0.64} />
-          </mesh>
-        );
-      })}
-    </group>
-  );
-}
-
-function InstallationGrid() {
-  const traces = COMMONS_TRACE_ANCHORS.filter((anchor) => anchor.kind === "installation-slot");
-  const colors = ["#d8b36f", "#7f9f8c", "#c98272", "#839bad"];
-  return (
-    <group name="visitor-installation-grid">
-      {traces.map((anchor, index) => (
-        <mesh
-          key={anchor.id}
-          position={[anchor.position[0], anchor.position[1], anchor.position[2]]}
-          rotation={[-Math.PI / 2, 0, index * 0.35]}
-        >
-          <ringGeometry args={[0.17, 0.28, 20]} />
-          <meshStandardMaterial
-            color={colors[index % colors.length]}
-            emissive={colors[index % colors.length]}
-            emissiveIntensity={0.1}
-            roughness={0.78}
-          />
-        </mesh>
-      ))}
-    </group>
-  );
-}
-
 function GuestbookCommons() {
   return (
     <group name="guestbook-commons">
@@ -153,7 +89,7 @@ function GuestbookCommons() {
       <InteriorAsset
         url={`${FURNITURE}/chairCushion.glb`}
         position={LAYOUT.guestbookChairNorth.position}
-        scale={2}
+        scale={4}
       />
       <InteriorAsset
         url={`${FURNITURE}/bookcaseOpenLow.glb`}
@@ -185,56 +121,9 @@ function GuestbookCommons() {
   );
 }
 
-function CoworkCafe() {
-  return (
-    <group name="cowork-cafe">
-      <WorkTable position={LAYOUT.coworkTable.position} width={2.6} depth={1.36} color="#6e5d51" />
-      {[
-        [LAYOUT.coworkChairNorthWest.position, 0],
-        [LAYOUT.coworkChairNorthEast.position, 0],
-        [LAYOUT.coworkChairSouth.position, Math.PI],
-      ].map(([position, rotation], index) => (
-        <InteriorAsset
-          key={index}
-          url={`${FURNITURE}/chairRounded.glb`}
-          position={position as [number, number, number]}
-          rotation={[0, rotation as number, 0]}
-          scale={1.9}
-        />
-      ))}
-      <InteriorAsset url={`${FURNITURE}/loungeSofa.glb`} position={LAYOUT.coworkSofa.position} rotation={[0, -Math.PI / 2, 0]} scale={2.1} />
-      <InteriorAsset url={`${FURNITURE}/lampRoundFloor.glb`} position={LAYOUT.coworkFloorLamp.position} scale={1.9} />
-      <InteriorAsset url={`${FOOD}/cup-tea.glb`} position={[4.45, 0.83, 5.52]} scale={1.25} />
-      <InteriorAsset url={`${FOOD}/cup-saucer.glb`} position={[5.07, 0.83, 5.56]} scale={1.25} />
-    </group>
-  );
-}
-
-function SharedLibrary() {
-  return (
-    <group name="shared-library">
-      <InteriorAsset url={`${FURNITURE}/bookcaseOpen.glb`} position={LAYOUT.libraryBookcaseWest.position} rotation={[0, Math.PI / 2, 0]} scale={2.35} />
-      <InteriorAsset url={`${FURNITURE}/bookcaseClosedDoors.glb`} position={LAYOUT.archiveBookcase.position} scale={2.2} />
-      <InteriorAsset url={`${FURNITURE}/bookcaseOpenLow.glb`} position={LAYOUT.libraryLowBookcaseWest.position} rotation={[0, Math.PI / 2, 0]} scale={2.1} />
-      <WorkTable position={LAYOUT.libraryWorktable.position} width={2.6} depth={1.36} color="#665548" />
-      <InteriorAsset
-        url={`${FURNITURE}/chairCushion.glb`}
-        position={LAYOUT.libraryChairSouth.position}
-        rotation={[0, Math.PI, 0]}
-        scale={1.95}
-      />
-      <InteriorAsset url={`${FURNITURE}/lampRoundTable.glb`} position={[-5.42, 0.82, -0.12]} scale={1.35} />
-      <InteriorAsset url={`${FURNITURE}/books.glb`} position={[-4.58, 0.82, -0.14]} rotation={[0, -0.2, 0]} scale={1.4} />
-    </group>
-  );
-}
-
 function RecoveryAndPlantLab() {
   return (
     <group name="recovery-and-plant-lab">
-      <InteriorAsset url={`${FURNITURE}/benchCushion.glb`} position={LAYOUT.recoveryBench.position} rotation={[0, -Math.PI / 2, 0]} scale={2.1} />
-      <InteriorAsset url={`${FURNITURE}/tableRound.glb`} position={LAYOUT.recoveryProjectTable.position} scale={2.25} />
-      <InteriorAsset url={`${FURNITURE}/chairRounded.glb`} position={LAYOUT.recoveryChairNorth.position} scale={1.9} />
       <group position={LAYOUT.plantLabIsland.position}>
         <mesh castShadow position={[0, 0.48, 0]}>
           <boxGeometry args={[2, 0.18, 1.44]} />
@@ -265,7 +154,6 @@ function PbaoResearchBay() {
         <PbaoModel />
       </group>
       <InteriorAsset url={`${FURNITURE}/chairRounded.glb`} position={LAYOUT.pbaoChairWest.position} rotation={[0, 0.45, 0]} scale={1.85} />
-      <InteriorAsset url={`${FURNITURE}/chairRounded.glb`} position={LAYOUT.pbaoChairEast.position} rotation={[0, -0.45, 0]} scale={1.85} />
       <InteriorAsset url={`${FURNITURE}/lampRoundTable.glb`} position={[-0.72, 0.82, -5.08]} scale={1.35} />
       <InteriorAsset url={`${FURNITURE}/books.glb`} position={[0.55, 0.82, -5.06]} rotation={[0, -0.18, 0]} scale={1.35} />
       <InteriorAsset url={`${FOOD}/cup-tea.glb`} position={[0.94, 0.82, -5.03]} scale={1.2} />
@@ -276,11 +164,7 @@ function PbaoResearchBay() {
 export function InteriorRooms() {
   return (
     <>
-      <InstallationGrid />
-      <InstallationConsole />
       <GuestbookCommons />
-      <CoworkCafe />
-      <SharedLibrary />
       <RecoveryAndPlantLab />
       <PbaoResearchBay />
     </>

@@ -174,18 +174,6 @@ export function ProceduralCharacter({ character, moving = false, running = false
             <meshStandardMaterial color={character.colors.hair} roughness={0.98} />
           </mesh>
         ))}
-          {character.id === "acorn" ? (
-            <group position={[0.2, 0.57, 0.02]} rotation={[0, 0, -0.24]}>
-              <mesh castShadow scale={[1.18, 0.64, 1]}>
-                <sphereGeometry args={[0.2, 14, 9]} />
-                <meshStandardMaterial color="#8d5b3f" roughness={0.98} flatShading />
-              </mesh>
-              <mesh position={[0, 0.16, 0]} rotation={[0, 0, 0.18]}>
-                <capsuleGeometry args={[0.025, 0.1, 4, 6]} />
-                <meshStandardMaterial color="#57754f" roughness={0.95} />
-              </mesh>
-            </group>
-          ) : null}
         </group>
       </group>
     </group>

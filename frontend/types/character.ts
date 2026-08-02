@@ -3,24 +3,19 @@
  * stable even when the public resident name or art direction changes.
  */
 export type CharacterId =
-  | "sprout"
-  | "cloud"
-  | "acorn"
   | "rabbit"
   | "cat"
   | "fox"
   | "deer"
   | "koala"
   | "penguin"
-  | "monkey"
-  | "mira"
-  | "pug";
+  | "monkey";
 
 export type CharacterRendererKind = "gltf" | "procedural-humanoid" | "biped-animal";
 
 export type CharacterBodyFamily = "pet" | "mini-human" | "human" | "biped-animal";
 
-export type CharacterSpecies = "human" | "cat" | "penguin" | "monkey" | "rabbit" | "pigeon" | "dog" | "tiger";
+export type CharacterSpecies = "human" | "cat" | "penguin" | "monkey" | "rabbit" | "fox" | "deer" | "koala" | "pigeon" | "dog" | "tiger";
 
 export type CharacterAssetSource = {
   creator: "Kenney" | "Quaternius" | "Minimoku" | "Prometheus Studio";

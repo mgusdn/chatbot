@@ -19,10 +19,10 @@ function memoryStorage() {
 describe("player profile", () => {
   it("stores the nickname and character as a v2 profile without counseling content", () => {
     const storage = memoryStorage();
-    const profile = writePlayerProfile(storage, "cloud", " 구름  산책자 ");
+    const profile = writePlayerProfile(storage, "cat", " 구름  산책자 ");
 
-    expect(profile).toMatchObject({ schemaVersion: 2, characterId: "cloud", nickname: "구름 산책자" });
-    expect(readPlayerProfile(storage)).toMatchObject({ schemaVersion: 2, characterId: "cloud", nickname: "구름 산책자" });
+    expect(profile).toMatchObject({ schemaVersion: 2, characterId: "cat", nickname: "구름 산책자" });
+    expect(readPlayerProfile(storage)).toMatchObject({ schemaVersion: 2, characterId: "cat", nickname: "구름 산책자" });
     expect(storage.getItem(PLAYER_PROFILE_KEY)).not.toContain("transcript");
   });
 
@@ -30,13 +30,13 @@ describe("player profile", () => {
     const storage = memoryStorage();
     storage.setItem(PLAYER_PROFILE_KEY, JSON.stringify({
       schemaVersion: 1,
-      characterId: "sprout",
+      characterId: "cat",
       selectedAt: "2026-07-20T12:00:00.000Z",
     }));
 
     expect(readPlayerProfile(storage)).toEqual({
       schemaVersion: 2,
-      characterId: "sprout",
+      characterId: "cat",
       nickname: MIGRATED_PROFILE_NICKNAME,
       selectedAt: "2026-07-20T12:00:00.000Z",
     });
@@ -68,7 +68,7 @@ describe("player profile", () => {
 
     storage.setItem(PLAYER_PROFILE_KEY, JSON.stringify({ schemaVersion: 2, characterId: "cloud", nickname: "   " }));
     expect(readPlayerProfile(storage)).toBeNull();
-    expect(() => writePlayerProfile(storage, "cloud", "<구름>")).toThrow("사용할 수 없는 문자");
+    expect(() => writePlayerProfile(storage, "cat", "<구름>")).toThrow("사용할 수 없는 문자");
   });
 
   it("normalizes spacing and enforces the ten-character limit", () => {

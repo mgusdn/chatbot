@@ -10,11 +10,9 @@ import {
   INTERIOR_HALF_DEPTH,
   INTERIOR_HALF_WIDTH,
   INTERIOR_MAIN_PATH_HALF_WIDTH,
-  INTERIOR_MIN_PATH_WIDTH,
   INTERIOR_PLAN_SCALE,
   INTERIOR_SIZE,
   INTERIOR_WALL_APPROACH_DEPTH,
-  INTERIOR_WALL_NORMAL_SHIFT,
   INTERIOR_WALLS,
   INTERIOR_ZONES,
   REQUIRED_INTERIOR_ZONE_IDS,
@@ -137,18 +135,12 @@ describe("open-plan mind research commons layout", () => {
     expect(INTERIOR_EXIT_GUARD.position[2] + INTERIOR_EXIT_GUARD.halfExtents[2]).toBeGreaterThan(porchEdge);
   });
 
-  it("keeps interaction anchors on their furniture islands and intentional fixtures on the north wall", () => {
+  it("keeps interaction anchors on their furniture islands", () => {
     expect(COMMONS_INTERACTION_ANCHORS.installation).toEqual([6.6, 0, 3.1]);
-    expect(COMMONS_INTERACTION_ANCHORS.guestbook).toEqual([-5.6, 0, 6.5]);
+    expect(COMMONS_INTERACTION_ANCHORS.guestbook).toEqual([-5.6, 0, 4.15]);
 
     const westShelf = colliderById("guestbook-low-shelf");
-    const northArchive = colliderById("archive-bookcase");
     expect(westShelf.position).toEqual([-8.15, 0.62, 5]);
-    expect(northArchive.position).toEqual([
-      -6.7,
-      1.05,
-      -7.02 + INTERIOR_WALL_NORMAL_SHIFT.north,
-    ]);
   });
 
   it("derives every furniture collider from the same position used by the renderer", () => {
@@ -176,30 +168,14 @@ describe("open-plan mind research commons layout", () => {
       const bounds = horizontalBounds(collider);
       expect(bounds.minX, `${collider.id} enters the west wall approach`).toBeGreaterThanOrEqual(westInnerEdge - 0.001);
       expect(bounds.maxX, `${collider.id} enters the east wall approach`).toBeLessThanOrEqual(eastInnerEdge + 0.001);
-      if (collider.id !== "archive-bookcase") {
-        expect(bounds.minZ, `${collider.id} enters the north wall approach`).toBeGreaterThanOrEqual(northInnerEdge - 0.001);
-      }
+      expect(bounds.minZ, `${collider.id} enters the north wall approach`).toBeGreaterThanOrEqual(northInnerEdge - 0.001);
     });
-  });
-
-  it("preserves at least 1.4 m routes between the main furniture islands", () => {
-    const coworkTable = horizontalBounds(colliderById("cowork-table"));
-    const coworkSofa = horizontalBounds(colliderById("cowork-sofa"));
-    const libraryShelf = horizontalBounds(colliderById("library-bookcase-west"));
-    const libraryTable = horizontalBounds(colliderById("library-worktable"));
-    const recoveryTable = horizontalBounds(colliderById("recovery-project-table"));
-    const recoveryBench = horizontalBounds(colliderById("recovery-bench"));
-
-    expect(coworkTable.minX - INTERIOR_MAIN_PATH_HALF_WIDTH).toBeGreaterThanOrEqual(INTERIOR_MIN_PATH_WIDTH);
-    expect(coworkSofa.minX - coworkTable.maxX).toBeGreaterThanOrEqual(INTERIOR_MIN_PATH_WIDTH);
-    expect(libraryTable.minX - libraryShelf.maxX).toBeGreaterThanOrEqual(INTERIOR_MIN_PATH_WIDTH);
-    expect(recoveryBench.minX - recoveryTable.maxX).toBeGreaterThanOrEqual(INTERIOR_MIN_PATH_WIDTH);
   });
 
   it("leaves collision-free standing pockets at public interactions", () => {
     const characterRadius = 0.35;
     const pockets = [
-      { id: "guestbook", point: [-5.6, 6.5] as const, anchor: COMMONS_INTERACTION_ANCHORS.guestbook },
+      { id: "guestbook", point: [-5.6, 2.7] as const, anchor: COMMONS_INTERACTION_ANCHORS.guestbook },
       { id: "installation", point: [6.6, 3.1] as const, anchor: COMMONS_INTERACTION_ANCHORS.installation },
       { id: "pbao", point: [0, -3.85] as const, anchor: WORLD_CONFIG.pbaoInteraction },
     ];

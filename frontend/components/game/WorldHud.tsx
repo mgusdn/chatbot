@@ -16,7 +16,7 @@ function companionLabel(name: string) {
   return `${name}${hasFinalConsonant ? "과" : "와"}`;
 }
 
-export function WorldHud({ nickname }: { nickname?: string }) {
+export function WorldHud() {
   const characterId = useGameStore((state) => state.confirmedCharacterId);
   const scene = useGameStore((state) => state.scene);
   const nearby = useGameStore((state) => state.nearbyInteractable);
@@ -69,8 +69,8 @@ export function WorldHud({ nickname }: { nickname?: string }) {
     <div className="world-hud">
       <header className="world-topbar">
         <div className="world-location">
-          <span>{scene === "exterior" ? "프바오 마음마을" : "오늘의 마음연구소"}</span>
-          <strong>{nickname ? `${nickname} · ` : ""}{companionLabel(characterName)} 산책 중</strong>
+          <span>{scene === "exterior" ? "프바오 마을" : "오늘의 마음연구소"}</span>
+          <strong>{companionLabel(characterName)} 산책 중</strong>
         </div>
         <div className="world-actions">
           <button

@@ -195,14 +195,6 @@ export const MEMORY_WALL_FIXTURES: readonly MemoryWallFixture[] = [
     minV: -0.84,
     maxV: 1.09,
   },
-  {
-    id: "archive-bookcase",
-    surfaceId: "wall.interior.north",
-    minU: -8.05,
-    maxU: -5.35,
-    minV: -1.425,
-    maxV: 0.675,
-  },
 ] as const;
 
 export function getMemorySurface(surfaceId: MemorySurfaceId): MemorySurfaceDefinition {
