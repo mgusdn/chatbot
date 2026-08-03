@@ -9,26 +9,26 @@ import {
 } from "@/constants/characterCatalog";
 
 const CURRENT_PERSISTED_IDS = [
-  "rabbit", "cat", "fox", "deer", "koala", "penguin", "monkey",
+  "rabbit", "cat", "fox", "deer", "koala", "penguin", "monkey", "snowy", "hazel",
 ] as const;
 
 describe("character catalog", () => {
-  it("contains the trimmed seven-animal roster", () => {
-    expect(CHARACTER_CATALOG).toHaveLength(7);
-    expect(new Set(CHARACTER_CATALOG.map((character) => character.id)).size).toBe(7);
-    expect(CHARACTER_CATALOG.filter((character) => character.kind === "animal")).toHaveLength(7);
+  it("contains the nine-animal roster", () => {
+    expect(CHARACTER_CATALOG).toHaveLength(9);
+    expect(new Set(CHARACTER_CATALOG.map((character) => character.id)).size).toBe(9);
+    expect(CHARACTER_CATALOG.filter((character) => character.kind === "animal")).toHaveLength(9);
     expect(CHARACTER_CATALOG.filter((character) => character.kind === "human")).toHaveLength(0);
 
     const animalNames = CHARACTER_CATALOG
       .filter((character) => character.kind === "animal")
       .map((character) => character.name);
 
-    expect(animalNames).toEqual(["나비", "파도", "콩이", "마스터", "여울", "비앙카", "마루"]);
+    expect(animalNames).toEqual(["나비", "파도", "콩이", "마스터", "여울", "비앙카", "마루", "송이", "밤이"]);
   });
 
-  it("retires Master from the visible six-resident picker without breaking legacy ids", () => {
-    expect(SELECTABLE_CHARACTER_CATALOG).toHaveLength(6);
-    expect(SELECTABLE_CHARACTER_CATALOG.filter((character) => character.kind === "animal")).toHaveLength(6);
+  it("retires Master from the visible eight-resident picker without breaking legacy ids", () => {
+    expect(SELECTABLE_CHARACTER_CATALOG).toHaveLength(8);
+    expect(SELECTABLE_CHARACTER_CATALOG.filter((character) => character.kind === "animal")).toHaveLength(8);
     expect(SELECTABLE_CHARACTER_CATALOG.some((character) => character.id === "rabbit")).toBe(false);
     expect(resolveSelectableCharacterId("rabbit")).toBe("fox");
     expect(resolveSelectableCharacterId("deer")).toBe("deer");

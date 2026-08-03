@@ -9,7 +9,9 @@ export type CharacterId =
   | "deer"
   | "koala"
   | "penguin"
-  | "monkey";
+  | "monkey"
+  | "snowy"
+  | "hazel";
 
 export type CharacterRendererKind = "gltf" | "procedural-humanoid" | "biped-animal";
 
