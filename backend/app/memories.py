@@ -20,9 +20,11 @@ import re
 import secrets
 import sqlite3
 from threading import Lock
+from typing import Any
 import unicodedata
 from uuid import UUID, uuid4
 
+from dotenv import load_dotenv
 from pydantic import ValidationError
 
 from .memory_schemas import (
@@ -33,6 +35,9 @@ from .memory_schemas import (
     MemoryDesignV2,
 )
 from .safety import detect_crisis
+
+
+load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=False)
 
 
 DEFAULT_ROOM_SLUG = "prometheus"
@@ -630,10 +635,13 @@ class MemoryStore:
             },
         }
         if "design_json" in row.keys() and row["design_json"]:
-            try:
-                design = json.loads(str(row["design_json"]))
-            except (TypeError, json.JSONDecodeError):
-                design = None
+            if isinstance(row["design_json"], dict):
+                design = row["design_json"]
+            else:
+                try:
+                    design = json.loads(str(row["design_json"]))
+                except (TypeError, json.JSONDecodeError):
+                    design = None
             if isinstance(design, dict) and design.get("version") in {1, 2}:
                 result["design"] = design
         return result
@@ -1390,4 +1398,137 @@ class MemoryStore:
         }
 
 
-memory_store = MemoryStore()
+class _PostgresRow:
+    """Small sqlite3.Row-compatible adapter for the shared store logic."""
+
+    def __init__(self, columns: tuple[str, ...], values: tuple[Any, ...]) -> None:
+        self._columns = columns
+        self._values = values
+        self._by_name = dict(zip(columns, values, strict=True))
+
+    def __getitem__(self, key: int | str) -> Any:
+        return self._values[key] if isinstance(key, int) else self._by_name[key]
+
+    def keys(self) -> tuple[str, ...]:
+        return self._columns
+
+
+class _PostgresCursor:
+    def __init__(self, cursor: Any) -> None:
+        self._cursor = cursor
+
+    @property
+    def rowcount(self) -> int:
+        return int(self._cursor.rowcount)
+
+    def _adapt(self, row: tuple[Any, ...] | None) -> _PostgresRow | None:
+        if row is None:
+            return None
+        columns = tuple(column.name for column in (self._cursor.description or ()))
+        return _PostgresRow(columns, tuple(row))
+
+    def fetchone(self) -> _PostgresRow | None:
+        return self._adapt(self._cursor.fetchone())
+
+    def fetchall(self) -> list[_PostgresRow]:
+        return [row for value in self._cursor.fetchall() if (row := self._adapt(value)) is not None]
+
+
+class _PostgresConnection:
+    """Translate the intentionally small SQLite SQL subset used by MemoryStore."""
+
+    _WRITE_LOCK_ID = 7_196_021_027
+
+    def __init__(self, connection: Any) -> None:
+        self._connection = connection
+
+    @staticmethod
+    def _translate(query: str) -> str:
+        translated = query.replace("?", "%s")
+        if "INSERT OR IGNORE INTO memory_reactions" in translated:
+            translated = translated.replace(
+                "INSERT OR IGNORE INTO memory_reactions(entry_id, reactor_hash, created_at) VALUES (%s, %s, %s)",
+                "INSERT INTO memory_reactions(entry_id, reactor_hash, created_at) "
+                "VALUES (%s, %s, %s) ON CONFLICT (entry_id, reactor_hash) DO NOTHING",
+            )
+        return translated
+
+    def execute(self, query: str, params: tuple[Any, ...] = ()) -> _PostgresCursor:
+        if query.strip().upper() == "BEGIN IMMEDIATE":
+            cursor = self._connection.execute("BEGIN")
+            self._connection.execute(
+                "SELECT pg_advisory_xact_lock(%s)",
+                (self._WRITE_LOCK_ID,),
+            )
+            return _PostgresCursor(cursor)
+        return _PostgresCursor(self._connection.execute(self._translate(query), params))
+
+
+class _PostgresConnectionContext:
+    def __init__(self, pool: Any) -> None:
+        self._pool_context = pool.connection()
+        self._connection: Any | None = None
+
+    def __enter__(self) -> _PostgresConnection:
+        self._connection = self._pool_context.__enter__()
+        return _PostgresConnection(self._connection)
+
+    def __exit__(self, exc_type: Any, exc: Any, traceback: Any) -> bool | None:
+        return self._pool_context.__exit__(exc_type, exc, traceback)
+
+
+class PostgresMemoryStore(MemoryStore):
+    """PostgreSQL-backed store retaining the audited MemoryStore contract.
+
+    SQLite's BEGIN IMMEDIATE serializes every write. The adapter takes one
+    transaction-scoped PostgreSQL advisory lock for the same correctness-first
+    behavior, including unique surface z-index allocation and rate limiting.
+    """
+
+    def __init__(self, database_url: str, **kwargs: Any) -> None:
+        if not database_url.strip():
+            raise RuntimeError("DATABASE_URL is required for the PostgreSQL memory store")
+        super().__init__(path=Path("/private/tmp/pume-postgres-memory-store"), **kwargs)
+        from psycopg_pool import ConnectionPool
+
+        normalized_url = database_url.strip().strip('"').strip("'")
+        if "sslmode=" not in normalized_url:
+            normalized_url += ("&" if "?" in normalized_url else "?") + "sslmode=require"
+
+        def configure(connection: Any) -> None:
+            connection.execute("SET search_path TO pume, public")
+            connection.commit()
+
+        self._pool = ConnectionPool(
+            conninfo=normalized_url,
+            min_size=1,
+            max_size=5,
+            timeout=10,
+            configure=configure,
+            open=True,
+        )
+        self._initialized = True
+
+    def _ensure_initialized(self) -> None:
+        # Schema changes are versioned in supabase/migrations and must never be
+        # performed implicitly by a web worker at import time.
+        return
+
+    def _connect(self) -> _PostgresConnectionContext:
+        return _PostgresConnectionContext(self._pool)
+
+    def close(self) -> None:
+        self._pool.close()
+
+
+def create_memory_store() -> MemoryStore:
+    backend = os.getenv("MEMORY_DATABASE_BACKEND", "sqlite").strip().lower()
+    if backend == "postgres":
+        database_url = os.getenv("DATABASE_URL", "")
+        return PostgresMemoryStore(database_url)
+    if backend != "sqlite":
+        raise RuntimeError(f"unsupported MEMORY_DATABASE_BACKEND: {backend}")
+    return MemoryStore()
+
+
+memory_store = create_memory_store()

@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --hostname 127.0.0.1",
+    "dev:lan": "next dev --hostname 0.0.0.0",
     "build": "next build --webpack",
     "start": "next start --hostname 127.0.0.1",
     "lint": "tsc --noEmit",
@@ -16,6 +17,7 @@
     "@react-three/fiber": "latest",
     "@react-three/rapier": "latest",
     "@ricky0123/vad-web": "^0.0.29",
+    "@supabase/supabase-js": "^2.112.0",
     "framer-motion": "latest",
     "next": "^16.2.12",
     "onnxruntime-web": "^1.22.0",

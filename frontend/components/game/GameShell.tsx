@@ -11,6 +11,7 @@ import { GuestbookLetterEditorModal } from "@/components/guestbook";
 import { MemoryRoomPanel } from "@/components/memory-room";
 import { useMemoryPlacement } from "@/hooks/useMemoryPlacement";
 import { friendlyMemoryRoomError, useMemoryRoom } from "@/hooks/useMemoryRoom";
+import { useMemoryRoomRealtime } from "@/hooks/useMemoryRoomRealtime";
 import { MemoryRoomApiError } from "@/lib/api/memoryRoomClient";
 import { readPlayerProfile, writePlayerProfile } from "@/lib/storage/playerProfile";
 import { useCommonsStore } from "@/store/useCommonsStore";
@@ -52,6 +53,12 @@ export function GameShell() {
   const stopCommonsPolling = useCommonsStore((state) => state.stopPolling);
   const reducedMotion = useReducedMotion();
   const memoryRoom = useMemoryRoom("prometheus");
+  const memoryRealtimeStatus = useMemoryRoomRealtime({
+    enabled: scene === "interior",
+    roomSlug: "prometheus",
+    revision: memoryRoom.room?.revision ?? null,
+    refresh: memoryRoom.load,
+  });
   const memoryPlacement = useMemoryPlacement();
   const [hydrated, setHydrated] = useState(false);
   const [nickname, setNickname] = useState("");
@@ -282,6 +289,7 @@ export function GameShell() {
       data-guestbook-voucher={guestbookStatus}
       data-memory-relocation={relocationStatus}
       data-memory-relocation-surface={relocationSurface || ""}
+      data-memory-realtime={memoryRealtimeStatus}
       data-game-error={worldError || ""}
     >
       <AudioDirector />

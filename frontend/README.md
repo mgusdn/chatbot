@@ -34,6 +34,14 @@ VAD는 `public/vad`에 저장된 모델·AudioWorklet·ONNX Runtime WASM을 로�
 frontend/.env.local:
 
     PUME_API_BASE_URL=http://127.0.0.1:8000
+    NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_replace_me
+    DEV_ALLOWED_ORIGINS=192.168.0.62
+
+두 기기에서 같은 로컬 데모를 열 때는 `npm run dev:lan`으로 실행하고 다른 기기에서
+`http://<데모 Mac의 LAN IP>:3000`에 접속합니다. 방명록 내용은 FastAPI만 읽고 쓰며,
+브라우저는 Supabase의 공개 room revision 신호만 구독합니다. `DEV_ALLOWED_ORIGINS`에는
+서버를 실행하는 Mac의 LAN IP를 넣고, 여러 주소가 필요하면 쉼표로 구분합니다.
 
 ## 검증
 
