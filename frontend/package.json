@@ -10,7 +10,8 @@
     "lint": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "verify:multiplayer": "node scripts/verify_multiplayer_realtime.mjs"
   },
   "dependencies": {
     "@react-three/drei": "latest",

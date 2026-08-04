@@ -14,6 +14,7 @@ import {
   type Object3D,
 } from "three";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
+import { SELECTABLE_CHARACTER_CATALOG } from "@/constants/characterCatalog";
 import type { CharacterDefinition } from "@/types/character";
 import { BipedAnimalCharacter } from "./BipedAnimalCharacter";
 import { resolveCharacterAnimationClip } from "./characterAnimation";
@@ -30,6 +31,15 @@ type TintableMaterial = Material & {
   color?: Color;
   roughness?: number;
 };
+
+export function preloadPlayableCharacterModels() {
+  const modelUrls = new Set(
+    SELECTABLE_CHARACTER_CATALOG
+      .map((character) => character.modelUrl)
+      .filter((modelUrl): modelUrl is string => Boolean(modelUrl)),
+  );
+  modelUrls.forEach((modelUrl) => useGLTF.preload(modelUrl));
+}
 
 function toneQuaterniusMaterial(material: Material, character: CharacterDefinition) {
   const toned = material.clone() as TintableMaterial;

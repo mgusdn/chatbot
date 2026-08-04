@@ -2,7 +2,7 @@
 
 import { Physics, RigidBody, CapsuleCollider, type RapierRigidBody } from "@react-three/rapier";
 import { useFrame, useThree } from "@react-three/fiber";
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState, type MutableRefObject } from "react";
 import { MathUtils, Vector3, type Group } from "three";
 import { CHARACTER_BY_ID } from "@/constants/characterCatalog";
 import { COMMONS_INTERACTION_ANCHORS, COMMONS_TRACE_ANCHORS } from "@/constants/interiorLayout";
@@ -30,10 +30,13 @@ import { useGameStore } from "@/store/useGameStore";
 import { useCommonsStore } from "@/store/useCommonsStore";
 import { useGuestbookVoucherStore } from "@/store/useGuestbookVoucherStore";
 import { useMemoryRelocationStore } from "@/store/useMemoryRelocationStore";
+import { useRoomMultiplayer } from "@/hooks/useRoomMultiplayer";
 import type { CharacterId } from "@/types/character";
 import type { InteractableId } from "@/types/game";
 import type { MemoryPlacementInput } from "@/types/memoryRoom";
+import type { LocalPlayerTelemetry, MultiplayerStatus } from "@/types/multiplayer";
 import { CharacterRenderer } from "./CharacterRenderer";
+import { RemotePlayers } from "./RemotePlayers";
 import { CommonsTraceField } from "@/components/commons";
 import {
   MemoryRoomField,
@@ -99,12 +102,14 @@ function PlayerController({
   onOpenGuestbookEditor,
   onCommitMemoryRelocation,
   playerPositionRef,
+  localPlayerTelemetryRef,
 }: {
   characterId: CharacterId;
   onPlaceGuestbook?: (placement: MemoryPlacementInput) => void;
   onOpenGuestbookEditor?: () => void;
   onCommitMemoryRelocation?: () => void;
   playerPositionRef?: PlayerPositionRef;
+  localPlayerTelemetryRef?: MutableRefObject<LocalPlayerTelemetry>;
 }) {
   const body = useRef<RapierRigidBody>(null);
   const visual = useRef<Group>(null);
@@ -482,7 +487,17 @@ function PlayerController({
     }
     if (!active) {
       body.current.setLinvel({ x: 0, y: velocity.y, z: 0 }, true);
+      if (localPlayerTelemetryRef) {
+        localPlayerTelemetryRef.current = {
+          ready: true,
+          position: [playerPosition.x, playerPosition.y, playerPosition.z],
+          rotationY: visual.current?.rotation.y ?? 0,
+          moving: false,
+          running: false,
+        };
+      }
       if (moving) setMoving(false);
+      if (running) setRunning(false);
       return;
     }
 
@@ -509,6 +524,15 @@ function PlayerController({
     }
     if (moving !== isMoving) setMoving(isMoving);
     if (running !== isRunning) setRunning(isRunning);
+    if (localPlayerTelemetryRef) {
+      localPlayerTelemetryRef.current = {
+        ready: true,
+        position: [position.x, position.y, position.z],
+        rotationY: visual.current?.rotation.y ?? 0,
+        moving: isMoving,
+        running: isRunning,
+      };
+    }
 
     const tuple: [number, number, number] = [position.x, position.y, position.z];
     let target: InteractableId | null = null;
@@ -601,6 +625,8 @@ function GameLoopGate({ paused }: { paused: boolean }) {
 
 type WorldSceneProps = {
   characterId: CharacterId;
+  nickname?: string;
+  onMultiplayerStateChange?: (status: MultiplayerStatus, count: number) => void;
   memories?: RoomMemory[];
   memoryPlacement?: MemoryPlacementController;
   selectedMemoryId?: string | null;
@@ -612,6 +638,8 @@ type WorldSceneProps = {
 
 export function WorldScene({
   characterId,
+  nickname = "",
+  onMultiplayerStateChange,
   memories = [],
   memoryPlacement,
   selectedMemoryId,
@@ -624,11 +652,20 @@ export function WorldScene({
   const phase = useGameStore((state) => state.phase);
   const activeCommonsStation = useGameStore((state) => state.activeCommonsStation);
   const npcPlayerPositionRef = useRef({ x: 0, z: 0 });
+  const multiplayer = useRoomMultiplayer({
+    enabled: scene === "interior",
+    roomSlug: "prometheus",
+    characterId,
+    nickname,
+  });
   const commonsTraces = useCommonsStore((state) => state.traces);
   const installationTraces = useMemo(
     () => commonsTraces.filter((trace) => trace.kind === "installation"),
     [commonsTraces],
   );
+  useEffect(() => {
+    onMultiplayerStateChange?.(multiplayer.status, multiplayer.remotePlayers.length);
+  }, [multiplayer.remotePlayers.length, multiplayer.status, onMultiplayerStateChange]);
   const paused = phase === "entering-counsel"
     || phase === "counsel-active"
     || phase === "leaving-counsel"
@@ -663,6 +700,7 @@ export function WorldScene({
                 onSelectMemory={onSelectMemory}
               />
               <VillagerNpcs playerPositionRef={npcPlayerPositionRef} />
+              <RemotePlayers players={multiplayer.remotePlayers} />
             </>
           )}
           <PlayerController
@@ -672,6 +710,7 @@ export function WorldScene({
             onOpenGuestbookEditor={onOpenGuestbookEditor}
             onCommitMemoryRelocation={onCommitMemoryRelocation}
             playerPositionRef={npcPlayerPositionRef}
+            localPlayerTelemetryRef={multiplayer.localPlayerTelemetryRef}
           />
         </Physics>
       </Suspense>

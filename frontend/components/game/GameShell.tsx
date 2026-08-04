@@ -19,6 +19,7 @@ import { useGameStore } from "@/store/useGameStore";
 import { getGuestbookVoucherSubmission, useGuestbookVoucherStore } from "@/store/useGuestbookVoucherStore";
 import { useMemoryRelocationStore } from "@/store/useMemoryRelocationStore";
 import type { MemoryPlacementInput, RoomMemory } from "@/types/memoryRoom";
+import type { MultiplayerStatus } from "@/types/multiplayer";
 import { CharacterSelectScreen } from "./CharacterSelectScreen";
 import { EntryScreen } from "./EntryScreen";
 import { WorldHud } from "./WorldHud";
@@ -62,6 +63,10 @@ export function GameShell() {
   const memoryPlacement = useMemoryPlacement();
   const [hydrated, setHydrated] = useState(false);
   const [nickname, setNickname] = useState("");
+  const [multiplayerState, setMultiplayerState] = useState<{ status: MultiplayerStatus; count: number }>({
+    status: "idle",
+    count: 0,
+  });
   const [selectedMemoryId, setSelectedMemoryId] = useState<string | null>(null);
   const guestbookStatus = useGuestbookVoucherStore((state) => state.status);
   const relocationStatus = useMemoryRelocationStore((state) => state.status);
@@ -187,6 +192,12 @@ export function GameShell() {
     closeCommonsStation();
   }, [closeCommonsStation]);
 
+  const updateMultiplayerState = useCallback((status: MultiplayerStatus, count: number) => {
+    setMultiplayerState((current) => (
+      current.status === status && current.count === count ? current : { status, count }
+    ));
+  }, []);
+
   const placeGuestbook = useCallback((placement: MemoryPlacementInput) => {
     const voucher = useGuestbookVoucherStore.getState();
     const submission = getGuestbookVoucherSubmission(voucher);
@@ -290,12 +301,16 @@ export function GameShell() {
       data-memory-relocation={relocationStatus}
       data-memory-relocation-surface={relocationSurface || ""}
       data-memory-realtime={memoryRealtimeStatus}
+      data-multiplayer-status={multiplayerState.status}
+      data-multiplayer-count={multiplayerState.count}
       data-game-error={worldError || ""}
     >
       <AudioDirector />
       {phase === "entry" ? <EntryScreen onStart={start} /> : null}
       {showCanvas ? (
         <GameCanvas
+          nickname={nickname}
+          onMultiplayerStateChange={updateMultiplayerState}
           memories={memoryRoom.memories}
           memoryPlacement={memoryPlacement}
           selectedMemoryId={selectedMemoryId}

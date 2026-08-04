@@ -43,6 +43,13 @@ frontend/.env.local:
 브라우저는 Supabase의 공개 room revision 신호만 구독합니다. `DEV_ALLOWED_ORIGINS`에는
 서버를 실행하는 Mac의 LAN IP를 넣고, 여러 주소가 필요하면 쉼표로 구분합니다.
 
+건물 내부의 접속 캐릭터도 같은 `NEXT_PUBLIC_SUPABASE_URL`과
+`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`를 사용해 Presence와 Broadcast로 동기화됩니다.
+플레이어 ID는 브라우저 탭의 `sessionStorage`에 자동 생성되므로 별도 환경변수나 DB
+테이블이 필요하지 않습니다. 각 컴퓨터가 앱을 따로 실행할 때는 두 컴퓨터 모두 같은
+Supabase 공개 URL/키를 설정하고, 한 컴퓨터가 서버를 호스팅할 때는 접속하는 쪽에서
+환경변수를 설정할 필요 없이 호스트의 LAN URL만 열면 됩니다.
+
 ## 검증
 
     npm test -- --run

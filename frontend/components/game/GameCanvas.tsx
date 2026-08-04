@@ -8,12 +8,16 @@ import { WORLD_CONFIG } from "@/constants/worldConfig";
 import { useGameStore } from "@/store/useGameStore";
 import type { MemoryPlacementController } from "@/hooks/useMemoryPlacement";
 import type { MemoryPlacementInput, RoomMemory } from "@/types/memoryRoom";
+import type { MultiplayerStatus } from "@/types/multiplayer";
 import { CharacterPreviewScene } from "./CharacterPreviewScene";
 import { EXTERIOR_PERFORMANCE_BUDGETS } from "./exterior/exteriorLayout";
 import { preloadVillagerNpcSprites } from "./npc/VillagerNpcs";
+import { preloadPlayableCharacterModels } from "./CharacterRenderer";
 import { WorldScene } from "./WorldScene";
 
 type GameCanvasProps = {
+  nickname?: string;
+  onMultiplayerStateChange?: (status: MultiplayerStatus, count: number) => void;
   memories?: RoomMemory[];
   memoryPlacement?: MemoryPlacementController;
   selectedMemoryId?: string | null;
@@ -36,6 +40,7 @@ function WorldAssetGate() {
     // before WorldScene mounts them, keeping this loading-progress gate
     // accurate and avoiding a render-time cache miss in VillagerSprite.
     preloadVillagerNpcSprites();
+    preloadPlayableCharacterModels();
   }, []);
 
   useEffect(() => {
@@ -91,6 +96,8 @@ function WebGLHealthBridge({ onUnrecoverableLoss }: { onUnrecoverableLoss: () =>
 }
 
 export default function GameCanvas({
+  nickname = "",
+  onMultiplayerStateChange,
   memories = [],
   memoryPlacement,
   selectedMemoryId,
@@ -144,6 +151,8 @@ export default function GameCanvas({
       {isPreview ? <CharacterPreviewScene characterId={selected} /> : (
         <WorldScene
           characterId={confirmed}
+          nickname={nickname}
+          onMultiplayerStateChange={onMultiplayerStateChange}
           memories={memories}
           memoryPlacement={memoryPlacement}
           selectedMemoryId={selectedMemoryId}
