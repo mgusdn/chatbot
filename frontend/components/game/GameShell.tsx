@@ -202,7 +202,7 @@ export function GameShell() {
     const voucher = useGuestbookVoucherStore.getState();
     const submission = getGuestbookVoucherSubmission(voucher);
     if (!submission) {
-      voucher.fail("방명록 교환권을 다시 확인해주세요.");
+      voucher.fail("방명록을 다시 확인해주세요.");
       return;
     }
     void memoryRoom.createMemory({
@@ -219,7 +219,7 @@ export function GameShell() {
       setSelectedMemoryId(memory.id);
     }).catch((caught) => {
       useGuestbookVoucherStore.getState().fail(
-        friendlyMemoryRoomError(caught, "방명록을 놓지 못했어요. 교환권은 그대로 보관했어요."),
+        friendlyMemoryRoomError(caught, "방명록을 놓지 못했어요. 방명록은 그대로 보관했어요."),
       );
     });
   }, [memoryRoom]);

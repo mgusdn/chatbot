@@ -119,7 +119,7 @@ export function GuestbookLetterEditorModal({
         <header className={styles.modalHeader}>
           <div>
             <p>GUESTBOOK LETTER TICKET</p>
-            <h2 id="guestbook-editor-title" ref={headingRef} tabIndex={-1}>방명록 교환권 꾸미기</h2>
+            <h2 id="guestbook-editor-title" ref={headingRef} tabIndex={-1}>방명록 꾸미기</h2>
             <span>글씨와 스티커를 자유롭게 놓아 나만의 편지를 만들어보세요.</span>
           </div>
           <button type="button" aria-label="방명록 편집기 닫기" onClick={close}>×</button>

@@ -94,7 +94,7 @@ export function WorldHud() {
           aria-live="polite"
         >
           <div>
-            <span>방명록 교환권</span>
+            <span>방명록</span>
             <strong>
               {guestbookStatus === "submitting"
                 ? guestbookOnWall ? "벽에 붙이는 중…" : "바닥에 놓는 중…"
@@ -118,7 +118,7 @@ export function WorldHud() {
             type="button"
             disabled={guestbookStatus === "submitting"}
             onClick={() => {
-              if (window.confirm("만든 방명록 교환권을 버릴까요?")) discardGuestbook();
+              if (window.confirm("만든 방명록을 버릴까요?")) discardGuestbook();
             }}
           >
             버리기

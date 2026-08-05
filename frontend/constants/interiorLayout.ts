@@ -134,20 +134,6 @@ export const INTERIOR_FURNITURE_LAYOUT = {
     position: [-7.5, 0, 7.15],
     halfExtents: [0.58, 0.8, 0.1],
   },
-  // The sofa's visual is no longer rendered, but the collider stays so this
-  // spot keeps blocking guestbook/memory placement the same as before.
-  coworkSofa: {
-    id: "cowork-sofa",
-    position: [8.05, 0, 5.55],
-    halfExtents: [0.5, 0.48, 1.15],
-  },
-  // The console's visual is no longer rendered, but its position still backs
-  // the "installation" interaction anchor below.
-  installationConsole: {
-    id: "installation-console",
-    position: [8.1, 0, 3.1],
-    halfExtents: [0.42, 1.05, 0.42],
-  },
   plantLabIsland: {
     id: "plant-lab-island",
     position: [6.6, 0, -5.5],
@@ -165,15 +151,22 @@ export const INTERIOR_FURNITURE_LAYOUT = {
   },
 } satisfies Record<string, InteriorFurniturePlacement>;
 
+/**
+ * No physical furniture marks this spot anymore (the console it was named
+ * after was removed as a stray placement/movement blocker), but the
+ * installation gallery interaction still anchors here.
+ */
+const INSTALLATION_ANCHOR_ORIGIN = [8.1, 0, 3.1] as const;
+
 export const COMMONS_INTERACTION_ANCHORS = {
   // Sit at the chair (not the tabletop) to start writing — the chair is
   // already on the boulevard-facing side of the table, so no offset is needed.
   guestbook: [...INTERIOR_FURNITURE_LAYOUT.guestbookChairNorth.position],
   // Stand in the open gallery aisle instead of squeezing against the console.
   installation: [
-    INTERIOR_FURNITURE_LAYOUT.installationConsole.position[0] - 1.5,
+    INSTALLATION_ANCHOR_ORIGIN[0] - 1.5,
     0,
-    INTERIOR_FURNITURE_LAYOUT.installationConsole.position[2],
+    INSTALLATION_ANCHOR_ORIGIN[2],
   ],
 } as const satisfies Record<string, readonly [number, number, number]>;
 

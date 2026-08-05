@@ -177,6 +177,7 @@ function PlayerController({
         zIndex: 0,
         previousSurfaceId: previousGuestbookSurface.current,
         rotationOffsetDeg: voucher.rotation_offset_deg,
+        ignoreFurnitureCollision: true,
       },
     );
     if (!result.validation.valid) {
@@ -367,10 +368,6 @@ function PlayerController({
       else openCommonsStation("guestbook");
       return;
     }
-    if (requestedTarget === "installation") {
-      body.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
-      openCommonsStation("installation");
-    }
   }, [
     interactionNonce,
     beginBuildingTransition,
@@ -458,6 +455,7 @@ function PlayerController({
           zIndex: 0,
           previousSurfaceId: previousGuestbookSurface.current,
           rotationOffsetDeg: guestbookRotation,
+          ignoreFurnitureCollision: true,
         },
       );
       previousGuestbookSurface.current = result.candidate.surfaceId;
@@ -543,7 +541,11 @@ function PlayerController({
     if (!relocationActive && !guestbookVoucherActive && scene === "interior") {
       if (withinRadius(tuple, WORLD_CONFIG.pbaoInteraction, radius)) target = "pbao";
       else if (withinRadius(tuple, COMMONS_INTERACTION_ANCHORS.guestbook, radius)) target = "guestbook";
-      else if (withinRadius(tuple, COMMONS_INTERACTION_ANCHORS.installation, radius)) target = "installation";
+      // The installation-gallery console was removed as a stray floor
+      // blocker (see constants/interiorLayout.ts); its walk-up trigger no
+      // longer fires so the "흔적 설치하기" prompt can't appear over empty
+      // floor. COMMONS_INTERACTION_ANCHORS.installation and the composer's
+      // installation mode stay in place for later use.
       else if (withinRadius(tuple, WORLD_CONFIG.interiorExit, radius)) target = "exit-house";
     }
     if (target !== nearby) setNearby(target);
