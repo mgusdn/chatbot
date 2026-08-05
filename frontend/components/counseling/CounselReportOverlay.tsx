@@ -128,7 +128,10 @@ export function SafeReportContent({ markdown }: { markdown: string }) {
               type="button"
               className={styles.sectionToggle}
               aria-expanded={isOpen}
-              onClick={() => toggleSection(index)}
+              onClick={(event) => {
+                event.stopPropagation();
+                toggleSection(index);
+              }}
             >
               <h3>{inlineText(section.heading.text)}</h3>
               <span className={styles.sectionChevron} aria-hidden="true">{isOpen ? "▾" : "▸"}</span>

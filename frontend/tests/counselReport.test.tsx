@@ -32,6 +32,16 @@ describe("counsel report", () => {
     expect(screen.getByText(/<img src=x/)).toBeVisible();
   });
 
+  it("expands a section on click instead of dismissing the report", () => {
+    const onDismiss = vi.fn();
+    render(<CounselReportOverlay report={report} onDismiss={onDismiss} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "1. 지금의 마음" }));
+
+    expect(onDismiss).not.toHaveBeenCalled();
+    expect(screen.getByText(/중요한 내용/)).toBeInTheDocument();
+  });
+
   it("dismisses from the explicit action", () => {
     const onDismiss = vi.fn();
     render(<CounselReportOverlay report={report} onDismiss={onDismiss} />);
