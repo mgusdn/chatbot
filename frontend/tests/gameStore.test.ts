@@ -45,6 +45,37 @@ describe("counsel return state", () => {
     expect(useGameStore.getState().returnSnapshot).toBeNull();
   });
 
+  it("keeps the last report available to reopen after dismissal", () => {
+    useGameStore.getState().completeCounsel(report);
+    useGameStore.getState().finishCounselReturn();
+    useGameStore.getState().dismissCounselReport();
+    expect(useGameStore.getState()).toMatchObject({
+      phase: "exploring-interior",
+      counselReport: null,
+      lastCounselReport: report,
+    });
+
+    useGameStore.getState().reopenLastReport();
+    expect(useGameStore.getState()).toMatchObject({
+      phase: "report-active",
+      counselReport: report,
+      lastCounselReport: report,
+    });
+  });
+
+  it("ignores reopening the report when there is nothing to show or input is locked", () => {
+    useGameStore.setState({ phase: "exploring-interior", lastCounselReport: null });
+    useGameStore.getState().reopenLastReport();
+    expect(useGameStore.getState().phase).toBe("exploring-interior");
+
+    useGameStore.getState().completeCounsel(report);
+    useGameStore.getState().finishCounselReturn();
+    useGameStore.getState().dismissCounselReport();
+    useGameStore.setState({ phase: "counsel-active" });
+    useGameStore.getState().reopenLastReport();
+    expect(useGameStore.getState().phase).toBe("counsel-active");
+  });
+
   it("returns without a report when counseling is closed early", () => {
     useGameStore.getState().closeCounsel();
     useGameStore.getState().finishCounselReturn();

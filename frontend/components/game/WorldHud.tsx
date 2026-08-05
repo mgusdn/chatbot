@@ -24,6 +24,8 @@ export function WorldHud() {
   const toggleMuted = useGameStore((state) => state.toggleMuted);
   const changeCharacter = useGameStore((state) => state.changeCharacter);
   const requestInteraction = useGameStore((state) => state.requestInteraction);
+  const lastCounselReport = useGameStore((state) => state.lastCounselReport);
+  const reopenLastReport = useGameStore((state) => state.reopenLastReport);
   const guestbookStatus = useGuestbookVoucherStore((state) => state.status);
   const guestbookError = useGuestbookVoucherStore((state) => state.error);
   const guestbookPreview = useGuestbookVoucherStore((state) => state.placement_preview);
@@ -84,6 +86,9 @@ export function WorldHud() {
             {muted ? "음향 켜기" : "음향 끄기"}
           </button>
           <button type="button" disabled={relocationStatus === "submitting"} onClick={changeCharacter}>캐릭터 바꾸기</button>
+          {lastCounselReport && (
+            <button type="button" onClick={reopenLastReport}>마음 정리 다시 보기</button>
+          )}
         </div>
       </header>
       <div className="desktop-help"><kbd>WASD</kbd><span>이동</span><kbd>Shift</kbd><span>달리기</span></div>

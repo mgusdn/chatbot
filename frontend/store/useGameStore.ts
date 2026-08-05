@@ -17,6 +17,7 @@ type GameState = {
   assetsProgress: number;
   returnSnapshot: TransformSnapshot | null;
   counselReport: CounselReport | null;
+  lastCounselReport: CounselReport | null;
   activeCommonsStation: CommonsStation | null;
   error: string | null;
   start: () => void;
@@ -40,6 +41,7 @@ type GameState = {
   clearReturnSnapshot: () => void;
   finishCounselReturn: () => void;
   dismissCounselReport: () => void;
+  reopenLastReport: () => void;
   openCommonsStation: (station: CommonsStation) => void;
   closeCommonsStation: () => void;
   toggleMuted: () => void;
@@ -61,6 +63,7 @@ const initialState = {
   assetsProgress: 0,
   returnSnapshot: null,
   counselReport: null,
+  lastCounselReport: null,
   activeCommonsStation: null,
   error: null,
 };
@@ -130,7 +133,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   activateCounsel: () => set({ phase: "counsel-active" }),
   completeCounsel: (counselReport) => set((state) => {
     if (state.phase !== "counsel-active") return state;
-    return { phase: "leaving-counsel", counselReport, nearbyInteractable: null, mobileMove: [0, 0] };
+    return { phase: "leaving-counsel", counselReport, lastCounselReport: counselReport, nearbyInteractable: null, mobileMove: [0, 0] };
   }),
   closeCounsel: () => set((state) => {
     if (state.phase !== "counsel-active") return state;
@@ -167,10 +170,19 @@ export const useGameStore = create<GameState>((set, get) => ({
       mobileMove: [0, 0],
     };
   }),
+  reopenLastReport: () => set((state) => {
+    if (!state.lastCounselReport || !isWorldInputPhase(state.phase)) return state;
+    return {
+      phase: "report-active",
+      counselReport: state.lastCounselReport,
+      nearbyInteractable: null,
+      mobileMove: [0, 0],
+    };
+  }),
   openCommonsStation: (activeCommonsStation) => set({ activeCommonsStation, mobileMove: [0, 0], pendingInteraction: null }),
   closeCommonsStation: () => set({ activeCommonsStation: null, mobileMove: [0, 0] }),
   toggleMuted: () => set((state) => ({ muted: !state.muted })),
-  changeCharacter: () => set({ phase: "character-select", nearbyInteractable: null, pendingInteraction: null, counselReport: null, returnSnapshot: null, activeCommonsStation: null, mobileMove: [0, 0] }),
+  changeCharacter: () => set({ phase: "character-select", nearbyInteractable: null, pendingInteraction: null, counselReport: null, lastCounselReport: null, returnSnapshot: null, activeCommonsStation: null, mobileMove: [0, 0] }),
   setError: (error) => set({ error, phase: error ? "world-error" : get().phase }),
   reset: () => set(initialState),
 }));
