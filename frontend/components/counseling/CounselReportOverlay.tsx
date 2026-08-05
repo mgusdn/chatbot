@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { useCallback, useEffect, useId, useRef, useState, type MouseEvent, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import type { CounselReport } from "@/types/counseling";
 import styles from "./CounselReportOverlay.module.css";
 
@@ -194,13 +194,6 @@ export function CounselReportOverlay({ report, onDismiss }: CounselReportOverlay
     };
   }, [dismiss]);
 
-  const handleCardClick = (event: MouseEvent<HTMLElement>) => {
-    // Do not turn a text-selection gesture into an accidental dismissal.
-    if (window.getSelection()?.toString()) return;
-    event.preventDefault();
-    dismiss();
-  };
-
   return (
     <motion.section
       className={styles.overlay}
@@ -222,7 +215,6 @@ export function CounselReportOverlay({ report, onDismiss }: CounselReportOverlay
         animate={{ opacity: 1, y: 0, rotate: 0, scale: 1 }}
         exit={reducedMotion ? undefined : { opacity: 0, y: 18, scale: 0.99 }}
         transition={{ duration: reducedMotion ? 0 : 0.44, delay: reducedMotion ? 0 : 0.08, ease: [0.22, 1, 0.36, 1] }}
-        onClick={handleCardClick}
       >
         <span className={styles.tape} aria-hidden="true" />
         <header className={styles.header}>

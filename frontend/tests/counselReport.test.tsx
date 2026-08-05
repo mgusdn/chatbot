@@ -56,11 +56,14 @@ describe("counsel report", () => {
     expect(screen.getByRole("button", { name: "확인하고 계속 둘러보기" })).toHaveFocus();
   });
 
-  it("dismisses when the paper card itself is clicked", () => {
+  it("does not dismiss from a stray click on the card, only the explicit action", () => {
     const onDismiss = vi.fn();
     render(<CounselReportOverlay report={report} onDismiss={onDismiss} />);
 
     fireEvent.click(screen.getByTestId("counsel-report-card"));
+    expect(onDismiss).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole("button", { name: "확인하고 계속 둘러보기" }));
     expect(onDismiss).toHaveBeenCalledOnce();
   });
 
