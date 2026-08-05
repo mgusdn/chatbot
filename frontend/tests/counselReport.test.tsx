@@ -32,6 +32,21 @@ describe("counsel report", () => {
     expect(screen.getByText(/<img src=x/)).toBeVisible();
   });
 
+  it("shows the closing hashtag line unhidden, without a section toggle", () => {
+    render(
+      <SafeReportContent
+        markdown={"### 1. 지금의 마음\n- 내용\n\n### 2. 바람\n- 내용\n\n#키워드하나 #키워드둘"}
+      />,
+    );
+
+    // Not gated behind any button/toggle.
+    expect(screen.getByText("#키워드하나 #키워드둘")).toBeVisible();
+    // And not left stuck inside section 2's collapsed body.
+    fireEvent.click(screen.getByRole("button", { name: "2. 바람" }));
+    const section2Body = screen.getByRole("button", { name: "2. 바람" }).parentElement;
+    expect(section2Body).not.toHaveTextContent("#키워드하나");
+  });
+
   it("expands a section on click instead of dismissing the report", () => {
     const onDismiss = vi.fn();
     render(<CounselReportOverlay report={report} onDismiss={onDismiss} />);

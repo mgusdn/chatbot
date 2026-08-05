@@ -87,9 +87,18 @@ function renderBlock(block: ReportBlock, key: number): ReactNode {
 
 type ReportSection = { heading: Extract<ReportBlock, { kind: "heading" }>; body: ReportBlock[] };
 
+// A trailing paragraph that's nothing but "#word #word ..." is the closing
+// hashtag line, not prose — pull it out and show it unhidden below the
+// collapsible sections instead of leaving it stuck inside the last one.
+const HASHTAG_LINE = /^(#\S+)(\s+#\S+)*$/;
+
+function isHashtagParagraph(block: ReportBlock): block is Extract<ReportBlock, { kind: "paragraph" }> {
+  return block.kind === "paragraph" && HASHTAG_LINE.test(block.text.trim());
+}
+
 /** Only ### (level 3) headings start a collapsible section; anything before
  * the first one (intro paragraph, the ## title) renders as a fixed preamble. */
-function groupIntoSections(blocks: ReportBlock[]): { preamble: ReportBlock[]; sections: ReportSection[] } {
+function groupIntoSections(blocks: ReportBlock[]): { preamble: ReportBlock[]; sections: ReportSection[]; hashtags: string | null } {
   const preamble: ReportBlock[] = [];
   const sections: ReportSection[] = [];
   let current: ReportSection | null = null;
@@ -101,11 +110,20 @@ function groupIntoSections(blocks: ReportBlock[]): { preamble: ReportBlock[]; se
     }
     (current ? current.body : preamble).push(block);
   });
-  return { preamble, sections };
+
+  let hashtags: string | null = null;
+  const lastSection = sections[sections.length - 1];
+  const lastBlock = lastSection?.body[lastSection.body.length - 1];
+  if (lastSection && lastBlock && isHashtagParagraph(lastBlock)) {
+    hashtags = lastBlock.text.trim();
+    lastSection.body = lastSection.body.slice(0, -1);
+  }
+
+  return { preamble, sections, hashtags };
 }
 
 export function SafeReportContent({ markdown }: { markdown: string }) {
-  const { preamble, sections } = groupIntoSections(parseReportMarkdown(markdown));
+  const { preamble, sections, hashtags } = groupIntoSections(parseReportMarkdown(markdown));
   const [openSections, setOpenSections] = useState<Set<number>>(() => new Set());
 
   const toggleSection = (index: number) => {
@@ -144,6 +162,7 @@ export function SafeReportContent({ markdown }: { markdown: string }) {
           </div>
         );
       })}
+      {hashtags && <p className={styles.hashtags}>{hashtags}</p>}
     </div>
   );
 }

@@ -168,6 +168,17 @@
 .section3 h3 { color: #1f5fa8; }
 .section4 h3 { color: #14285c; }
 
+/* Closing hashtag line: same size/weight as the numbered headings above,
+   but always visible (not tucked behind a section toggle). */
+.hashtags {
+  margin: 23px 0 0;
+  color: #385b47;
+  font-size: 15px;
+  font-weight: 750;
+  line-height: 1.45;
+  letter-spacing: -0.025em;
+}
+
 .content p,
 .content li {
   color: #52615a;
