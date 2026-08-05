@@ -277,7 +277,7 @@ function drawPrometheusP(context: CanvasRenderingContext2D, size: number) {
   context.fillText("P", 0, size * 0.025);
 }
 
-function drawSticker(context: CanvasRenderingContext2D, stickerId: GuestbookStickerId, size: number) {
+export function drawSticker(context: CanvasRenderingContext2D, stickerId: GuestbookStickerId, size: number) {
   const s = size / 2;
   context.lineJoin = "round";
   context.lineCap = "round";

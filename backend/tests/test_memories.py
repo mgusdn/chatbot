@@ -239,43 +239,26 @@ def test_relocation_geometry_matches_the_expanded_room_contract():
         for fixture_id, min_u, max_u, min_v, max_v
         in MEMORY_RELOCATION_FLOOR_FIXTURES
     }
+    # Fixtures that no longer correspond to any rendered furniture (the old
+    # cowork-cafe/installation-gallery/shared-library/recovery-lab pieces,
+    # plus the removed archive bookcase and the never-rendered east pbao
+    # chair) were dropped so their footprints stop blocking guestbook
+    # placement and memory relocation.
     assert set(fixtures) == {
         "guestbook-worktable",
         "guestbook-chair-north",
         "guestbook-low-shelf",
         "guestbook-notice-board",
-        "cowork-table",
-        "cowork-chair-north-west",
-        "cowork-chair-north-east",
-        "cowork-chair-south",
-        "cowork-sofa",
-        "cowork-floor-lamp",
-        "installation-console",
-        "library-bookcase-west",
-        "library-low-bookcase-west",
-        "archive-bookcase",
-        "library-worktable",
-        "library-chair-south",
-        "recovery-bench",
-        "recovery-project-table",
-        "recovery-chair-north",
         "plant-lab-island",
         "pbao-desk",
         "pbao-chair-west",
-        "pbao-chair-east",
     }
     assert fixtures["guestbook-worktable"] == (-6.85, -4.35, -5.92, -4.68)
     assert fixtures["guestbook-low-shelf"] == (-8.51, -7.79, -6.3, -3.7)
-    assert fixtures["cowork-sofa"] == pytest.approx((7.55, 8.55, -6.7, -4.4))
-    assert fixtures["library-bookcase-west"] == (-8.32, -7.68, -1.4, 2.0)
-    assert fixtures["archive-bookcase"] == pytest.approx((-8.05, -5.35, 8.22, 8.82))
-    assert fixtures["recovery-bench"] == pytest.approx((7.57, 8.53, 0.15, 2.25))
-    assert fixtures["installation-console"] == pytest.approx((7.68, 8.52, -3.52, -2.68))
     assert fixtures["pbao-desk"] == (-1.65, 1.65, 4.6, 5.6)
 
     assert {fixture[0] for fixture in MEMORY_RELOCATION_WALL_FIXTURES} == {
         "today-wall",
-        "archive-bookcase",
     }
 
 
@@ -454,11 +437,6 @@ def test_designed_letter_can_be_created_directly_on_each_walk_up_wall(
     [
         ("wall.interior.north", 0.0, "placement_bounds"),
         ("wall.interior.north", 0.5, "placement_collision"),
-        (
-            "wall.interior.north",
-            0.5 - 6.7 / MEMORY_RELOCATION_SURFACE_SIZES["wall.interior.north"][0],
-            "placement_collision",
-        ),
     ],
 )
 def test_designed_wall_create_uses_relocation_bounds_and_fixture_validation(
@@ -490,6 +468,34 @@ def test_designed_wall_create_uses_relocation_bounds_and_fixture_validation(
     assert response.status_code == 422
     assert response.json()["detail"]["code"] == expected_code
     assert client.get("/api/memory-rooms/prometheus").json()["memory_count"] == 0
+
+
+def test_designed_wall_create_opens_the_former_archive_bookcase_spot(
+    memory_api_client,
+):
+    # The archive bookcase was removed along with its wall-fixture exclusion
+    # zone, so a letter can now land where it used to sit.
+    client, _, _, _ = memory_api_client
+    payload = memory_payload(
+        design=design_v2(),
+        placement={
+            "surface_id": "wall.interior.north",
+            "u": 0.5 - 6.7 / MEMORY_RELOCATION_SURFACE_SIZES["wall.interior.north"][0],
+            "v": 0.708,
+            "rotation_deg": 0,
+            "scale": 1,
+            "z_index": 0,
+        },
+    )
+    payload.pop("body")
+
+    response = client.post(
+        "/api/memory-rooms/prometheus/memories",
+        json=payload,
+        headers=VISITOR,
+    )
+
+    assert response.status_code == 201
 
 
 def test_walk_up_wall_rejects_rotation_that_the_client_cannot_create(

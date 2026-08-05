@@ -117,6 +117,19 @@ export const ALL_MEMORY_SURFACE_IDS = [
 export const MEMORY_SURFACE_IDS = LEGACY_MEMORY_SURFACE_IDS;
 
 export type LegacyMemorySurfaceId = (typeof LEGACY_MEMORY_SURFACE_IDS)[number];
+
+/**
+ * Surfaces offered by the point-and-click composer UI (MemoryRoomPanel's
+ * "추억 남기기" tab). Floor surfaces are excluded so the guestbook commons
+ * floor stays clear for walk-up letters — floor.interior/floor.center
+ * remain valid MemorySurfaceIds for already-persisted memories and for the
+ * separate walk-up guestbook/relocation flow.
+ */
+export const COMPOSER_MEMORY_SURFACE_IDS = [
+  "wall.north",
+  "wall.west",
+  "desk.main",
+] as const satisfies readonly LegacyMemorySurfaceId[];
 export type MemoryRelocationWallSurfaceId = (typeof MEMORY_RELOCATION_WALL_SURFACE_IDS)[number];
 export type MemoryRelocationSurfaceId = "floor.interior" | MemoryRelocationWallSurfaceId;
 export type MemorySurfaceId = (typeof ALL_MEMORY_SURFACE_IDS)[number];

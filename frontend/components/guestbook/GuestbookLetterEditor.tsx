@@ -21,6 +21,7 @@ import {
   countGuestbookText,
   createGuestbookStickerLayer,
   createGuestbookTextLayer,
+  drawSticker,
   ensureGuestbookSignatureFontReady,
   GUESTBOOK_TEMPLATE_OPTIONS,
   getGuestbookTemplate,
@@ -89,24 +90,40 @@ function stickerLabel(stickerId: GuestbookStickerId) {
   return STICKER_LABELS[stickerId];
 }
 
-function stickerToolbarArtwork(stickerId: GuestbookStickerId) {
-  if (stickerId === "prometheus-p") {
-    return (
-      <img
-        src="/images/guestbook/prometheus-p.png"
-        alt=""
-        aria-hidden="true"
-        width={24}
-        height={24}
-        draggable={false}
-      />
-    );
-  }
-  if (stickerId === "thumbs-up") return <span aria-hidden="true">👍</span>;
+const STICKER_THUMBNAIL_PX = 26;
+
+/** Paints the same vector/raster artwork the letter itself uses, so the
+ * toolbar shows the real sticker instead of a generic placeholder glyph. */
+function StickerThumbnail({ stickerId }: { stickerId: GuestbookStickerId }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    let current = true;
+    const paint = () => {
+      const canvas = canvasRef.current;
+      const context = canvas?.getContext("2d");
+      if (!canvas || !context) return;
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.save();
+      context.translate(canvas.width / 2, canvas.height / 2);
+      drawSticker(context, stickerId, STICKER_THUMBNAIL_PX * 0.8);
+      context.restore();
+    };
+    paint();
+    // The prometheus-p raster and the signature font share one readiness
+    // gate; redraw once it resolves so the thumbnail isn't left blank.
+    void ensureGuestbookSignatureFontReady().then(() => { if (current) paint(); });
+    return () => { current = false; };
+  }, [stickerId]);
+
   return (
-    <span aria-hidden="true">
-      {stickerId === "heart" ? "♥" : stickerId === "star" ? "★" : "●"}
-    </span>
+    <canvas
+      ref={canvasRef}
+      width={STICKER_THUMBNAIL_PX}
+      height={STICKER_THUMBNAIL_PX}
+      aria-hidden="true"
+      className={styles.stickerThumb}
+    />
   );
 }
 
@@ -443,7 +460,7 @@ export function GuestbookLetterEditor({ design, onChange, className }: Guestbook
                 onClick={() => addSticker(stickerId)}
                 disabled={stickerCount >= GUESTBOOK_MAX_STICKER_LAYERS || design.layers.length >= GUESTBOOK_MAX_LAYERS}
               >
-                {stickerToolbarArtwork(stickerId)}
+                <StickerThumbnail stickerId={stickerId} />
               </button>
             ))}
           </div>

@@ -111,29 +111,12 @@ MEMORY_RELOCATION_FLOOR_FIXTURES = (
     _floor_fixture("guestbook-chair-north", -5.6, 4.15, 0.36, 0.38),
     _floor_fixture("guestbook-low-shelf", -8.15, 5.0, 0.36, 1.3),
     _floor_fixture("guestbook-notice-board", -7.5, 7.15, 0.58, 0.1),
-    _floor_fixture("cowork-table", 4.75, 5.55, 1.3, 0.68),
-    _floor_fixture("cowork-chair-north-west", 4.05, 4.48, 0.38, 0.38),
-    _floor_fixture("cowork-chair-north-east", 5.45, 4.48, 0.38, 0.38),
-    _floor_fixture("cowork-chair-south", 4.75, 6.65, 0.38, 0.38),
-    _floor_fixture("cowork-sofa", 8.05, 5.55, 0.5, 1.15),
-    _floor_fixture("cowork-floor-lamp", 8.1, 7.15, 0.32, 0.32),
-    _floor_fixture("installation-console", 8.1, 3.1, 0.42, 0.42),
-    _floor_fixture("library-bookcase-west", -8.0, -0.3, 0.32, 1.7),
-    _floor_fixture("library-low-bookcase-west", -8.0, -4.0, 0.34, 1.25),
-    _floor_fixture("archive-bookcase", -6.7, -8.52, 1.35, 0.3),
-    _floor_fixture("library-worktable", -4.95, -0.15, 1.3, 0.68),
-    _floor_fixture("library-chair-south", -4.95, 0.95, 0.36, 0.38),
-    _floor_fixture("recovery-bench", 8.05, -1.2, 0.48, 1.05),
-    _floor_fixture("recovery-project-table", 5.15, -1.3, 0.8, 0.8),
-    _floor_fixture("recovery-chair-north", 5.15, -2.45, 0.38, 0.38),
     _floor_fixture("plant-lab-island", 6.6, -5.5, 1.0, 0.72),
     _floor_fixture("pbao-desk", 0.0, -5.1, 1.65, 0.5),
     _floor_fixture("pbao-chair-west", -2.75, -4.0, 0.4, 0.4),
-    _floor_fixture("pbao-chair-east", 2.75, -4.0, 0.4, 0.4),
 )
 MEMORY_RELOCATION_WALL_FIXTURES = (
     ("today-wall", "wall.interior.north", -2.75, 2.75, -0.84, 1.09),
-    ("archive-bookcase", "wall.interior.north", -8.05, -5.35, -1.425, 0.675),
 )
 MEMORY_REPORT_CATEGORIES = {
     "personal_information", "crisis", "harassment", "spam", "copyright", "other",
@@ -1279,13 +1262,12 @@ class MemoryStore:
             updated = self._entry_row(connection, str(room["id"]), entry_id)
         return self._public_memory(updated)
 
-    def delete(self, slug: str, entry_id: str, ownership_token: str) -> None:
+    def delete(self, slug: str, entry_id: str) -> None:
         now_epoch = self._now().timestamp()
         with self._connect() as connection:
             connection.execute("BEGIN IMMEDIATE")
             room = self._room_row(connection, slug)
-            row = self._owned_entry_row(connection, str(room["id"]), entry_id)
-            self._assert_owner(row, ownership_token)
+            self._owned_entry_row(connection, str(room["id"]), entry_id)
             connection.execute(
                 """
                 UPDATE memory_entries

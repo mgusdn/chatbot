@@ -5,12 +5,12 @@ import { useMemoryPlacement, type MemoryPlacementController } from "@/hooks/useM
 import { useMemoryRoom, type MemoryRoomController } from "@/hooks/useMemoryRoom";
 import { getGuestbookTemplate } from "@/lib/guestbook";
 import {
+  COMPOSER_MEMORY_SURFACE_IDS,
   MEMORY_BODY_LIMITS,
   MEMORY_CARD_STYLES,
   MEMORY_EMOTIONS,
   MEMORY_KINDS,
   MEMORY_REPORT_CATEGORIES,
-  MEMORY_SURFACE_IDS,
   countMemoryBody,
   type MemoryCardStyle,
   type MemoryEmotion,
@@ -32,8 +32,6 @@ const STYLE_LABELS: Record<MemoryCardStyle, string> = {
 const SURFACE_LABELS = {
   "wall.north": "추억 게시판",
   "wall.west": "서쪽 벽",
-  "floor.center": "바닥",
-  "floor.interior": "상담실 전체 바닥",
   "desk.main": "기록 테이블",
 } as const;
 const REPORT_LABELS: Record<MemoryReportCategory, string> = {
@@ -330,7 +328,7 @@ export function MemoryRoomPanel({
             <fieldset className={styles.placement}>
               <legend>어디에 둘까요?</legend>
               <div className={styles.surfaceChoices}>
-                {MEMORY_SURFACE_IDS.map((surfaceId) => (
+                {COMPOSER_MEMORY_SURFACE_IDS.map((surfaceId) => (
                   <button key={surfaceId} type="button" className={placement.value.surface_id === surfaceId ? styles.surfaceActive : styles.surface} aria-pressed={placement.value.surface_id === surfaceId} onClick={() => chooseSurface(surfaceId)}>{SURFACE_LABELS[surfaceId]}</button>
                 ))}
               </div>
@@ -360,7 +358,7 @@ export function MemoryRoomPanel({
             </div>
             {controller.status === "loading" || controller.status === "idle" ? <div className={styles.empty} role="status">추억을 펼치는 중이에요.</div> : null}
             {controller.status === "error" ? <div className={styles.empty}><strong>앨범을 열지 못했어요.</strong><button type="button" onClick={() => void controller.load()}>다시 시도</button></div> : null}
-            {controller.status === "empty" ? <div className={styles.empty}><strong>아직 놓인 추억이 없어요.</strong><span>편집대에서 방명록 교환권을 만들어보세요.</span>{!viewerOnly ? <button type="button" onClick={() => setTab("compose")}>추억 남기기</button> : null}</div> : null}
+            {controller.status === "empty" ? <div className={styles.empty}><strong>아직 놓인 추억이 없어요.</strong><span>편집대에서 방명록을 만들어보세요.</span>{!viewerOnly ? <button type="button" onClick={() => setTab("compose")}>추억 남기기</button> : null}</div> : null}
             <ol className={styles.memoryList} aria-label="프로메테우스 추억 목록">
               {controller.memories.map((memory) => {
                 const pending = controller.pendingIds.includes(memory.id);
@@ -389,7 +387,7 @@ export function MemoryRoomPanel({
                           {owned && onBeginRelocation
                             ? <button type="button" disabled={pending} onClick={() => onBeginRelocation(memory)}>위치 옮기기</button>
                             : null}
-                          {owned ? <button type="button" disabled={pending} onClick={() => setConfirmDeleteId(memory.id)}>지우기</button> : null}
+                          <button type="button" disabled={pending} onClick={() => setConfirmDeleteId(memory.id)}>지우기</button>
                           {!owned && !controller.reportedIds.includes(memory.id) ? <button type="button" disabled={pending} onClick={() => setReportingId(memory.id)}>신고</button> : null}
                         </div>
                         {confirmDeleteId === memory.id ? <div className={styles.confirm} role="alert"><span>이 추억을 지울까요?</span><button type="button" onClick={() => void deleteMemory(memory.id)}>지우기</button><button type="button" onClick={() => setConfirmDeleteId(null)}>취소</button></div> : null}

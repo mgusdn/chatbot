@@ -132,11 +132,9 @@ export const memoryRoomApi = {
     body: JSON.stringify(request),
   }),
 
-  remove: (roomSlug: string, memoryId: string, ownershipToken: string) =>
-    api<void>(memoryPath(roomSlug, memoryId), {
-      method: "DELETE",
-      headers: { "X-Ownership-Token": ownershipToken },
-    }),
+  // Deletion isn't gated by ownership — anyone can clear any guestbook entry.
+  remove: (roomSlug: string, memoryId: string) =>
+    api<void>(memoryPath(roomSlug, memoryId), { method: "DELETE" }),
 
   react: (roomSlug: string, memoryId: string, visitorToken: string) =>
     api<MemoryReactionResponse>(`${memoryPath(roomSlug, memoryId)}/reactions`, {

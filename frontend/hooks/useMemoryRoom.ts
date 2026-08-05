@@ -177,12 +177,10 @@ export function useMemoryRoom(roomSlug = "prometheus"): MemoryRoomController {
   }, [getVisitorToken, markPending, ownership, roomSlug]);
 
   const deleteMemory = useCallback(async (memoryId: string) => {
-    const ownershipToken = ownership[memoryId];
-    if (!ownershipToken) throw new Error("내가 남긴 추억만 지울 수 있어요.");
     markPending(memoryId, true);
     setError(null);
     try {
-      await memoryRoomApi.remove(roomSlug, memoryId, ownershipToken);
+      await memoryRoomApi.remove(roomSlug, memoryId);
       setOwnership(removeMemoryOwnership(storage(), memoryId));
       setMemories((current) => {
         const next = current.filter((memory) => memory.id !== memoryId);
@@ -196,7 +194,7 @@ export function useMemoryRoom(roomSlug = "prometheus"): MemoryRoomController {
     } finally {
       markPending(memoryId, false);
     }
-  }, [markPending, ownership, roomSlug]);
+  }, [markPending, roomSlug]);
 
   const react = useCallback(async (memoryId: string) => {
     if (reactedIds.includes(memoryId) || pendingIds.includes(memoryId)) return;

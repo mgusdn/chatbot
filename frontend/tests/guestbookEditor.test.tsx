@@ -76,16 +76,17 @@ describe("guestbook letter editor", () => {
     expect(screen.queryAllByText("하트 스티커")).toHaveLength(0);
   });
 
-  it("offers a natural thumbs-up and the Prometheus P raster sticker", () => {
+  it("renders every toolbar sticker as its real artwork instead of a placeholder glyph", () => {
     render(<Harness />);
     const thumbsUp = screen.getByRole("button", { name: "좋아요 스티커 추가" });
     const prometheus = screen.getByRole("button", { name: "프로메테우스 P 스티커 추가" });
 
-    expect(thumbsUp).toHaveTextContent("👍");
-    const artwork = prometheus.querySelector("img");
-    expect(artwork).toHaveAttribute("src", "/images/guestbook/prometheus-p.png");
-    expect(artwork).toHaveAttribute("width", "24");
-    expect(artwork).toHaveAttribute("height", "24");
+    for (const stickerButton of screen.getAllByRole("button", { name: /스티커 추가$/ })) {
+      const thumbnail = stickerButton.querySelector("canvas");
+      expect(thumbnail).toBeInTheDocument();
+      expect(thumbnail).toHaveAttribute("width", "26");
+      expect(thumbnail).toHaveAttribute("height", "26");
+    }
 
     fireEvent.click(thumbsUp);
     expect(screen.getAllByText("좋아요 스티커")).toHaveLength(2);

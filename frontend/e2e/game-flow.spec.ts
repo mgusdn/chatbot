@@ -479,14 +479,14 @@ test("stored character is preselected but still requires confirmation", async ({
   await expect(page.getByTestId("confirm-character")).toBeVisible();
 });
 
-test("visitors can place a persistent memory and install a shared object", async ({ page }, testInfo) => {
+test("visitors can place a persistent memory, and the retired installation prompt never appears", async ({ page }, testInfo) => {
   const shell = await enterCommons(page, testInfo);
 
   await walkUntilPrompt(page, "방명록 작성", 15_000, "a");
   await interact(page, testInfo);
   await expect(shell).toHaveAttribute("data-commons-station", "guestbook");
   const editor = page.getByTestId("guestbook-letter-editor-modal");
-  await expect(editor.getByRole("heading", { name: "방명록 교환권 꾸미기" })).toBeVisible();
+  await expect(editor.getByRole("heading", { name: "방명록 꾸미기" })).toBeVisible();
   await editor.getByPlaceholder("마음을 적어주세요.").fill("서로의 이야기를 천천히 들었던 밤");
   await editor.getByRole("button", { name: "하트 스티커 추가" }).click();
   await editor.getByRole("button", { name: "꾸미기 완료" }).click();
@@ -523,25 +523,14 @@ test("visitors can place a persistent memory and install a shared object", async
     await walkUntilPrompt(page, "밖으로 나가기", 8_000, "d");
   }
   await walkUntilPrompt(page, "말 걸기", 15_000);
-  // Desktop movement holds Shift (run speed), while the touch joystick uses
-  // walk speed. Land both routes in the same open gallery aisle.
+
+  // The old installation console was removed as a stray floor blocker, and
+  // its walk-up trigger was disabled along with it: standing in the open
+  // gallery lane where it used to sit must never surface its prompt.
   await moveFor(page, "s", testInfo.project.name.startsWith("mobile") ? 2_200 : 900);
-  if (testInfo.project.name.startsWith("mobile")) {
-    await walkUntilPrompt(page, "흔적 설치하기", 12_000, "d");
-  } else {
-    // Enter the open east gallery lane, then sweep south through the console's
-    // interaction radius without overshooting into the wall approach band.
+  if (!testInfo.project.name.startsWith("mobile")) {
     await moveFor(page, "d", 1_700);
-    await walkUntilPrompt(page, "흔적 설치하기", 8_000, "s");
   }
-  await interact(page, testInfo);
-  await expect(shell).toHaveAttribute("data-commons-station", "installation");
-  const installationPanel = page.getByTestId("commons-panel");
-  await expect(installationPanel.getByRole("heading", { name: "오늘의 설치 갤러리" })).toBeVisible();
-  await installationPanel.getByRole("radio", { name: /책/ }).click();
-  await installationPanel.getByRole("textbox", { name: "남길 메시지" }).fill("다음 사람을 위한 한 권의 여유");
-  await installationPanel.getByRole("button", { name: "흔적 남기기" }).click();
-  const installedTraces = installationPanel.getByRole("list", { name: "오늘 남겨진 흔적" });
-  await expect(installedTraces.getByText("다음 사람을 위한 한 권의 여유")).toBeVisible();
-  await expect(installedTraces.getByText("책", { exact: true })).toBeVisible();
+  await page.waitForTimeout(1_500);
+  await expect(page.getByTestId("interaction-prompt").filter({ hasText: "흔적 설치하기" })).toHaveCount(0);
 });

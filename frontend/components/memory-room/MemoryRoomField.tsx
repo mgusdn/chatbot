@@ -170,11 +170,18 @@ export function MemoryRoomField({
     return map;
   }, [maxVisible, memories, relocationActive, relocationMemoryId]);
 
+  // The point-and-click composer no longer targets the floor: guestbook
+  // letters land there through the separate walk-up relocation flow, and
+  // letting the composer drop plain memory cards on the same surface paved
+  // over the floor and left no room for guestbook letters.
   const place = (surfaceId: MemorySurfaceId, event: ThreeEvent<PointerEvent>) => {
     if (!placement?.active || !event.uv) return;
+    if (surfaceId === "floor.center" || surfaceId === "floor.interior") return;
     event.stopPropagation();
     placement.placeOnSurface(surfaceId, event.uv.x, event.uv.y);
   };
+  const isComposableSurface = (surfaceId: MemorySurfaceId) =>
+    surfaceId !== "floor.center" && surfaceId !== "floor.interior";
 
   const ghost = placement ? {
     id: "draft",
@@ -211,21 +218,23 @@ export function MemoryRoomField({
     <group name="prometheus-memory-room-field">
       {surfaces.map((surface) => (
         <group key={surface.id} position={surface.position} rotation={surface.rotation} name={`memory-surface-${surface.id}`}>
-          <mesh
-            name={`memory-hit-area-${surface.id}`}
-            renderOrder={2}
-            onPointerDown={(event) => place(surface.id, event)}
-            onPointerMove={(event) => { if (event.buttons === 1) place(surface.id, event); }}
-          >
-            <planeGeometry args={surface.size} />
-            <meshBasicMaterial
-              color="#f7dc95"
-              transparent
-              opacity={placement?.active ? (placement.value.surface_id === surface.id ? 0.14 : 0.035) : 0}
-              depthWrite={false}
-              colorWrite={Boolean(placement?.active)}
-            />
-          </mesh>
+          {isComposableSurface(surface.id) ? (
+            <mesh
+              name={`memory-hit-area-${surface.id}`}
+              renderOrder={2}
+              onPointerDown={(event) => place(surface.id, event)}
+              onPointerMove={(event) => { if (event.buttons === 1) place(surface.id, event); }}
+            >
+              <planeGeometry args={surface.size} />
+              <meshBasicMaterial
+                color="#f7dc95"
+                transparent
+                opacity={placement?.active ? (placement.value.surface_id === surface.id ? 0.14 : 0.035) : 0}
+                depthWrite={false}
+                colorWrite={Boolean(placement?.active)}
+              />
+            </mesh>
+          ) : null}
           {(bySurface.get(surface.id) || []).map((memory) => (
             <MemoryCardMesh key={memory.id} memory={memory} surface={surface} selected={selectedMemoryId === memory.id} onSelect={onSelectMemory} />
           ))}

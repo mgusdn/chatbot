@@ -271,12 +271,7 @@
   box-shadow: inset 0 0 0 1px rgba(87, 67, 50, 0.13);
 }
 
-.stickers button[data-sticker="sparkle"],
-.stickers button[data-sticker="star"] { color: #c18a2f; }
-.stickers button[data-sticker="leaf"] { color: #638b62; }
-.stickers button[data-sticker="speech"] { color: #608099; }
-.stickers button[data-sticker="paw"] { color: #8d6857; }
-.stickers button span { font-size: 18px; }
+.stickerThumb { pointer-events: none; }
 
 .canvasFrame {
   min-height: 0;

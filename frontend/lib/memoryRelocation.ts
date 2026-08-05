@@ -125,6 +125,8 @@ export type EvaluateMemoryRelocationOptions = {
   previousSurfaceId?: MemoryRelocationSurfaceId | null;
   /** Applied only while the candidate is on the floor; wall letters stay level. */
   rotationOffsetDeg?: number;
+  /** Guestbook letters may overlap furniture on the floor; entrance clearance still applies. */
+  ignoreFurnitureCollision?: boolean;
 };
 
 type OrientedRect = {
@@ -566,7 +568,10 @@ function candidateLocalRect(candidate: MemoryRelocationCandidate): OrientedRect 
   };
 }
 
-function floorCollision(candidate: MemoryRelocationCandidate): MemoryRelocationValidation | null {
+function floorCollision(
+  candidate: MemoryRelocationCandidate,
+  options: { ignoreFurnitureCollision?: boolean } = {},
+): MemoryRelocationValidation | null {
   const rect = candidateWorldRect(candidate);
   if (orientedRectIntersectsBounds(
     rect,
@@ -579,6 +584,7 @@ function floorCollision(candidate: MemoryRelocationCandidate): MemoryRelocationV
       blockerId: "interior-entry-clearance",
     };
   }
+  if (options.ignoreFurnitureCollision) return null;
 
   for (const collider of INTERIOR_FURNITURE_COLLIDERS) {
     const [x, , z] = collider.position;
@@ -621,6 +627,7 @@ function wallFixtureCollision(candidate: MemoryRelocationCandidate): MemoryReloc
 
 export function validateMemoryRelocationCandidate(
   candidate: MemoryRelocationCandidate,
+  options: { ignoreFurnitureCollision?: boolean } = {},
 ): MemoryRelocationValidation {
   if (!candidateHasFiniteGeometry(candidate)) {
     return { valid: false, reason: "invalid-candidate", blockerId: null };
@@ -636,7 +643,7 @@ export function validateMemoryRelocationCandidate(
   const bounds = localBoundsBlocker(candidate, surface);
   if (bounds) return { valid: false, ...bounds };
   const collision = candidate.kind === "floor"
-    ? floorCollision(candidate)
+    ? floorCollision(candidate, options)
     : wallFixtureCollision(candidate);
   return collision || { valid: true, reason: null, blockerId: null };
 }
@@ -649,6 +656,8 @@ export function evaluateMemoryRelocation(
   const candidate = createCandidateFromSnap(pose, snap, options);
   return {
     candidate,
-    validation: validateMemoryRelocationCandidate(candidate),
+    validation: validateMemoryRelocationCandidate(candidate, {
+      ignoreFurnitureCollision: options.ignoreFurnitureCollision,
+    }),
   };
 }

@@ -164,14 +164,11 @@ def relocate_memory(
 
 
 @router.delete("/{room_slug}/memories/{memory_id}", status_code=204)
-def delete_memory(
-    room_slug: str,
-    memory_id: str,
-    ownership_token: str = Header(alias="X-Ownership-Token", min_length=20, max_length=200),
-) -> Response:
+def delete_memory(room_slug: str, memory_id: str) -> Response:
+    # Deletion isn't gated by ownership — anyone can clear any guestbook entry.
     try:
-        memory_store.delete(room_slug, memory_id, ownership_token)
-    except (MemoryRoomNotFound, MemoryNotFound, MemoryOwnershipError) as exc:
+        memory_store.delete(room_slug, memory_id)
+    except (MemoryRoomNotFound, MemoryNotFound) as exc:
         _raise_memory_error(exc)
     return Response(status_code=204)
 
