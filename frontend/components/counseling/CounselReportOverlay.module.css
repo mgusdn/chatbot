@@ -124,23 +124,50 @@
 }
 
 .content h3 {
-  margin: 23px 0 9px;
+  margin: 0;
   color: #385b47;
   font-size: 15px;
   line-height: 1.45;
   letter-spacing: -0.025em;
 }
 
-/* Satir iceberg model sections: color deepens from sky blue at the
-   surface to navy at the deepest layer, mirroring the iceberg metaphor. */
-.content h3:nth-of-type(1) { color: #4fc3e8; }
-.content h3:nth-of-type(2) { color: #2e9bd6; }
-.content h3:nth-of-type(3) { color: #1f5fa8; }
-.content h3:nth-of-type(4) { color: #14285c; }
+.section {
+  margin: 23px 0 9px;
+}
 
-.content h3:first-child {
+.section:first-child {
   margin-top: 0;
 }
+
+.sectionToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sectionChevron {
+  flex: 0 0 auto;
+  color: #8a9a90;
+  font-size: 13px;
+}
+
+.sectionBody {
+  margin-top: 9px;
+}
+
+/* Satir iceberg model sections: color deepens from sky blue at the
+   surface to navy at the deepest layer, mirroring the iceberg metaphor. */
+.section1 h3 { color: #4fc3e8; }
+.section2 h3 { color: #2e9bd6; }
+.section3 h3 { color: #1f5fa8; }
+.section4 h3 { color: #14285c; }
 
 .content p,
 .content li {

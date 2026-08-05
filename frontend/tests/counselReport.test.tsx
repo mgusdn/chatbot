@@ -27,6 +27,8 @@ describe("counsel report", () => {
   it("renders model HTML as inert text instead of injecting it", () => {
     const { container } = render(<SafeReportContent markdown={'### 요약\n- <img src=x onerror="alert(1)"> 안전한 내용'} />);
     expect(container.querySelector("img")).toBeNull();
+    // Sections start collapsed; open it before checking the rendered text.
+    fireEvent.click(screen.getByRole("button", { name: "요약" }));
     expect(screen.getByText(/<img src=x/)).toBeVisible();
   });
 

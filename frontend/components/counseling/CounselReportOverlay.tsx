@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { useCallback, useEffect, useId, useRef, type MouseEvent, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type MouseEvent, type ReactNode } from "react";
 import type { CounselReport } from "@/types/counseling";
 import styles from "./CounselReportOverlay.module.css";
 
@@ -65,27 +65,81 @@ export function parseReportMarkdown(markdown: string): ReportBlock[] {
   return blocks;
 }
 
+function renderBlock(block: ReportBlock, key: number): ReactNode {
+  if (block.kind === "heading") {
+    return block.level === 2
+      ? <h2 key={key}>{inlineText(block.text)}</h2>
+      : <h3 key={key}>{inlineText(block.text)}</h3>;
+  }
+  if (block.kind === "list") {
+    return (
+      <ul key={key}>
+        {block.items.map((item, itemIndex) => (
+          <li key={itemIndex} className={item.depth ? styles[`depth${item.depth}`] : undefined}>
+            {inlineText(item.text)}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+  return <p key={key}>{inlineText(block.text)}</p>;
+}
+
+type ReportSection = { heading: Extract<ReportBlock, { kind: "heading" }>; body: ReportBlock[] };
+
+/** Only ### (level 3) headings start a collapsible section; anything before
+ * the first one (intro paragraph, the ## title) renders as a fixed preamble. */
+function groupIntoSections(blocks: ReportBlock[]): { preamble: ReportBlock[]; sections: ReportSection[] } {
+  const preamble: ReportBlock[] = [];
+  const sections: ReportSection[] = [];
+  let current: ReportSection | null = null;
+  blocks.forEach((block) => {
+    if (block.kind === "heading" && block.level === 3) {
+      current = { heading: block, body: [] };
+      sections.push(current);
+      return;
+    }
+    (current ? current.body : preamble).push(block);
+  });
+  return { preamble, sections };
+}
+
 export function SafeReportContent({ markdown }: { markdown: string }) {
+  const { preamble, sections } = groupIntoSections(parseReportMarkdown(markdown));
+  const [openSections, setOpenSections] = useState<Set<number>>(() => new Set());
+
+  const toggleSection = (index: number) => {
+    setOpenSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) next.delete(index);
+      else next.add(index);
+      return next;
+    });
+  };
+
   return (
     <div className={styles.content}>
-      {parseReportMarkdown(markdown).map((block, index) => {
-        if (block.kind === "heading") {
-          return block.level === 2
-            ? <h2 key={index}>{inlineText(block.text)}</h2>
-            : <h3 key={index}>{inlineText(block.text)}</h3>;
-        }
-        if (block.kind === "list") {
-          return (
-            <ul key={index}>
-              {block.items.map((item, itemIndex) => (
-                <li key={itemIndex} className={item.depth ? styles[`depth${item.depth}`] : undefined}>
-                  {inlineText(item.text)}
-                </li>
-              ))}
-            </ul>
-          );
-        }
-        return <p key={index}>{inlineText(block.text)}</p>;
+      {preamble.map((block, index) => renderBlock(block, index))}
+      {sections.map((section, index) => {
+        const isOpen = openSections.has(index);
+        return (
+          <div key={index} className={`${styles.section} ${styles[`section${index + 1}`] ?? ""}`}>
+            <button
+              type="button"
+              className={styles.sectionToggle}
+              aria-expanded={isOpen}
+              onClick={() => toggleSection(index)}
+            >
+              <h3>{inlineText(section.heading.text)}</h3>
+              <span className={styles.sectionChevron} aria-hidden="true">{isOpen ? "▾" : "▸"}</span>
+            </button>
+            {isOpen && (
+              <div className={styles.sectionBody}>
+                {section.body.map((block, blockIndex) => renderBlock(block, blockIndex))}
+              </div>
+            )}
+          </div>
+        );
       })}
     </div>
   );
