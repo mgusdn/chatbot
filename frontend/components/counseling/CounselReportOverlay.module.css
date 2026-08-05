@@ -171,7 +171,7 @@
 /* Closing hashtag line: same size/weight as the numbered headings above,
    but always visible (not tucked behind a section toggle). */
 .hashtags {
-  margin: 23px 0 0;
+  margin: 46px 0 0;
   color: #385b47;
   font-size: 15px;
   font-weight: 750;
