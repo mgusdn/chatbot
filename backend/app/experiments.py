@@ -201,6 +201,20 @@ class ExperimentStore:
         with session.lock:
             return _demo_state(session.state)
 
+    def keepsake_context(self, experiment_id: str, arm: PipelineArm) -> dict:
+        """Return the minimum private state needed to select a keepsake phrase."""
+        session = self._get(experiment_id).arms[arm]
+        with session.lock:
+            state = session.state
+            if state["stage"] != "done" or not str(state.get("report") or "").strip():
+                raise ValueError("counseling_not_complete")
+            return {
+                "name": state.get("name") or "사용자",
+                "report": state.get("report") or "",
+                "slots": deepcopy(state.get("slots") or {}),
+                "selected_values": list(state.get("selected_values") or []),
+            }
+
     def run_turn(
         self,
         experiment_id: str,

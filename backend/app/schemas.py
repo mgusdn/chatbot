@@ -53,6 +53,10 @@ class RatingRequest(BaseModel):
     note: str = Field(default="", max_length=1000)
 
 
+class KeepsakeCreateRequest(BaseModel):
+    arm: Arm = Arm.baseline
+
+
 def _normalize_public_text(value: str) -> str:
     return " ".join(value.split()).strip()
 

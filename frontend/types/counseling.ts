@@ -126,6 +126,39 @@ export type CounselReport = {
   state: PublicCounselState;
 };
 
+export type KeepsakeLetter = {
+  id: string;
+  recipient_name: string;
+  recipient_modifier: string;
+  recipient_label: string;
+  phrase_id: string;
+  phrase_text: string;
+  hashtags: [string, string, string];
+  sender_name: string;
+  sender_label: string;
+  template_id:
+    | "cream_rest_v1"
+    | "purple_growth_v1"
+    | "starry_wish_v1"
+    | "black_effort_v1"
+    | "red_release_v1"
+    | string;
+  template_version: number;
+  orientation: "landscape";
+  created_at: string;
+  expires_at: string;
+};
+
+export type KeepsakeCreateResponse = {
+  letter: KeepsakeLetter;
+  share_token: string;
+  expires_at: string;
+};
+
+export type KeepsakeReadResponse = {
+  letter: KeepsakeLetter;
+};
+
 export type CounselingSendOutcome =
   | { accepted: false; kind: "rejected" | "error" }
   | { accepted: true; kind: "continue" | "safety" }

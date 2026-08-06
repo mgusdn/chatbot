@@ -106,14 +106,22 @@ const RAPPORT_EXAMPLES: Record<string, readonly (readonly [string, string])[]> =
   ],
 } as const;
 
-export function CounselingScreen({ isOpen, shouldPrepare }: { isOpen: boolean; shouldPrepare: boolean }) {
+export function CounselingScreen({
+  isOpen,
+  shouldPrepare,
+  participantName,
+}: {
+  isOpen: boolean;
+  shouldPrepare: boolean;
+  participantName: string;
+}) {
   const [speechHealth, setSpeechHealth] = useState<SpeechHealth | null>(null);
   const [lastSttMs, setLastSttMs] = useState<number | null>(null);
   const ttsAvailable = Boolean(
     speechHealth?.tts.configured && speechHealth.tts.connected !== false,
   );
   const speechOutput = useSpeechOutput({ available: ttsAvailable });
-  const session = useCounselingSession(shouldPrepare, speechOutput.enqueue);
+  const session = useCounselingSession(shouldPrepare, speechOutput.enqueue, participantName);
   const currentExamples = session.runState.stage === "rapport"
     ? RAPPORT_EXAMPLES[session.runState.rapport_step ?? ""] ?? DEFAULT_EXAMPLES
     : SLOT_EXAMPLES[session.runState.pending_slot ?? ""] ?? DEFAULT_EXAMPLES;

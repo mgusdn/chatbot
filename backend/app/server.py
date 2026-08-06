@@ -21,6 +21,7 @@ from .commons import (
     commons_store,
 )
 from .experiments import RunNotFoundError, store
+from .keepsakes import keepsake_store
 from .memory_api import router as memory_room_router
 from .speech_api import router as speech_router
 from .schemas import (
@@ -29,6 +30,7 @@ from .schemas import (
     ExperimentCreateRequest,
     GuestbookCreateRequest,
     InstallationCreateRequest,
+    KeepsakeCreateRequest,
     RatingRequest,
     TurnRequest,
 )
@@ -182,6 +184,31 @@ def get_demo_state(
         return store.demo_state(experiment_id, arm.value)
     except KeyError as exc:
         raise HTTPException(status_code=404, detail="실험 세션을 찾을 수 없습니다.") from exc
+
+
+@app.post("/api/experiments/{experiment_id}/keepsake-letter", status_code=201)
+def create_keepsake_letter(experiment_id: str, request: KeepsakeCreateRequest) -> dict:
+    try:
+        context = store.keepsake_context(experiment_id, request.arm.value)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="상담 세션을 찾을 수 없습니다.") from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail="상담 요약이 완성된 뒤 기념 편지를 만들 수 있어요.") from exc
+
+    letter, share_token = keepsake_store.create(context)
+    return {
+        "letter": letter,
+        "share_token": share_token,
+        "expires_at": letter["expires_at"],
+    }
+
+
+@app.get("/api/keepsake-letters/{share_token}")
+def get_keepsake_letter(share_token: str) -> dict:
+    letter = keepsake_store.get(share_token)
+    if letter is None:
+        raise HTTPException(status_code=404, detail="기념 편지 링크가 만료되었거나 존재하지 않아요.")
+    return {"letter": letter}
 
 
 @app.post("/api/experiments/{experiment_id}/turns")

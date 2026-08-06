@@ -281,6 +281,11 @@ class GptSoVitsService:
             # Match chatbot-voice: fastest streaming profile. Never combine it
             # with batch_size; GPT-SoVITS currently errors on that combination.
             "streaming_mode": int(os.getenv("TTS_STREAMING_MODE", "3")),
+            # Keep autoregressive sampling aligned with the selected voice
+            # bundle's validated inference manifest. The API defaults (random
+            # seed and top_k=15) produced variable, prematurely-ended speech.
+            "seed": int(os.getenv("TTS_SEED", "1234")),
+            "top_k": int(os.getenv("TTS_TOP_K", "5")),
         }
 
 

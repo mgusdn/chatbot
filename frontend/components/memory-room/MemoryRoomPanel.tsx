@@ -390,7 +390,7 @@ export function MemoryRoomPanel({
                           <button type="button" disabled={pending} onClick={() => setConfirmDeleteId(memory.id)}>지우기</button>
                           {!owned && !controller.reportedIds.includes(memory.id) ? <button type="button" disabled={pending} onClick={() => setReportingId(memory.id)}>신고</button> : null}
                         </div>
-                        {confirmDeleteId === memory.id ? <div className={styles.confirm} role="alert"><span>이 추억을 지울까요?</span><button type="button" onClick={() => void deleteMemory(memory.id)}>지우기</button><button type="button" onClick={() => setConfirmDeleteId(null)}>취소</button></div> : null}
+                        {confirmDeleteId === memory.id ? <div className={styles.confirm} role="alert"><span>이 방명록을 지울까요? 삭제하면 모든 화면에서 사라져요.</span><button type="button" onClick={() => void deleteMemory(memory.id)}>지우기</button><button type="button" onClick={() => setConfirmDeleteId(null)}>취소</button></div> : null}
                         {reportingId === memory.id ? <div className={styles.confirm}><label>신고 이유 <select value={reportCategory} onChange={(event) => setReportCategory(event.target.value as MemoryReportCategory)}>{MEMORY_REPORT_CATEGORIES.map((value) => <option key={value} value={value}>{REPORT_LABELS[value]}</option>)}</select></label><button type="button" onClick={() => void reportMemory(memory.id)}>접수</button><button type="button" onClick={() => setReportingId(null)}>취소</button></div> : null}
                       </footer>
                     </article>
@@ -402,7 +402,7 @@ export function MemoryRoomPanel({
           </div>
         )}
       </div>
-      <p className={styles.safety}>공개 추억방에는 연락처나 다른 사람의 개인정보를 남기지 말아주세요. 이 브라우저의 저장 데이터를 지우면 내 추억을 옮기거나 삭제할 열쇠도 사라져요. 위험한 순간에는 112·119 등 즉시 도움받을 수 있는 곳에 연락해주세요.</p>
+      <p className={styles.safety}>공개 추억방에는 연락처나 다른 사람의 개인정보를 남기지 말아주세요. 방명록은 누구나 지울 수 있고, 이 브라우저의 저장 데이터를 지우면 내 추억을 옮길 열쇠가 사라져요. 위험한 순간에는 112·119 등 즉시 도움받을 수 있는 곳에 연락해주세요.</p>
     </section>
   );
 }

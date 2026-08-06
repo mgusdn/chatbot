@@ -13,7 +13,10 @@ const report: CounselReport = {
   state: { stage: "done", turn_count: 1, filled_slots: [] },
 };
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.unstubAllGlobals();
+});
 
 describe("counsel report", () => {
   it("parses the fixed report headings and lists", () => {
@@ -98,5 +101,39 @@ describe("counsel report", () => {
 
     fireEvent.keyDown(window, { key: "Tab" });
     expect(action).toHaveFocus();
+  });
+
+  it("creates a short-lived keepsake link and renders its QR without dismissing the report", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        share_token: "safe-token_123",
+        expires_at: "2026-08-05T13:30:00.000Z",
+        letter: {
+          id: "letter-1",
+          recipient_name: "구름",
+          recipient_modifier: "자신의 길을 걸어가는",
+          recipient_label: "자신의 길을 걸어가는 구름에게",
+          phrase_id: "own_pace",
+          phrase_text: "너의 속도를 믿어줘.",
+          hashtags: ["나만의속도", "방향찾기", "한걸음씩"],
+          sender_name: "푸바오",
+          sender_label: "푸바오가.",
+          template_id: "red_flower_v1",
+          template_version: 1,
+          orientation: "landscape",
+          created_at: "2026-08-05T13:00:00.000Z",
+          expires_at: "2026-08-05T13:30:00.000Z",
+        },
+      }),
+    }));
+    const onDismiss = vi.fn();
+    render(<CounselReportOverlay report={report} onDismiss={onDismiss} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "기념 편지 가져가기" }));
+
+    expect(await screen.findByRole("dialog", { name: "기념 편지 QR" })).toBeInTheDocument();
+    expect(screen.getByText("구름님의 편지가 준비됐어요")).toBeInTheDocument();
+    expect(onDismiss).not.toHaveBeenCalled();
   });
 });

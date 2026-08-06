@@ -35,6 +35,7 @@
   box-shadow:
     0 28px 72px rgba(22, 31, 25, 0.32),
     0 2px 0 rgba(255, 255, 255, 0.72) inset;
+  cursor: default;
   transform-origin: 50% 100%;
 }
 
@@ -234,6 +235,30 @@
   background: rgba(255, 253, 245, 0.96);
 }
 
+.actionCopy {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.actionCopy strong {
+  color: #405748;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.actionCopy span {
+  color: #7b827c;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.actionButtons {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 8px;
+}
+
 .actions kbd {
   padding: 2px 5px;
   border: 1px solid rgba(71, 88, 77, 0.2);
@@ -245,7 +270,8 @@
   font-weight: 800;
 }
 
-.actions button {
+.actions button,
+.qrActions button {
   flex: 0 0 auto;
   min-height: 43px;
   padding: 0 18px;
@@ -260,16 +286,120 @@
   transition: transform 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
 }
 
-.actions button:hover {
+.actions button:hover,
+.qrActions button:hover {
   background: #2f4e3d;
   box-shadow: 0 10px 23px rgba(49, 79, 61, 0.27);
   transform: translateY(-1px);
 }
 
-.actions button:focus-visible {
+.actions button:focus-visible,
+.qrActions button:focus-visible {
   outline: 3px solid rgba(224, 180, 69, 0.72);
   outline-offset: 3px;
 }
+
+.actions button:disabled {
+  opacity: 0.58;
+  cursor: wait;
+  transform: none;
+}
+
+.actions .keepsakeButton {
+  color: #493f2f;
+  background: #f1cb68;
+  box-shadow: 0 8px 19px rgba(163, 123, 29, 0.2);
+}
+
+.actions .keepsakeButton:hover { background: #e9bf50; }
+
+.actions .continueButton {
+  color: #4c6254;
+  background: #e5eadf;
+  box-shadow: none;
+}
+
+.actions .continueButton:hover { color: #fffdf3; background: #385746; }
+
+.qrOverlay {
+  position: absolute;
+  z-index: 8;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(34, 43, 36, 0.65);
+  backdrop-filter: blur(5px);
+}
+
+.qrPanel {
+  width: min(390px, 100%);
+  padding: 25px 24px 20px;
+  border: 1px solid rgba(91, 73, 42, 0.15);
+  border-radius: 22px;
+  color: #405047;
+  background: #fffdf5;
+  box-shadow: 0 24px 58px rgba(23, 32, 26, 0.34);
+  text-align: center;
+}
+
+.qrEyebrow {
+  color: #7e8a78;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+
+.qrPanel h2 {
+  margin: 7px 0 5px;
+  color: #304b3b;
+  font-size: 21px;
+  letter-spacing: -0.04em;
+}
+
+.qrPanel > p {
+  margin: 0 auto 15px;
+  max-width: 290px;
+  color: #778078;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.qrCode {
+  display: inline-grid;
+  place-items: center;
+  padding: 10px;
+  border: 1px solid rgba(70, 88, 74, 0.13);
+  border-radius: 17px;
+  background: #fffdf5;
+}
+
+.qrCode svg { display: block; width: min(224px, 58vw); height: auto; }
+
+.qrPanel .qrWarning {
+  margin: 11px auto 0;
+  padding: 8px 10px;
+  border-radius: 9px;
+  color: #865d2d;
+  background: #f7e8c8;
+  font-size: 9px;
+}
+
+.qrActions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.qrActions button {
+  min-height: 39px;
+  padding: 0 15px;
+  box-shadow: none;
+}
+
+.qrActions button:first-child { color: #526359; background: #e5eadf; }
+.qrPanel small { display: block; margin-top: 10px; color: #97978d; font-size: 9px; }
 
 @media (max-width: 640px) {
   .overlay {
@@ -295,6 +425,9 @@
     flex-direction: column;
     padding: 11px 15px 14px;
   }
+
+  .actionCopy { text-align: center; }
+  .actionButtons { flex-direction: column; width: 100%; }
 
   .actions p {
     text-align: center;

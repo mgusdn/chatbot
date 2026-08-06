@@ -1,9 +1,9 @@
-import { act, cleanup, fireEvent, render, renderHook, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, renderHook, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { MemoryRoomPanel } from "@/components/memory-room";
 import { memorySurfaceLocalPoint } from "@/components/memory-room/MemoryRoomField";
 import { useMemoryPlacement } from "@/hooks/useMemoryPlacement";
-import type { MemoryRoomController } from "@/hooks/useMemoryRoom";
+import { useMemoryRoom, type MemoryRoomController } from "@/hooks/useMemoryRoom";
 import { memoryRoomApi } from "@/lib/api/memoryRoomClient";
 import {
   MEMORY_OWNERSHIP_KEY,
@@ -91,6 +91,7 @@ describe("memory room API contract", () => {
       "owner-token-1234567890",
       "visitor-token-1234567890",
     );
+    await memoryRoomApi.remove("prometheus", memory.id);
 
     expect(fetchMock.mock.calls[0]).toEqual([
       "/api/memory-rooms/prometheus/memories",
@@ -130,6 +131,11 @@ describe("memory room API contract", () => {
         }),
       }),
     ]);
+    expect(fetchMock.mock.calls[3]).toEqual([
+      "/api/memory-rooms/prometheus/memories/memory-1",
+      expect.objectContaining({ method: "DELETE" }),
+    ]);
+    expect(fetchMock.mock.calls[3][1]).toEqual(expect.objectContaining({ headers: {} }));
   });
 });
 
@@ -145,6 +151,28 @@ describe("memory local identity", () => {
     expect(JSON.parse(window.localStorage.getItem(MEMORY_OWNERSHIP_KEY) || "{}")).toEqual({
       [memory.id]: "owner-token-1234567890",
     });
+  });
+
+  it("treats an already deleted memory as a successful concurrent delete", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 404,
+      statusText: "Not Found",
+      json: async () => ({ detail: "추억방 또는 추억을 찾을 수 없어요." }),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    const { result } = renderHook(() => useMemoryRoom("prometheus"));
+
+    await act(async () => {
+      await expect(result.current.deleteMemory(memory.id)).resolves.toBeUndefined();
+    });
+
+    expect(result.current.status).toBe("empty");
+    expect(result.current.error).toBeNull();
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/memory-rooms/prometheus/memories/memory-1",
+      expect.objectContaining({ method: "DELETE" }),
+    );
   });
 });
 
@@ -242,5 +270,25 @@ describe("accessible memory room panel", () => {
     fireEvent.click(screen.getByRole("button", { name: "위치 옮기기" }));
     expect(onBeginRelocation).toHaveBeenCalledWith(memory);
     expect(screen.queryByText("어디에 둘까요?")).not.toBeInTheDocument();
+  });
+
+  it("allows any visitor to confirm deletion while keeping relocation owner-only", async () => {
+    const deleteMemory = vi.fn(async () => undefined);
+    render(
+      <MemoryRoomPanel
+        controller={controller({ deleteMemory, ownsMemory: () => false })}
+        autoStart={false}
+        viewerOnly
+        selectedMemoryId={memory.id}
+        onBeginRelocation={vi.fn()}
+      />,
+    );
+
+    expect(screen.queryByRole("button", { name: "위치 옮기기" })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "지우기" }));
+    const confirmation = screen.getByRole("alert");
+    expect(confirmation).toHaveTextContent("삭제하면 모든 화면에서 사라져요.");
+    fireEvent.click(within(confirmation).getByRole("button", { name: "지우기" }));
+    await waitFor(() => expect(deleteMemory).toHaveBeenCalledWith(memory.id));
   });
 });

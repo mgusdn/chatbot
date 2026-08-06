@@ -22,6 +22,7 @@
     "framer-motion": "latest",
     "next": "^16.2.12",
     "onnxruntime-web": "^1.22.0",
+    "qrcode.react": "^4.2.0",
     "react": "latest",
     "react-dom": "latest",
     "three": "latest",

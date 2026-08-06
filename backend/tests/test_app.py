@@ -4,6 +4,8 @@ from pathlib import Path
 os.environ["AB_MOCK_MODE"] = "true"
 os.environ["MOCK_GEMINI_DELAY_MS"] = "0"
 os.environ["AB_RESULTS_PATH"] = "/private/tmp/pume-llm-ab-test-results.jsonl"
+os.environ["KEEPSAKE_DATABASE_BACKEND"] = "sqlite"
+os.environ["KEEPSAKE_DB_PATH"] = "/private/tmp/pume-keepsake-api-tests.sqlite3"
 
 from fastapi.testclient import TestClient
 

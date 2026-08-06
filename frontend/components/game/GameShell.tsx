@@ -404,7 +404,11 @@ export function GameShell() {
         </div>
       )}
 
-      <CounselingScreen isOpen={counselOpen} shouldPrepare={shouldPrepareCounsel} />
+      <CounselingScreen
+        isOpen={counselOpen}
+        shouldPrepare={shouldPrepareCounsel}
+        participantName={nickname}
+      />
       <AnimatePresence>
         {phase === "report-active" && counselReport && (
           <CounselReportOverlay key={counselReport.id} report={counselReport} onDismiss={dismissCounselReport} />

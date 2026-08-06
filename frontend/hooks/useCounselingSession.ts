@@ -88,6 +88,7 @@ export type CounselingSpeechSegment = {
 export function useCounselingSession(
   shouldPrepare: boolean,
   onSpeechSegment?: (segment: CounselingSpeechSegment) => void,
+  participantName = "사용자",
 ) {
   const [experimentId, setExperimentId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -140,7 +141,7 @@ export function useCounselingSession(
     setFormError(false);
 
     try {
-      const data = await counselingApi.createExperiment();
+      const data = await counselingApi.createExperiment(participantName.trim() || "사용자");
       if (epoch !== sessionEpoch.current) return;
       const greeting = data.greetings[COUNSELING_ARM] || "안녕하세요. 오늘 어떤 마음으로 오셨나요?";
       setExperimentId(data.experiment_id);
@@ -159,7 +160,7 @@ export function useCounselingSession(
     } finally {
       if (epoch === sessionEpoch.current) setBusy(false);
     }
-  }, [clearTimers]);
+  }, [clearTimers, participantName]);
 
   const prepare = useCallback(async () => {
     if (prepared.current) return;

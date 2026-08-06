@@ -96,6 +96,8 @@ def test_tts_ticket_hides_text_and_streams_upstream_audio(monkeypatch, tmp_path)
     assert audio.headers["content-type"].startswith("audio/raw")
     assert audio.content == b"\x01\x00\x02\x00"
     assert upstream_calls[0][2]["streaming_mode"] == 3
+    assert upstream_calls[0][2]["seed"] == 1234
+    assert upstream_calls[0][2]["top_k"] == 5
     assert upstream_calls[0][2]["media_type"] == "raw"
     assert upstream_calls[0][2]["fragment_interval"] == 0
     assert upstream_calls[0][2]["text_split_method"] == "cut0"

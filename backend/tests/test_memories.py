@@ -1731,7 +1731,7 @@ def test_owner_delete_erases_v2_design_text_and_signature(memory_api_client):
     assert row == ("", None, None)
 
 
-def test_owner_can_move_with_optimistic_version_and_soft_delete(memory_api_client):
+def test_owner_can_move_and_any_visitor_can_soft_delete(memory_api_client):
     client, _, _, path = memory_api_client
     created = create_memory(client).json()
     memory_id = created["memory"]["id"]
@@ -1780,17 +1780,17 @@ def test_owner_can_move_with_optimistic_version_and_soft_delete(memory_api_clien
 
     assert client.delete(
         f"/api/memory-rooms/prometheus/memories/{memory_id}",
-        headers={"X-Ownership-Token": created["ownership_token"]},
     ).status_code == 204
     assert client.get(f"/api/memory-rooms/prometheus/memories/{memory_id}").status_code == 404
     assert client.get("/api/memory-rooms/prometheus/memories").json()["memories"] == []
+    assert client.get("/api/memory-rooms/prometheus").json()["revision"] == 3
     with sqlite3.connect(path) as connection:
         row = connection.execute(
             "SELECT body_plaintext, moderation_status, moderation_reason, deleted_at FROM memory_entries WHERE id = ?",
             (memory_id,),
         ).fetchone()
     assert row[0] == ""
-    assert row[1:3] == ("deleted", "owner_deleted")
+    assert row[1:3] == ("deleted", "public_deleted")
     assert row[3] is not None
 
 

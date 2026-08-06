@@ -1273,7 +1273,7 @@ class MemoryStore:
                 UPDATE memory_entries
                 SET body_plaintext = '', design_json = NULL, design_version = NULL,
                     author_alias = '떠난 방문자',
-                    moderation_status = 'deleted', moderation_reason = 'owner_deleted',
+                    moderation_status = 'deleted', moderation_reason = 'public_deleted',
                     deleted_at = ?, updated_at = ?, version = version + 1
                 WHERE id = ?
                 """,

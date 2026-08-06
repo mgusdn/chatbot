@@ -11,6 +11,8 @@ const ALLOWED_PATHS = [
   /^experiments$/,
   /^experiments\/[A-Za-z0-9-]+$/,
   /^experiments\/[A-Za-z0-9-]+\/(turns(?:\/stream)?|demo-state|ratings)$/,
+  /^experiments\/[A-Za-z0-9-]+\/keepsake-letter$/,
+  /^keepsake-letters\/[A-Za-z0-9_-]+$/,
   /^commons\/today$/,
   /^commons\/(guestbook|installations)$/,
   /^commons\/traces\/[A-Za-z0-9-]+$/,

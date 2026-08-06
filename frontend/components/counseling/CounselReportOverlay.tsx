@@ -1,8 +1,10 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
-import type { CounselReport } from "@/types/counseling";
+import { QRCodeSVG } from "qrcode.react";
+import { useCallback, useEffect, useId, useRef, useState, type MouseEvent, type ReactNode } from "react";
+import { counselingApi } from "@/lib/api/counselingClient";
+import type { CounselReport, KeepsakeCreateResponse } from "@/types/counseling";
 import styles from "./CounselReportOverlay.module.css";
 
 type ReportBlock =
@@ -177,7 +179,19 @@ export function CounselReportOverlay({ report, onDismiss }: CounselReportOverlay
   const titleId = useId();
   const descriptionId = useId();
   const actionRef = useRef<HTMLButtonElement>(null);
+  const qrCloseRef = useRef<HTMLButtonElement>(null);
   const dismissedRef = useRef(false);
+  const [keepsake, setKeepsake] = useState<KeepsakeCreateResponse | null>(null);
+  const [keepsakeBusy, setKeepsakeBusy] = useState(false);
+  const [keepsakeError, setKeepsakeError] = useState<string | null>(null);
+
+  const publicBaseUrl = typeof window === "undefined"
+    ? ""
+    : (process.env.NEXT_PUBLIC_APP_URL?.trim() || window.location.origin).replace(/\/$/, "");
+  const shareUrl = keepsake ? `${publicBaseUrl}/letter/${keepsake.share_token}` : "";
+  const localOnlyUrl = shareUrl
+    ? ["127.0.0.1", "localhost"].includes(new URL(shareUrl).hostname)
+    : false;
 
   const dismiss = useCallback(() => {
     if (dismissedRef.current) return;
@@ -189,11 +203,18 @@ export function CounselReportOverlay({ report, onDismiss }: CounselReportOverlay
     const previouslyFocused = document.activeElement instanceof HTMLElement
       ? document.activeElement
       : null;
-    actionRef.current?.focus({ preventScroll: true });
+    if (keepsake) qrCloseRef.current?.focus({ preventScroll: true });
+    else actionRef.current?.focus({ preventScroll: true });
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.isComposing) return;
-      if (event.key === "Enter" || event.key === "Escape") {
+      if (event.key === "Escape" && keepsake) {
+        event.preventDefault();
+        setKeepsake(null);
+        window.setTimeout(() => actionRef.current?.focus({ preventScroll: true }), 0);
+        return;
+      }
+      if ((event.key === "Enter" || event.key === "Escape") && !keepsakeBusy) {
         event.preventDefault();
         dismiss();
         return;
@@ -202,7 +223,8 @@ export function CounselReportOverlay({ report, onDismiss }: CounselReportOverlay
       // from moving into the paused world behind this modal surface.
       if (event.key === "Tab") {
         event.preventDefault();
-        actionRef.current?.focus({ preventScroll: true });
+        if (keepsake) qrCloseRef.current?.focus({ preventScroll: true });
+        else actionRef.current?.focus({ preventScroll: true });
       }
     };
 
@@ -211,7 +233,29 @@ export function CounselReportOverlay({ report, onDismiss }: CounselReportOverlay
       window.removeEventListener("keydown", handleKeyDown);
       if (previouslyFocused?.isConnected) previouslyFocused.focus({ preventScroll: true });
     };
-  }, [dismiss]);
+  }, [dismiss, keepsake, keepsakeBusy]);
+
+  const createKeepsake = useCallback(async () => {
+    if (keepsakeBusy) return;
+    setKeepsakeBusy(true);
+    setKeepsakeError(null);
+    try {
+      setKeepsake(await counselingApi.createKeepsake(report.experimentId));
+    } catch (error) {
+      setKeepsakeError(error instanceof Error ? error.message : "기념 편지를 만들지 못했어요.");
+    } finally {
+      setKeepsakeBusy(false);
+    }
+  }, [keepsakeBusy, report.experimentId]);
+
+  const copyShareUrl = useCallback(async () => {
+    if (!shareUrl) return;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+    } catch {
+      setKeepsakeError("링크를 복사하지 못했어요. QR을 휴대폰 카메라로 비춰주세요.");
+    }
+  }, [shareUrl]);
 
   return (
     <motion.section
@@ -252,19 +296,73 @@ export function CounselReportOverlay({ report, onDismiss }: CounselReportOverlay
         </div>
 
         <footer className={styles.actions}>
-          <p><kbd>Enter</kbd>를 눌러 마을로 돌아갈 수도 있어요.</p>
-          <button
-            ref={actionRef}
-            type="button"
-            aria-keyshortcuts="Enter Escape"
-            onClick={(event) => {
-              event.stopPropagation();
-              dismiss();
-            }}
-          >
-            확인하고 계속 둘러보기
-          </button>
+          <div className={styles.actionCopy}>
+            <strong>오늘 발견한 마음을 편지로 간직해보세요.</strong>
+            <span>{keepsakeError || "휴대폰으로 받아 2×3인치 사진으로 인쇄할 수 있어요."}</span>
+          </div>
+          <div className={styles.actionButtons}>
+            <button
+              type="button"
+              className={styles.keepsakeButton}
+              disabled={keepsakeBusy}
+              onClick={(event) => {
+                event.stopPropagation();
+                void createKeepsake();
+              }}
+            >
+              {keepsakeBusy ? "편지를 만드는 중…" : "기념 편지 가져가기"}
+            </button>
+            <button
+              ref={actionRef}
+              type="button"
+              className={styles.continueButton}
+              aria-keyshortcuts="Enter Escape"
+              onClick={(event) => {
+                event.stopPropagation();
+                dismiss();
+              }}
+            >
+              확인하고 계속 둘러보기
+            </button>
+          </div>
         </footer>
+
+        {keepsake && shareUrl ? (
+          <div
+            className={styles.qrOverlay}
+            role="dialog"
+            aria-modal="true"
+            aria-label="기념 편지 QR"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className={styles.qrPanel}>
+              <span className={styles.qrEyebrow}>YOUR KEEPSAKE IS READY</span>
+              <h2>{keepsake.letter.recipient_name}님의 편지가 준비됐어요</h2>
+              <p>휴대폰 카메라로 QR을 비추면 편지를 사진으로 저장할 수 있어요.</p>
+              <div className={styles.qrCode}>
+                <QRCodeSVG
+                  value={shareUrl}
+                  size={224}
+                  level="M"
+                  marginSize={2}
+                  bgColor="#fffdf5"
+                  fgColor="#3f4e40"
+                  title="기념 편지 열기"
+                />
+              </div>
+              {localOnlyUrl ? (
+                <p className={styles.qrWarning} role="status">
+                  현재 QR 주소가 이 컴퓨터 전용 주소예요. 휴대폰에서 열려면 NEXT_PUBLIC_APP_URL을 LAN 또는 배포 주소로 설정해 주세요.
+                </p>
+              ) : null}
+              <div className={styles.qrActions}>
+                <button type="button" onClick={() => void copyShareUrl()}>링크 복사</button>
+                <button ref={qrCloseRef} type="button" onClick={() => setKeepsake(null)}>닫기</button>
+              </div>
+              <small>링크는 {new Date(keepsake.expires_at).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })}까지 열 수 있어요.</small>
+            </div>
+          </div>
+        ) : null}
       </motion.article>
     </motion.section>
   );

@@ -179,15 +179,22 @@ export function useMemoryRoom(roomSlug = "prometheus"): MemoryRoomController {
   const deleteMemory = useCallback(async (memoryId: string) => {
     markPending(memoryId, true);
     setError(null);
-    try {
-      await memoryRoomApi.remove(roomSlug, memoryId);
+    const removeLocally = () => {
       setOwnership(removeMemoryOwnership(storage(), memoryId));
       setMemories((current) => {
         const next = current.filter((memory) => memory.id !== memoryId);
         if (next.length === 0) setStatus("empty");
         return next;
       });
+    };
+    try {
+      await memoryRoomApi.remove(roomSlug, memoryId);
+      removeLocally();
     } catch (caught) {
+      if (caught instanceof MemoryRoomApiError && caught.status === 404) {
+        removeLocally();
+        return;
+      }
       const message = friendlyMemoryRoomError(caught, "추억을 지우지 못했어요.");
       setError(message);
       throw new Error(message);

@@ -1,6 +1,8 @@
 import type {
   ExperimentResponse,
   HealthResponse,
+  KeepsakeCreateResponse,
+  KeepsakeReadResponse,
   PublicCounselState,
   TurnStreamEvent,
   TurnResponse,
@@ -71,7 +73,10 @@ export async function readTurnEventStream(
 
 export const counselingApi = {
   health: (probe = true) => api<HealthResponse>(`/api/health?probe=${probe}`),
-  createExperiment: () => api<ExperimentResponse>("/api/experiments", { method: "POST", body: "{}" }),
+  createExperiment: (name = "사용자") => api<ExperimentResponse>("/api/experiments", {
+    method: "POST",
+    body: JSON.stringify({ name }),
+  }),
   sendTurnStream: (
     experimentId: string,
     message: string,
@@ -87,4 +92,11 @@ export const counselingApi = {
   }).then((response) => readTurnEventStream(response, onEvent)),
   demoState: (experimentId: string) =>
     api<PublicCounselState>(`/api/experiments/${experimentId}/demo-state?arm=baseline`),
+  createKeepsake: (experimentId: string) =>
+    api<KeepsakeCreateResponse>(`/api/experiments/${experimentId}/keepsake-letter`, {
+      method: "POST",
+      body: JSON.stringify({ arm: "baseline" }),
+    }),
+  getKeepsake: (shareToken: string) =>
+    api<KeepsakeReadResponse>(`/api/keepsake-letters/${encodeURIComponent(shareToken)}`),
 };
