@@ -376,6 +376,19 @@
 
 .qrCode svg { display: block; width: min(224px, 58vw); height: auto; }
 
+/* Printed in full so a visitor whose camera will not read the code can type it
+   in by hand — the last-resort path at a noisy booth. */
+.qrPanel .qrUrl {
+  margin: 10px auto 0;
+  padding: 6px 8px;
+  border-radius: 8px;
+  color: #526359;
+  background: #eef1ea;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 9px;
+  word-break: break-all;
+}
+
 .qrPanel .qrWarning {
   margin: 11px auto 0;
   padding: 8px 10px;

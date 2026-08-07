@@ -280,19 +280,38 @@ class GptSoVitsService:
             # AudioWorklet instead of starting a fresh <audio> element for
             # every sentence. The configured voice currently emits 32 kHz mono.
             "media_type": os.getenv("TTS_MEDIA_TYPE", "raw"),
-            # 60 ms is short enough to keep pre-buffered sentences flowing,
-            # but gives the final syllable a natural release instead of
-            # cutting directly from an active waveform to digital zero.
+            # Silence GPT-SoVITS appends after every fragment, so with cut5 it
+            # also spaces the sentences inside one segment. Only the closing
+            # segment of a turn asks for it (see pad_end above): it gives the
+            # final syllable a release instead of cutting an active waveform to
+            # digital zero, while intermediate segments stay butt-joined so a
+            # sentence does not audibly stall mid-thought.
             "fragment_interval": fragment_interval,
-            "text_split_method": os.getenv("TTS_TEXT_SPLIT_METHOD", "cut0"),
-            # Match chatbot-voice: fastest streaming profile. Never combine it
-            # with batch_size; GPT-SoVITS currently errors on that combination.
-            "streaming_mode": int(os.getenv("TTS_STREAMING_MODE", "3")),
-            # Keep autoregressive sampling aligned with the selected voice
-            # bundle's validated inference manifest. The API defaults (random
-            # seed and top_k=15) produced variable, prematurely-ended speech.
+            # cut5 splits on punctuation. A whole utterance sent as one fragment
+            # (cut0) makes the autoregressive model reach its stopping point
+            # early and drop the closing word; per-sentence fragments each finish.
+            "text_split_method": os.getenv("TTS_TEXT_SPLIT_METHOD", "cut5"),
+            # Streaming must stay off. TTS.py assembles chunks with SOLA overlap
+            # and trims overlap_size off the end of any chunk not flagged final,
+            # and the generation loop can break before that flag is ever set —
+            # which silently eats the last ~0.3s (0.64s on a long utterance) of
+            # real speech. Verified with a controlled pair: identical text and
+            # seed rendered 2.13s and dropped the closing word at streaming_mode
+            # 3, versus 2.42s and complete at 0. Turning it off costs ~0.5s of
+            # extra latency before the first sample on a segment-sized clip, and
+            # finishes the whole clip sooner than streaming did.
+            "streaming_mode": int(os.getenv("TTS_STREAMING_MODE", "0")),
+            # A fixed seed makes a given sentence render identically every time;
+            # measured over three runs the output is sample-for-sample stable.
+            #
+            # top_k was once dropped to 5 to stop speech ending early, but that
+            # was while the seed was still random and the two effects were
+            # confounded. With the seed pinned, 5 is what truncates: the same
+            # sentence renders 2.45s and ends at the clip's loudest point, while
+            # top_k=15 runs 3.32s and decays before the trailing silence. Raise
+            # this rather than lowering it if endings sound clipped.
             "seed": int(os.getenv("TTS_SEED", "1234")),
-            "top_k": int(os.getenv("TTS_TOP_K", "5")),
+            "top_k": int(os.getenv("TTS_TOP_K", "15")),
         }
 
 

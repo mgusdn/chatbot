@@ -212,8 +212,8 @@ def test_baseline_saves_at_most_two_incidental_slots(monkeypatch):
                         "confidence": 0.97,
                     },
                     {
-                        "slot": "duration",
-                        "value": "두 달째 반복됨",
+                        "slot": "coping",
+                        "value": "알람을 맞춰봄",
                         "sufficient": False,
                         "confidence": 0.94,
                     },
@@ -232,11 +232,11 @@ def test_baseline_saves_at_most_two_incidental_slots(monkeypatch):
 
     assert result["slots"]["situation"] == ["자소서 작성을 계속 미룸"]
     assert result["slots"]["emotion"] == ["스스로에게 화가 남"]
-    assert result["slots"]["duration"] == ["두 달째 반복됨"]
+    assert result["slots"]["coping"] == ["알람을 맞춰봄"]
     assert result["slots"]["behavior"] == []
-    assert result["last_analysis"]["incidental_slots"] == ["emotion", "duration"]
+    assert result["last_analysis"]["incidental_slots"] == ["emotion", "coping"]
     assert result["slot_switches"]["emotion"] == "on"
-    assert result["slot_switches"]["duration"] == "off"
+    assert result["slot_switches"]["coping"] == "off"
     assert result["pending"]["target_slot"] == "thought"
 
 
@@ -274,46 +274,17 @@ def test_baseline_explicit_unknown_moves_to_next_slot_without_reasking(monkeypat
     assert call_order == ["OPENING"]
 
 
-def test_baseline_duration_with_period_and_frequency_skips_analyzer(monkeypatch):
-    state = new_session("baseline", "baseline-duration-rule")
-    state.update(
-        {
-            "stage": "loop",
-            "user_input": "두 달 정도 됐고 거의 매번 그래요.",
-            "bot_message": "이런 어려움은 언제부터, 얼마나 자주 이어지고 있나요?",
-            "pending": {
-                "target_slot": "duration",
-                "question_intent": SLOT_QUESTION_TEMPLATES["duration"],
-            },
-            "asked_slots": ["duration"],
-        }
-    )
-    call_order = []
-
-    def fake_call(label, _system, _user, **_kwargs):
-        call_order.append(label)
-        if label == "TURN_ANALYSIS":
-            raise AssertionError("명백한 기간+빈도는 로컬 규칙이어야 합니다.")
-        return {"empathy": "오랫동안 반복되어 많이 지치셨겠어요."}
-
-    monkeypatch.setattr(baseline_nodes, "_timed_llm_call", fake_call)
-    result = baseline_nodes.render_question_node(state)
-
-    assert result["slots"]["duration"] == ["두 달 정도 됐고 거의 매번 그래요."]
-    assert result["slot_switches"]["duration"] == "on"
-    assert result["pending"]["target_slot"] == "situation"
-    assert result["last_analysis"]["analysis_source"] == "local_rule"
-    assert call_order == ["OPENING"]
+# The duration local rule (period + frequency skips the analyzer) is only
+# reachable while the "duration" slot is enabled in SLOT_ORDER. Its test is
+# removed alongside the slot; restore both together.
 
 
 def test_baseline_local_rules_are_conservative_for_clear_single_slot_answers():
     clear_cases = {
         "emotion": "스스로한테 화도 나고 답답해요.",
         "thought": "이번에도 못 낼 것 같다는 생각이 들어요.",
-        "relationship": "주변 사람들과 지원 이야기를 꺼내는 것도 피하게 돼요.",
         "coping": "알람은 도움이 됐지만 스터디는 오히려 부담이 됐어요.",
         "goal": "마감 전에 여유 있게 제출하는 사람이 되고 싶어요.",
-        "self_message": "오늘 할 수 있는 만큼 시작해도 된다고 말해주고 싶어요.",
     }
     for slot, utterance in clear_cases.items():
         analysis = baseline_nodes._local_baseline_analysis(
@@ -327,10 +298,8 @@ def test_baseline_local_rules_are_conservative_for_clear_single_slot_answers():
     ambiguous_cases = {
         "emotion": "그냥 그래요.",
         "thought": "아직은 애매해요.",
-        "relationship": "주변 사람들이 있어요.",
         "coping": "알람을 맞췄어요.",
         "goal": "잘 모르겠지만요.",
-        "self_message": "딱히 없어요.",
     }
     for slot, utterance in ambiguous_cases.items():
         assert baseline_nodes._local_baseline_analysis(
@@ -687,13 +656,15 @@ def test_optimized_explicit_unknown_skips_immediately(monkeypatch):
 
 
 def test_optimized_off_target_saves_sufficient_incidental_coping(monkeypatch):
-    state = _loop_state_at("relationship")
+    # Target a slot that precedes coping, so coping is still empty and the
+    # incidental save is unambiguous.
+    state = _loop_state_at("behavior")
     state["user_input"] = "알람과 스터디를 해봤지만 스터디는 도움이 안 됐어요."
 
     def fake_call(provider, *, task, **kwargs):
         if task == "target_slot_analysis":
             return {
-                "target_slot": "relationship",
+                "target_slot": "behavior",
                 "value": None,
                 "decision": "off_target",
                 "missing_aspect": None,
@@ -710,7 +681,7 @@ def test_optimized_off_target_saves_sufficient_incidental_coping(monkeypatch):
         return {
             "reflection": "여러 방법을 시도해보셨군요.",
             "if_sufficient": "다음 이야기를 들려주시겠어요?",
-            "if_insufficient": "주변 사람들과의 관계에는 달라진 점이 있었나요?",
+            "if_insufficient": "그럴 때 자주 하게 되는 행동이 있나요?",
         }
 
     monkeypatch.setattr(optimized_nodes, "call_model_json", fake_call)
@@ -720,9 +691,9 @@ def test_optimized_off_target_saves_sufficient_incidental_coping(monkeypatch):
         "알람과 스터디를 시도했고 스터디는 도움이 되지 않았음"
     ]
     assert result["slot_switches"]["coping"] == "on"
-    assert result["slot_switches"]["relationship"] == "asking"
-    assert result["retry_count"]["relationship"] == 1
-    assert result["pending"]["target_slot"] == "relationship"
+    assert result["slot_switches"]["behavior"] == "asking"
+    assert result["retry_count"]["behavior"] == 1
+    assert result["pending"]["target_slot"] == "behavior"
     assert "coping" not in result["asked_slots"]
 
 

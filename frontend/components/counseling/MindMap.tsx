@@ -5,7 +5,8 @@ import type { PublicCounselState } from "@/types/counseling";
 const CORE_SLOTS = ["situation", "thought", "emotion", "behavior", "coping", "goal"] as const;
 const SLOT_LABELS: Record<string, string> = {
   situation: "상황", thought: "생각", emotion: "감정", behavior: "행동",
-  cause: "원인", impact: "영향", duration: "기간", coping: "대처", goal: "바람",
+  coping: "대처", goal: "바람",
+  // cause: "원인", impact: "영향", duration: "기간",
 };
 const PLACEHOLDERS: Record<(typeof CORE_SLOTS)[number], string> = {
   situation: "어떤 일이 있었나요?",

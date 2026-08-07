@@ -170,7 +170,7 @@ def test_insight_report_has_larger_token_budget(monkeypatch):
     assert _max_tokens_for_task("insight_report") == 4096
 
 
-def test_latest_upstream_eleven_slot_schemas_are_strict():
+def test_latest_upstream_core_slot_schemas_are_strict():
     for task in {
         "reflect",
         "next_question",
@@ -188,7 +188,9 @@ def test_latest_upstream_eleven_slot_schemas_are_strict():
 
     extraction = _response_format("extract_slots")["json_schema"]["schema"]
     assert extraction["required"] == SLOT_ORDER
-    assert {"relationship", "self_message"} <= set(extraction["properties"])
+    # The extraction schema must not drift from the six collected slots — asking
+    # the model for a slot the pipeline no longer stores silently wastes tokens.
+    assert set(extraction["properties"]) == set(SLOT_ORDER)
 
 
 def test_optimized_analyzer_and_response_contracts():

@@ -71,18 +71,21 @@ _SECRET_PATTERNS: tuple[tuple[re.Pattern[str], str], ...] = (
 
 
 _NULLABLE_STRING = {"type": ["string", "null"]}
+# Mirrors SLOT_ORDER in counsel/state.py — the five non-core slots are commented
+# out there and must stay commented out here, or the extraction schema would ask
+# the model for keys the pipeline no longer stores.
 _SLOT_KEYS = [
     "situation",
     "emotion",
     "thought",
-    "cause",
+    # "cause",
     "behavior",
-    "duration",
-    "impact",
-    "relationship",
+    # "duration",
+    # "impact",
+    # "relationship",
     "coping",
     "goal",
-    "self_message",
+    # "self_message",
 ]
 _TASK_JSON_SCHEMAS: dict[str, dict] = {
     "reflect": {

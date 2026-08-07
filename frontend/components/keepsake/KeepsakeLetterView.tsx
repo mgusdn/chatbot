@@ -4,8 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { counselingApi } from "@/lib/api/counselingClient";
 import {
   ensureKeepsakeAssetsReady,
-  KEEPSAKE_CANVAS_HEIGHT,
-  KEEPSAKE_CANVAS_WIDTH,
+  getLayout,
   renderKeepsakeLetter,
 } from "@/lib/keepsake/renderer";
 import type { KeepsakeLetter } from "@/types/counseling";
@@ -112,8 +111,8 @@ export function KeepsakeLetterView({ shareToken }: { shareToken: string }) {
             <div className={styles.preview}>
               <canvas
                 ref={canvasRef}
-                width={KEEPSAKE_CANVAS_WIDTH}
-                height={KEEPSAKE_CANVAS_HEIGHT}
+                width={getLayout(letter.template_id).width}
+                height={getLayout(letter.template_id).height}
                 aria-label={`${letter.recipient_name}님의 푸바오 기념 편지`}
               />
             </div>

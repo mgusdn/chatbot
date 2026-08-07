@@ -15,7 +15,7 @@ from uuid import uuid4
 
 
 DEFAULT_TTL_MINUTES = 30
-DEFAULT_TEMPLATE_ID = "purple_growth_v1"
+DEFAULT_TEMPLATE_ID = "featurephone_v1"
 
 
 @dataclass(frozen=True)
@@ -28,25 +28,20 @@ class PhraseProfile:
     template_id: str
 
 
-# The five profiles correspond one-to-one with the five exhibition letter
-# designs. The classifier stays closed-set so counseling text can never be
-# copied verbatim into the public, token-addressed letter.
+# The four profiles correspond one-to-one with the four exhibition letter
+# designs. Each design is a finished PNG with its phrase and signature already
+# printed on it, so a phrase can only ever appear on its own template — adding a
+# profile here without adding the matching artwork would make it unrenderable.
+# The classifier stays closed-set so counseling text can never be copied
+# verbatim into the public, token-addressed letter.
 PHRASE_CATALOG: tuple[PhraseProfile, ...] = (
-    PhraseProfile(
-        id="gentle_rest",
-        modifier="잠시 쉼이 필요한",
-        text="잠시 쉬어가는 것도\n너를 돌보는 중요한 일이야.\n오늘 밤만큼은 걱정을 내려놓고\n편안히 숨을 고르자.",
-        keywords=("피곤", "지쳤", "힘들", "부담", "잠", "휴식", "쉬", "무기력"),
-        hashtags=("마음의쉼표", "충분히애썼어", "나를돌보기"),
-        template_id="cream_rest_v1",
-    ),
     PhraseProfile(
         id="self_growth",
         modifier="마음을 단단히 키워온",
         text="지나온 마음을 잊지 마.\n서툴고 아팠던 순간도\n너를 더 단단히 자라게 했어.\n여기까지 잘 견뎌온 너를 믿어.",
         keywords=("자책", "완벽", "부족", "실망", "한심", "자존감", "실수", "비난", "성장", "견뎌"),
         hashtags=("자기다정함", "마음의성장", "있는그대로"),
-        template_id="purple_growth_v1",
+        template_id="featurephone_v1",
     ),
     PhraseProfile(
         id="own_pace",
@@ -54,7 +49,7 @@ PHRASE_CATALOG: tuple[PhraseProfile, ...] = (
         text="밤하늘의 별처럼\n너의 바람도 빛을 잃지 않을 거야.\n조급해하지 말고 너의 속도로\n원하는 곳을 향해 가보자.",
         keywords=("진로", "취업", "비교", "늦", "앞서", "제자리", "방향", "목표", "소원", "바라"),
         hashtags=("나만의속도", "빛나는소원", "한걸음씩"),
-        template_id="starry_wish_v1",
+        template_id="pink_doodle_v1",
     ),
     PhraseProfile(
         id="steady_effort",
@@ -62,7 +57,7 @@ PHRASE_CATALOG: tuple[PhraseProfile, ...] = (
         text="세상일이 늘 쉽게 풀리진 않아도\n보이지 않는 곳에서 쌓은 노력은\n분명 너만의 힘이 되어\n좋은 열매로 돌아올 거야.",
         keywords=("노력", "열심", "도전", "시작", "실패", "미루", "끈기", "성과", "일"),
         hashtags=("꾸준한마음", "노력의시간", "좋은열매"),
-        template_id="black_effort_v1",
+        template_id="buddybuddy_v1",
     ),
     PhraseProfile(
         id="joyful_release",
@@ -70,9 +65,19 @@ PHRASE_CATALOG: tuple[PhraseProfile, ...] = (
         text="열심히 사는 모습도 멋지지만\n너무 오래 마음을 몰아세우진 마.\n좋아하는 음악 한 곡과 함께\n오늘의 긴장을 가볍게 풀어봐.",
         keywords=("관계", "친구", "가족", "사람", "연락", "외로", "눈치", "스트레스", "답답", "화", "긴장", "즐거"),
         hashtags=("마음의여유", "스트레스안녕", "오늘도토닥토닥"),
-        template_id="red_release_v1",
+        template_id="yellow_doodle_v1",
     ),
 )
+
+
+# Two of the four designs are landscape cards, two are portrait phone/messenger
+# screens. The renderer picks its canvas from this, not from a fixed constant.
+TEMPLATE_ORIENTATIONS: dict[str, str] = {
+    "featurephone_v1": "portrait",
+    "buddybuddy_v1": "portrait",
+    "pink_doodle_v1": "landscape",
+    "yellow_doodle_v1": "landscape",
+}
 
 
 THEME_TAGS: tuple[tuple[str, tuple[str, ...]], ...] = (
@@ -134,18 +139,21 @@ def build_keepsake_draft(context: dict[str, Any]) -> dict[str, Any]:
             break
 
     nickname = _safe_nickname(context.get("name"))
+    template_id = profile.template_id or DEFAULT_TEMPLATE_ID
     return {
         "recipient_name": nickname,
         "recipient_modifier": profile.modifier,
-        "recipient_label": f"{profile.modifier} {nickname}에게",
+        # The artwork prints a bare "To. {nickname}에게", so the modifier is kept
+        # as metadata only and is not part of the label the renderer draws.
+        "recipient_label": f"{nickname}에게",
         "phrase_id": profile.id,
         "phrase_text": profile.text,
         "hashtags": hashtags[:3],
-        "sender_name": "푸바오",
-        "sender_label": "푸바오가.",
-        "template_id": profile.template_id or DEFAULT_TEMPLATE_ID,
+        "sender_name": "프바오",
+        "sender_label": "프바오",
+        "template_id": template_id,
         "template_version": 1,
-        "orientation": "landscape",
+        "orientation": TEMPLATE_ORIENTATIONS.get(template_id, "portrait"),
     }
 
 

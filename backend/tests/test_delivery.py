@@ -15,7 +15,7 @@ from counsel import baseline_nodes
 from counsel.delivery import BaselineTurnDelivery
 from counsel.llm import ModelProviderError
 from counsel.prompts import BASELINE_LEAD_EMPATHY, WAITING_BRIDGE_LINES
-from counsel.state import SLOT_ORDER, SLOT_QUESTION_TEMPLATES
+from counsel.state import SLOT_FALLBACK_QUESTIONS, SLOT_ORDER, SLOT_QUESTION_TEMPLATES
 
 
 client = TestClient(app)
@@ -459,20 +459,22 @@ def test_final_slot_gate_removes_undelivered_speculative_bot_log(monkeypatch):
     monkeypatch.setenv("BASELINE_BRIDGE_DELAY_MS", "1000")
     experiment_id = _create_loop_session()
     session = store._get(experiment_id).arms["baseline"]
+    # Drive the session to the last slot the loop asks for, whichever that is.
+    final_slot = SLOT_ORDER[-1]
     with session.lock:
         for slot in SLOT_ORDER:
             session.state["slots"][slot] = [f"{slot}에 관한 기존 답변"]
-        session.state["slots"]["self_message"] = []
+        session.state["slots"][final_slot] = []
         session.state["asked_slots"] = list(SLOT_ORDER)
         session.state["pending"] = {
-            "target_slot": "self_message",
-            "question_intent": SLOT_QUESTION_TEMPLATES["self_message"],
+            "target_slot": final_slot,
+            "question_intent": SLOT_QUESTION_TEMPLATES[final_slot],
         }
-        session.state["bot_message"] = "스스로에게 어떤 말을 건네고 싶으신가요?"
+        session.state["bot_message"] = SLOT_FALLBACK_QUESTIONS[final_slot]
         session.state["turn_count"] = len(SLOT_ORDER) - 1
         before_log_length = len(session.state["conversation_log"])
 
-    events = _stream(experiment_id, "그동안 애쓴 나에게 고맙다고 말하고 싶어요.")
+    events = _stream(experiment_id, "미루지 않고 마감 전에 여유 있게 끝내고 싶어요.")
     result = events[-1]["results"]["baseline"]
     state = session.state
     turn_entries = state["conversation_log"][before_log_length:]

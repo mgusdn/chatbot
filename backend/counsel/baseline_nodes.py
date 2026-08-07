@@ -146,6 +146,8 @@ def _local_baseline_analysis(
             "analysis_source": "local_rule",
         }
 
+    # Unreachable while "duration" is commented out of SLOT_ORDER — kept so the
+    # rule comes back with the slot.
     if target_slot == "duration":
         has_period = bool(
             re.search(
@@ -183,10 +185,10 @@ def _local_baseline_analysis(
             r"라는\s*생각|못\s*(?:할|낼|해낼)|해야\s*(?:할|한다)"
         ),
         "goal": r"고\s*싶|되고\s*싶|바라|달라지고|해내고\s*싶",
-        "self_message": (
-            r"말해\s*주고\s*싶|말하고\s*싶|라고\s*해\s*주고|"
-            r"괜찮다고|잘했다고|해도\s*된다고"
-        ),
+        # "self_message": (
+        #     r"말해\s*주고\s*싶|말하고\s*싶|라고\s*해\s*주고|"
+        #     r"괜찮다고|잘했다고|해도\s*된다고"
+        # ),
     }
     pattern = simple_slot_patterns.get(target_slot)
     if pattern and re.search(pattern, normalized):
@@ -198,6 +200,7 @@ def _local_baseline_analysis(
             "analysis_source": "local_rule",
         }
 
+    # Unreachable while "relationship" is commented out of SLOT_ORDER.
     if target_slot == "relationship":
         has_person = bool(
             re.search(
@@ -1183,15 +1186,12 @@ def _fallback_insight_report(state: SessionState) -> str:
         f"- 현재 상황은 {joined('situation')}이며, 행동과 대처는 "
         f"{joined('behavior')} / {joined('coping')}로 정리됩니다.\n\n"
         "### 2. 수면 아래 중간층: 지각과 기대\n"
-        f"- 떠오르는 생각은 {joined('thought')}이고, 스스로 짐작한 원인은 "
-        f"{joined('cause')}입니다.\n\n"
+        f"- 떠오르는 생각은 {joined('thought')}입니다.\n\n"
         "### 3. 빙산의 심층: 감정 뒤의 열망\n"
-        f"- 느끼는 감정은 {joined('emotion')}이며, 일상과 관계에는 "
-        f"{joined('impact')} / {joined('relationship')}의 영향이 있습니다.\n\n"
+        f"- 느끼는 감정은 {joined('emotion')}입니다.\n\n"
         "### 4. 빙산의 가장 깊은 곳: 가치와 자아\n"
         f"- 중요하게 고른 가치는 {value_names}입니다. 바라는 모습은 "
-        f"{joined('goal')}이며, 스스로에게 건네고 싶은 말은 "
-        f"{joined('self_message')}입니다. 지금까지 들려주신 내용을 바탕으로 "
+        f"{joined('goal')}입니다. 지금까지 들려주신 내용을 바탕으로 "
         "작은 한 걸음부터 시작해 보셔도 좋겠습니다."
     )
 
@@ -1215,14 +1215,9 @@ def insight_report_node(state: SessionState) -> dict:
                 situation=" ".join(slots["situation"]) or "(없음)",
                 thought=" ".join(slots["thought"]) or "(없음)",
                 emotion=" ".join(slots["emotion"]) or "(없음)",
-                cause=" ".join(slots["cause"]) or "(없음)",
                 behavior=" ".join(slots["behavior"]) or "(없음)",
-                impact=" ".join(slots["impact"]) or "(없음)",
-                duration=" ".join(slots["duration"]) or "(없음)",
-                relationship=" ".join(slots["relationship"]) or "(없음)",
                 coping=" ".join(slots["coping"]) or "(없음)",
                 goal=" ".join(slots["goal"]) or "(없음)",
-                self_message=" ".join(slots["self_message"]) or "(없음)",
                 values=_format_selected_values(state["selected_values"]),
             ),
             reasoning_effort="medium",

@@ -1,0 +1,78 @@
+{"kind":"deck","id":"pr/sj0ton","name":"Deck"}
+{"kind":"layout","layoutId":"/ppt/slideMasters/slideMaster1.xml","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout1.xml","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/y90nupkv","slide":1,"title":"SATIR ICEBERG MODEL × AI","textShapes":13}
+{"kind":"textbox","id":"sh/547294r6","slide":1,"name":"eyebrow","text":"SATIR ICEBERG MODEL × AI","textPreview":"SATIR ICEBERG MODEL × AI","textChars":24,"textLines":1,"bbox":[250,330,1087,58]}
+{"kind":"textbox","id":"sh/k3yl0zql","slide":1,"name":"headline","text":"AI 타로 & 사주","textPreview":"AI 타로 & 사주","textChars":10,"textLines":1,"bbox":[145,420,1297,180]}
+{"kind":"shape","id":"sh/7qp4be9c","slide":1,"name":"hook","bbox":[170,615,1247,135]}
+{"kind":"textbox","id":"sh/65g3298r","slide":1,"name":"descriptor","text":"사티어 빙산모델로 나를 이해해봐요","textPreview":"사티어 빙산모델로 나를 이해해봐요","textChars":18,"textLines":1,"bbox":[225,780,1137,66]}
+{"kind":"shape","id":"sh/ts7md4r2","slide":1,"name":"section-rule-top","bbox":[300,900,987,3]}
+{"kind":"textbox","id":"sh/sryl4zqx","slide":1,"name":"analysis-label","text":"6가지 내면 분석","textPreview":"6가지 내면 분석","textChars":9,"textLines":1,"bbox":[450,935,687,60]}
+{"kind":"textbox","id":"sh/fu94fe98","slide":1,"name":"analysis-0-left","text":"감정 · 상처 분석","textPreview":"감정 · 상처 분석","textChars":10,"textLines":1,"bbox":[250,1034,521.5,90]}
+{"kind":"textbox","id":"sh/utg3698n","slide":1,"name":"analysis-0-right","text":"생각 · 지각 분석","textPreview":"생각 · 지각 분석","textChars":10,"textLines":1,"bbox":[815.5,1034,521.5,90]}
+{"kind":"shape","id":"sh/wn6dc7eh","slide":1,"name":"analysis-row-1","bbox":[250,1138,1087,2]}
+{"kind":"textbox","id":"sh/hofulsf2","slide":1,"name":"analysis-1-left","text":"행동 · 대처 패턴","textPreview":"행동 · 대처 패턴","textChars":10,"textLines":1,"bbox":[250,1152,521.5,90]}
+{"kind":"textbox","id":"sh/ul4vaxgb","slide":1,"name":"analysis-1-right","text":"내면의 기대","textPreview":"내면의 기대","textChars":6,"textLines":1,"bbox":[815.5,1152,521.5,90]}
+{"kind":"shape","id":"sh/vmdcj2xw","slide":1,"name":"analysis-row-2","bbox":[250,1256,1087,2]}
+{"kind":"textbox","id":"sh/4r6dg7et","slide":1,"name":"analysis-2-left","text":"숨은 열망","textPreview":"숨은 열망","textChars":5,"textLines":1,"bbox":[250,1270,521.5,90]}
+{"kind":"textbox","id":"sh/5sfepcfe","slide":1,"name":"analysis-2-right","text":"가치 · 자아 탐색","textPreview":"가치 · 자아 탐색","textChars":10,"textLines":1,"bbox":[815.5,1270,521.5,90]}
+{"kind":"shape","id":"sh/ipovexwn","slide":1,"name":"analysis-center-rule","bbox":[792.5,1042,2,310]}
+{"kind":"shape","id":"sh/3qxwn2x8","slide":1,"name":"section-rule-bottom","bbox":[300,1405,987,3]}
+{"kind":"textbox","id":"sh/sfqdkrep","slide":1,"name":"contact","text":"상담문의  PuBaO","textPreview":"상담문의  PuBaO","textChars":11,"textLines":1,"bbox":[260,1460,1067,72]}
+{"kind":"shape","id":"sh/dgzetcfa","slide":1,"name":"qr-frame","bbox":[641.5,1550,304,304]}
+{"kind":"textbox","id":"sh/0bmd476t","slide":1,"name":"qr-caption","text":"GitHub에서 프로젝트 보기","textPreview":"GitHub에서 프로젝트 보기","textChars":16,"textLines":1,"bbox":[250,1876,1087,48]}
+{"kind":"textbox","id":"sh/zadcv2p8","slide":1,"name":"qr-url","text":"github.com/mgusdn/chatbot","textPreview":"github.com/mgusdn/chatbot","textChars":25,"textLines":1,"bbox":[260,1922,1067,42]}
+{"kind":"image","id":"im/dgvyd8fa","slide":1,"name":"","bbox":[0,0,1587,2245]}
+{"kind":"image","id":"im/eh4fmdgv","slide":1,"name":"","bbox":[658.5,1567,270,270]}
+{"kind":"image","id":"im/zidgfixg","slide":1,"name":"","bbox":[229.03,600,1128.95,165]}
+{"kind":"notes","id":"nt/y90nupkv","slide":1,"text":"[Sources]\n- User-provided style reference: /var/folders/z3/3k1qp3m90d38sv0jjk5wsw1w0000gn/T/codex-clipboard-29c3efb4-72a0-4959-8f87-520cdb57d392.png\n- OpenAI-generated background asset: assets/black-gold-background.png\n- Project content source: /Users/chan/Developer/workspace/pume-llm-ab/backend/counsel/prompts.py\n- QR destination: https://github.com/mgusdn/chatbot\n[/Sources]\n\nA clean black-and-gold standing-banner concept with a single red attention hook.\n\n[Sources]\n- Nanum Brush Script: https://github.com/google/fonts/tree/main/ofl/nanumbrushscript (SIL Open Font License 1.1)\n[/Sources]\nTypography revision: AppleMyungjo for Korean display/body text; Avenir Next Condensed for supporting Latin text; brush hook rasterized to preserve print appearance.\n\nRevision: non-hook typography changed to angular Apple SD Gothic Neo/DIN Condensed. Character-slide text changed to white. Descriptor copy changed to ‘사티어 빙산모델로 나를 이해해봐요’. Character artwork moved upward via inherited background crop."}
+{"kind":"slide","id":"sl/hwbqtkby","slide":2,"title":"SATIR ICEBERG MODEL × AI","textShapes":13}
+{"kind":"textbox","id":"sh/9072xkry","slide":2,"name":"eyebrow","text":"SATIR ICEBERG MODEL × AI","textPreview":"SATIR ICEBERG MODEL × AI","textChars":24,"textLines":1,"bbox":[260,785,1067,54]}
+{"kind":"textbox","id":"sh/ozy1ofad","slide":2,"name":"headline","text":"AI 타로 & 사주","textPreview":"AI 타로 & 사주","textChars":10,"textLines":1,"bbox":[120,850,1347,165]}
+{"kind":"shape","id":"sh/b29kza94","slide":2,"name":"hook","bbox":[180,1015,1227,120]}
+{"kind":"textbox","id":"sh/a10jqpsj","slide":2,"name":"descriptor","text":"사티어 빙산모델로 나를 이해해봐요","textPreview":"사티어 빙산모델로 나를 이해해봐요","textChars":18,"textLines":1,"bbox":[225,1145,1137,62]}
+{"kind":"shape","id":"sh/x4r21kru","slide":2,"name":"section-rule-top","bbox":[305,1235,977,3]}
+{"kind":"textbox","id":"sh/w3i1sfa9","slide":2,"name":"analysis-label","text":"6가지 내면 분석","textPreview":"6가지 내면 분석","textChars":9,"textLines":1,"bbox":[450,1262,687,54]}
+{"kind":"textbox","id":"sh/r65knqtk","slide":2,"name":"analysis-0-left","text":"감정 · 상처 분석","textPreview":"감정 · 상처 분석","textChars":10,"textLines":1,"bbox":[230,1344,541.5,64]}
+{"kind":"textbox","id":"sh/q5wjelsz","slide":2,"name":"analysis-0-right","text":"생각 · 지각 분석","textPreview":"생각 · 지각 분석","textChars":10,"textLines":1,"bbox":[815.5,1344,541.5,64]}
+{"kind":"shape","id":"sh/ove9o7yd","slide":2,"name":"analysis-row-1","bbox":[230,1422,1127,2]}
+{"kind":"textbox","id":"sh/9wnqhczy","slide":2,"name":"analysis-1-left","text":"행동 · 대처 패턴","textPreview":"행동 · 대처 패턴","textChars":10,"textLines":1,"bbox":[230,1436,541.5,64]}
+{"kind":"textbox","id":"sh/mtwrmxg7","slide":2,"name":"analysis-1-right","text":"내면의 기대","textPreview":"내면의 기대","textChars":6,"textLines":1,"bbox":[815.5,1436,541.5,64]}
+{"kind":"shape","id":"sh/nu58f2hs","slide":2,"name":"analysis-row-2","bbox":[230,1514,1127,2]}
+{"kind":"textbox","id":"sh/wjy9sry9","slide":2,"name":"analysis-2-left","text":"숨은 열망","textPreview":"숨은 열망","textChars":5,"textLines":1,"bbox":[230,1528,541.5,64]}
+{"kind":"textbox","id":"sh/xk7qlczu","slide":2,"name":"analysis-2-right","text":"가치 · 자아 탐색","textPreview":"가치 · 자아 탐색","textChars":10,"textLines":1,"bbox":[815.5,1528,541.5,64]}
+{"kind":"shape","id":"sh/ahwrqhgj","slide":2,"name":"analysis-center-rule","bbox":[792.5,1352,2,232]}
+{"kind":"shape","id":"sh/bip8jmho","slide":2,"name":"section-rule-bottom","bbox":[305,1640,977,3]}
+{"kind":"textbox","id":"sh/cnupgny5","slide":2,"name":"contact","text":"상담문의  PuBaO","textPreview":"상담문의  PuBaO","textChars":11,"textLines":1,"bbox":[260,1665,1067,72]}
+{"kind":"shape","id":"sh/do3q9szq","slide":2,"name":"qr-frame","bbox":[654,1755,279,279]}
+{"kind":"textbox","id":"sh/s72xofmh","slide":2,"name":"qr-caption","text":"GitHub에서 프로젝트 보기","textPreview":"GitHub에서 프로젝트 보기","textChars":16,"textLines":1,"bbox":[250,2056,1087,48]}
+{"kind":"textbox","id":"sh/76twva5c","slide":2,"name":"qr-url","text":"github.com/mgusdn/chatbot","textPreview":"github.com/mgusdn/chatbot","textChars":25,"textLines":1,"bbox":[260,2102,1067,42]}
+{"kind":"image","id":"im/do3yp03u","slide":2,"name":"","bbox":[0,0,1587,2245]}
+{"kind":"image","id":"im/ypcfi5kf","slide":2,"name":"","bbox":[671,1772,245,245]}
+{"kind":"image","id":"im/zqlgral0","slide":2,"name":"","bbox":[227.49,995,1132.02,155]}
+{"kind":"notes","id":"nt/hwbqtkby","slide":2,"text":"[Sources]\n- User-provided style reference: /var/folders/z3/3k1qp3m90d38sv0jjk5wsw1w0000gn/T/codex-clipboard-94eaefa5-151e-4dae-aac9-c758328dc192.png\n- OpenAI-generated background asset: assets/sky-panda-background.png\n- Project content source: /Users/chan/Developer/workspace/pume-llm-ab/backend/counsel/prompts.py\n- QR destination: https://github.com/mgusdn/chatbot\n[/Sources]\n\nA friendly character-led version that keeps the same information hierarchy as the clean black concept.\n\n[Sources]\n- Nanum Brush Script: https://github.com/google/fonts/tree/main/ofl/nanumbrushscript (SIL Open Font License 1.1)\n[/Sources]\nTypography revision: AppleMyungjo for Korean display/body text; Avenir Next Condensed for supporting Latin text; brush hook rasterized to preserve print appearance.\n\nRevision: non-hook typography changed to angular Apple SD Gothic Neo/DIN Condensed. Character-slide text changed to white. Descriptor copy changed to ‘사티어 빙산모델로 나를 이해해봐요’. Character artwork moved upward via inherited background crop."}
+{"kind":"slide","id":"sl/ofy9wn61","slide":3,"title":"SATIR ICEBERG MODEL × AI","textShapes":13}
+{"kind":"textbox","id":"sh/cza94vmx","slide":3,"name":"eyebrow","text":"SATIR ICEBERG MODEL × AI","textPreview":"SATIR ICEBERG MODEL × AI","textChars":24,"textLines":1,"bbox":[260,785,1067,54]}
+{"kind":"textbox","id":"sh/d0jax03i","slide":3,"name":"headline","text":"AI 타로 & 사주","textPreview":"AI 타로 & 사주","textChars":10,"textLines":1,"bbox":[120,850,1347,165]}
+{"kind":"shape","id":"sh/298ryl4v","slide":3,"name":"hook","bbox":[180,1015,1227,120]}
+{"kind":"textbox","id":"sh/3ah8rqlg","slide":3,"name":"descriptor","text":"사티어 빙산모델로 나를 이해해봐요","textPreview":"사티어 빙산모델로 나를 이해해봐요","textChars":18,"textLines":1,"bbox":[225,1145,1137,62]}
+{"kind":"shape","id":"sh/obq90bml","slide":3,"name":"section-rule-top","bbox":[305,1235,977,3]}
+{"kind":"textbox","id":"sh/pcjqtg36","slide":3,"name":"analysis-label","text":"6가지 내면 분석","textPreview":"6가지 내면 분석","textChars":9,"textLines":1,"bbox":[450,1262,687,54]}
+{"kind":"textbox","id":"sh/m5cra54z","slide":3,"name":"analysis-0-left","text":"감정 · 상처 분석","textPreview":"감정 · 상처 분석","textChars":10,"textLines":1,"bbox":[230,1344,541.5,64]}
+{"kind":"textbox","id":"sh/n6ls3alk","slide":3,"name":"analysis-0-right","text":"생각 · 지각 분석","textPreview":"생각 · 지각 분석","textChars":10,"textLines":1,"bbox":[815.5,1344,541.5,64]}
+{"kind":"shape","id":"sh/n2l4fq98","slide":3,"name":"analysis-row-1","bbox":[230,1422,1127,2]}
+{"kind":"textbox","id":"sh/m1c3mlsn","slide":3,"name":"analysis-1-left","text":"행동 · 대처 패턴","textPreview":"행동 · 대처 패턴","textChars":10,"textLines":1,"bbox":[230,1436,541.5,64]}
+{"kind":"textbox","id":"sh/943mhgre","slide":3,"name":"analysis-1-right","text":"내면의 기대","textPreview":"내면의 기대","textChars":6,"textLines":1,"bbox":[815.5,1436,541.5,64]}
+{"kind":"shape","id":"sh/83ulovat","slide":3,"name":"analysis-row-2","bbox":[230,1514,1127,2]}
+{"kind":"textbox","id":"sh/v6l4jq94","slide":3,"name":"analysis-2-left","text":"숨은 열망","textPreview":"숨은 열망","textChars":5,"textLines":1,"bbox":[230,1528,541.5,64]}
+{"kind":"textbox","id":"sh/a5c3ql8z","slide":3,"name":"analysis-2-right","text":"가치 · 자아 탐색","textPreview":"가치 · 자아 탐색","textChars":10,"textLines":1,"bbox":[815.5,1528,541.5,64]}
+{"kind":"shape","id":"sh/x8nml0ra","slide":3,"name":"analysis-center-rule","bbox":[792.5,1352,2,232]}
+{"kind":"shape","id":"sh/w7ulsvqp","slide":3,"name":"section-rule-bottom","bbox":[305,1640,977,3]}
+{"kind":"textbox","id":"sh/ja54na9g","slide":3,"name":"contact","text":"상담문의  PuBaO","textPreview":"상담문의  PuBaO","textChars":11,"textLines":1,"bbox":[260,1665,1067,72]}
+{"kind":"shape","id":"sh/i9w3u58v","slide":3,"name":"qr-frame","bbox":[654,1755,279,279]}
+{"kind":"textbox","id":"sh/f29gbyx0","slide":3,"name":"qr-caption","text":"GitHub에서 프로젝트 보기","textPreview":"GitHub에서 프로젝트 보기","textChars":16,"textLines":1,"bbox":[250,2056,1087,48]}
+{"kind":"textbox","id":"sh/03ix43e5","slide":3,"name":"qr-url","text":"github.com/mgusdn/chatbot","textPreview":"github.com/mgusdn/chatbot","textChars":25,"textLines":1,"bbox":[260,2102,1067,42]}
+{"kind":"image","id":"im/21kvutkb","slide":3,"name":"","bbox":[0,0,1587,2245]}
+{"kind":"image","id":"im/10bu183q","slide":3,"name":"","bbox":[671,1772,245,245]}
+{"kind":"image","id":"im/0z2ds325","slide":3,"name":"","bbox":[227.49,995,1132.02,155]}
+{"kind":"notes","id":"nt/ofy9wn61","slide":3,"text":"[Sources]\n- User-provided style reference: /var/folders/z3/3k1qp3m90d38sv0jjk5wsw1w0000gn/T/codex-clipboard-94eaefa5-151e-4dae-aac9-c758328dc192.png\n- OpenAI-generated background asset: assets/sky-woman-background.png\n- Project content source: /Users/chan/Developer/workspace/pume-llm-ab/backend/counsel/prompts.py\n- QR destination: https://github.com/mgusdn/chatbot\n[/Sources]\n\nA low-saturation woman fortune-reader version using the same editable hierarchy as the panda concept.\n\n[Sources]\n- Nanum Brush Script: https://github.com/google/fonts/tree/main/ofl/nanumbrushscript (SIL Open Font License 1.1)\n[/Sources]\nTypography revision: AppleMyungjo for Korean display/body text; Avenir Next Condensed for supporting Latin text; brush hook rasterized to preserve print appearance.\n\nRevision: non-hook typography changed to angular Apple SD Gothic Neo/DIN Condensed. Character-slide text changed to white. Descriptor copy changed to ‘사티어 빙산모델로 나를 이해해봐요’. Character artwork moved upward via inherited background crop."}

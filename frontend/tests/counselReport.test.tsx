@@ -13,9 +13,63 @@ const report: CounselReport = {
   state: { stage: "done", turn_count: 1, filled_slots: [] },
 };
 
+const keepsakePayload = {
+  share_token: "safe-token_123",
+  expires_at: "2026-08-05T13:30:00.000Z",
+  letter: {
+    id: "letter-1",
+    recipient_name: "구름",
+    recipient_modifier: "소원을 품고 걸어가는",
+    recipient_label: "구름에게",
+    phrase_id: "own_pace",
+    phrase_text: "너의 속도를 믿어줘.",
+    hashtags: ["나만의속도", "방향찾기", "한걸음씩"],
+    sender_name: "프바오",
+    sender_label: "프바오",
+    template_id: "pink_doodle_v1",
+    template_version: 1,
+    orientation: "landscape",
+    created_at: "2026-08-05T13:00:00.000Z",
+    expires_at: "2026-08-05T13:30:00.000Z",
+  },
+};
+
+/** Routes the keepsake create call and the LAN probe to separate payloads. */
+function stubKeepsakeFetch(lanOrigin: { origin: string | null; addresses: string[] } | null) {
+  vi.stubGlobal("fetch", vi.fn(async (input: unknown) => {
+    if (String(input).includes("/api/lan-origin")) {
+      if (!lanOrigin) return { ok: false, json: async () => ({}) };
+      return { ok: true, json: async () => lanOrigin };
+    }
+    return { ok: true, json: async () => keepsakePayload };
+  }));
+}
+
+const realLocation = window.location;
+
+/** jsdom pins the origin at environment setup, so swap the whole object. */
+function stubOrigin(origin: string) {
+  const url = new URL(origin);
+  Object.defineProperty(window, "location", {
+    configurable: true,
+    writable: true,
+    value: {
+      ...realLocation,
+      origin: url.origin,
+      href: `${url.origin}/`,
+      protocol: url.protocol,
+      host: url.host,
+      hostname: url.hostname,
+      port: url.port,
+    },
+  });
+}
+
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
+  vi.unstubAllEnvs();
+  Object.defineProperty(window, "location", { configurable: true, writable: true, value: realLocation });
 });
 
 describe("counsel report", () => {
@@ -104,29 +158,7 @@ describe("counsel report", () => {
   });
 
   it("creates a short-lived keepsake link and renders its QR without dismissing the report", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        share_token: "safe-token_123",
-        expires_at: "2026-08-05T13:30:00.000Z",
-        letter: {
-          id: "letter-1",
-          recipient_name: "구름",
-          recipient_modifier: "자신의 길을 걸어가는",
-          recipient_label: "자신의 길을 걸어가는 구름에게",
-          phrase_id: "own_pace",
-          phrase_text: "너의 속도를 믿어줘.",
-          hashtags: ["나만의속도", "방향찾기", "한걸음씩"],
-          sender_name: "푸바오",
-          sender_label: "푸바오가.",
-          template_id: "red_flower_v1",
-          template_version: 1,
-          orientation: "landscape",
-          created_at: "2026-08-05T13:00:00.000Z",
-          expires_at: "2026-08-05T13:30:00.000Z",
-        },
-      }),
-    }));
+    stubKeepsakeFetch(null);
     const onDismiss = vi.fn();
     render(<CounselReportOverlay report={report} onDismiss={onDismiss} />);
 
@@ -135,5 +167,42 @@ describe("counsel report", () => {
     expect(await screen.findByRole("dialog", { name: "기념 편지 QR" })).toBeInTheDocument();
     expect(screen.getByText("구름님의 편지가 준비됐어요")).toBeInTheDocument();
     expect(onDismiss).not.toHaveBeenCalled();
+  });
+
+  it("builds the QR from the address the booth browser is open at, over a stale env origin", async () => {
+    // The venue reassigned the laptop's IP; the env file still holds the old one.
+    vi.stubEnv("NEXT_PUBLIC_APP_URL", "http://192.168.0.62:3000");
+    stubOrigin("http://192.168.1.44:3000");
+    stubKeepsakeFetch({ origin: "http://192.168.1.44:3000", addresses: ["192.168.1.44"] });
+
+    render(<CounselReportOverlay report={report} onDismiss={vi.fn()} />);
+    fireEvent.click(screen.getByRole("button", { name: "기념 편지 가져가기" }));
+
+    const url = await screen.findByTestId("keepsake-share-url");
+    expect(url).toHaveTextContent("http://192.168.1.44:3000/letter/safe-token_123");
+    expect(screen.queryByText(/현재 컴퓨터에서만/)).toBeNull();
+  });
+
+  it("falls back to the detected LAN address when opened at localhost", async () => {
+    vi.stubEnv("NEXT_PUBLIC_APP_URL", "");
+    stubOrigin("http://localhost:3000");
+    stubKeepsakeFetch({ origin: "http://192.168.1.44:3000", addresses: ["192.168.1.44"] });
+
+    render(<CounselReportOverlay report={report} onDismiss={vi.fn()} />);
+    fireEvent.click(screen.getByRole("button", { name: "기념 편지 가져가기" }));
+
+    const url = await screen.findByTestId("keepsake-share-url");
+    expect(url).toHaveTextContent("http://192.168.1.44:3000/letter/safe-token_123");
+  });
+
+  it("warns when the QR host no longer matches any address on this machine", async () => {
+    vi.stubEnv("NEXT_PUBLIC_APP_URL", "");
+    stubOrigin("http://192.168.0.62:3000");
+    stubKeepsakeFetch({ origin: "http://192.168.1.44:3000", addresses: ["192.168.1.44"] });
+
+    render(<CounselReportOverlay report={report} onDismiss={vi.fn()} />);
+    fireEvent.click(screen.getByRole("button", { name: "기념 편지 가져가기" }));
+
+    expect(await screen.findByText(/192\.168\.0\.62.*현재 주소와 달라요/)).toBeInTheDocument();
   });
 });

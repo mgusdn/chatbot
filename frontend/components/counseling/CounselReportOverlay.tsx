@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
-import { useCallback, useEffect, useId, useRef, useState, type MouseEvent, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState, type MouseEvent, type ReactNode } from "react";
 import { counselingApi } from "@/lib/api/counselingClient";
 import type { CounselReport, KeepsakeCreateResponse } from "@/types/counseling";
 import styles from "./CounselReportOverlay.module.css";
@@ -22,6 +22,21 @@ function inlineText(text: string): ReactNode[] {
     }
     return <span key={index}>{part}</span>;
   });
+}
+
+const LOOPBACK_HOSTS = ["localhost", "127.0.0.1", "[::1]", "::1"];
+
+function hostnameOf(url: string) {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return "";
+  }
+}
+
+/** A loopback address only ever resolves back to the device that opened it. */
+function isLoopback(url: string) {
+  return LOOPBACK_HOSTS.includes(hostnameOf(url));
 }
 
 export function parseReportMarkdown(markdown: string): ReportBlock[] {
@@ -185,13 +200,55 @@ export function CounselReportOverlay({ report, onDismiss }: CounselReportOverlay
   const [keepsakeBusy, setKeepsakeBusy] = useState(false);
   const [keepsakeError, setKeepsakeError] = useState<string | null>(null);
 
-  const publicBaseUrl = typeof window === "undefined"
-    ? ""
-    : (process.env.NEXT_PUBLIC_APP_URL?.trim() || window.location.origin).replace(/\/$/, "");
+  const [lanOrigin, setLanOrigin] = useState<string | null>(null);
+  const [lanAddresses, setLanAddresses] = useState<string[] | null>(null);
+
+  // Asked for once per report rather than per letter, so the QR appears without
+  // a network round trip when the visitor taps through quickly.
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/lan-origin", { cache: "no-store", signal: controller.signal })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { origin?: string | null; addresses?: string[] } | null) => {
+        if (!data) return;
+        setLanOrigin(data.origin ?? null);
+        setLanAddresses(data.addresses ?? []);
+      })
+      .catch(() => {
+        // Detection is a convenience; the address bar is still authoritative.
+      });
+    return () => controller.abort();
+  }, []);
+
+  // The address the booth browser is already open at wins whenever a phone
+  // could reach it: the operator typed the venue's IP, so by definition it is
+  // routable from the same wifi. A stale NEXT_PUBLIC_APP_URL must never be able
+  // to override that — a hardcoded IP is wrong the moment the network changes.
+  const publicBaseUrl = useMemo(() => {
+    if (typeof window === "undefined") return "";
+    const strip = (value: string) => value.replace(/\/$/, "");
+    const here = window.location.origin;
+    if (!isLoopback(here)) return strip(here);
+    const configured = process.env.NEXT_PUBLIC_APP_URL?.trim();
+    if (configured && !isLoopback(configured)) return strip(configured);
+    // Opened at localhost with nothing configured: fall back to the address the
+    // server sees on its own interfaces, so the QR still works.
+    if (lanOrigin) return strip(lanOrigin);
+    return strip(here);
+  }, [lanOrigin]);
+
   const shareUrl = keepsake ? `${publicBaseUrl}/letter/${keepsake.share_token}` : "";
-  const localOnlyUrl = shareUrl
-    ? ["127.0.0.1", "localhost"].includes(new URL(shareUrl).hostname)
-    : false;
+  const shareHost = shareUrl ? hostnameOf(shareUrl) : "";
+  const localOnlyUrl = shareUrl ? isLoopback(shareUrl) : false;
+  // A literal IPv4 that no longer matches any interface means the configured
+  // address went stale — the venue reassigned it, and the phone would hit a host
+  // that is not this laptop. Hostnames are left alone: they resolve elsewhere.
+  const staleHostUrl = Boolean(shareUrl)
+    && !localOnlyUrl
+    && /^\d{1,3}(\.\d{1,3}){3}$/.test(shareHost)
+    && lanAddresses !== null
+    && lanAddresses.length > 0
+    && !lanAddresses.includes(shareHost);
 
   const dismiss = useCallback(() => {
     if (dismissedRef.current) return;
@@ -350,9 +407,15 @@ export function CounselReportOverlay({ report, onDismiss }: CounselReportOverlay
                   title="기념 편지 열기"
                 />
               </div>
+              <p className={styles.qrUrl} data-testid="keepsake-share-url">{shareUrl}</p>
               {localOnlyUrl ? (
                 <p className={styles.qrWarning} role="status">
-                  ⚠️ 이 QR은 현재 컴퓨터에서만 열 수 있어요. 휴대폰으로 열려면 브라우저 주소창의 주소를 LAN IP(예: 192.168.x.x:3000)로 바꿔서 다시 접속해 주세요.
+                  ⚠️ 이 QR은 현재 컴퓨터에서만 열 수 있어요. 이 컴퓨터가 와이파이에 연결됐는지 확인한 뒤, 브라우저 주소창을 LAN IP(예: 192.168.x.x:3000)로 바꿔서 다시 접속해 주세요.
+                </p>
+              ) : null}
+              {staleHostUrl ? (
+                <p className={styles.qrWarning} role="status">
+                  ⚠️ QR 주소({shareHost})가 이 컴퓨터의 현재 주소와 달라요. 지금 주소는 {lanAddresses?.join(", ")} 입니다. 브라우저를 그 주소로 다시 열어 주세요.
                 </p>
               ) : null}
               <div className={styles.qrActions}>

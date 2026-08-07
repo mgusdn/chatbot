@@ -137,14 +137,13 @@ export type KeepsakeLetter = {
   sender_name: string;
   sender_label: string;
   template_id:
-    | "cream_rest_v1"
-    | "purple_growth_v1"
-    | "starry_wish_v1"
-    | "black_effort_v1"
-    | "red_release_v1"
+    | "featurephone_v1"
+    | "buddybuddy_v1"
+    | "pink_doodle_v1"
+    | "yellow_doodle_v1"
     | string;
   template_version: number;
-  orientation: "landscape";
+  orientation: "landscape" | "portrait";
   created_at: string;
   expires_at: string;
 };

@@ -1,0 +1,75 @@
+{"kind":"deck","id":"pr/gm261u","name":"Deck"}
+{"kind":"layout","layoutId":"4a93d0b2-7abc-40ca-bc88-0ff98916675d","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"755cd732-fe9c-492e-b3cd-4a092e757d54","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/x0686h","slide":1,"title":"SATIR ICEBERG MODEL × AI","textShapes":14}
+{"kind":"textbox","id":"sh/l872p0je","slide":1,"name":"eyebrow","text":"SATIR ICEBERG MODEL × AI","textPreview":"SATIR ICEBERG MODEL × AI","textChars":24,"textLines":1,"bbox":[250,330,1087,58]}
+{"kind":"textbox","id":"sh/07y1gvi9","slide":1,"name":"headline","text":"AI 타로 & 사주","textPreview":"AI 타로 & 사주","textChars":10,"textLines":1,"bbox":[145,420,1297,180]}
+{"kind":"textbox","id":"sh/na9kra1k","slide":1,"name":"hook","text":"잡으러 왔습니다","textPreview":"잡으러 왔습니다","textChars":8,"textLines":1,"bbox":[170,615,1247,135]}
+{"kind":"textbox","id":"sh/m90ji50z","slide":1,"name":"descriptor","text":"사티어 빙산 모델로 발견하는 나의 마음과 관계","textPreview":"사티어 빙산 모델로 발견하는 나의 마음과 관계","textChars":25,"textLines":1,"bbox":[225,780,1137,66]}
+{"kind":"shape","id":"sh/9cr2t0jq","slide":1,"name":"section-rule-top","bbox":[300,900,987,3]}
+{"kind":"textbox","id":"sh/8bi1kfi5","slide":1,"name":"analysis-label","text":"6가지 내면 분석","textPreview":"6가지 내면 분석","textChars":9,"textLines":1,"bbox":[450,935,687,60]}
+{"kind":"textbox","id":"sh/ve9kva1w","slide":1,"name":"analysis-0-left","text":"감정 · 상처 분석","textPreview":"감정 · 상처 분석","textChars":10,"textLines":1,"bbox":[250,1034,521.5,90]}
+{"kind":"textbox","id":"sh/ad03m50b","slide":1,"name":"analysis-0-right","text":"생각 · 지각 분석","textPreview":"생각 · 지각 분석","textChars":10,"textLines":1,"bbox":[815.5,1034,521.5,90]}
+{"kind":"shape","id":"sh/cvexszit","slide":1,"name":"analysis-row-1","bbox":[250,1138,1087,2]}
+{"kind":"textbox","id":"sh/xwnyl4je","slide":1,"name":"analysis-1-left","text":"행동 · 대처 패턴","textPreview":"행동 · 대처 패턴","textChars":10,"textLines":1,"bbox":[250,1152,521.5,90]}
+{"kind":"textbox","id":"sh/atcfqp0n","slide":1,"name":"analysis-1-right","text":"내면의 기대","textPreview":"내면의 기대","textChars":6,"textLines":1,"bbox":[815.5,1152,521.5,90]}
+{"kind":"shape","id":"sh/bu5gju18","slide":1,"name":"analysis-row-2","bbox":[250,1256,1087,2]}
+{"kind":"textbox","id":"sh/kjehwzi5","slide":1,"name":"analysis-2-left","text":"숨은 열망","textPreview":"숨은 열망","textChars":5,"textLines":1,"bbox":[250,1270,521.5,90]}
+{"kind":"textbox","id":"sh/lknyp4ja","slide":1,"name":"analysis-2-right","text":"가치 · 자아 탐색","textPreview":"가치 · 자아 탐색","textChars":10,"textLines":1,"bbox":[815.5,1270,521.5,90]}
+{"kind":"shape","id":"sh/yxwzu90z","slide":1,"name":"analysis-center-rule","bbox":[792.5,1042,2,310]}
+{"kind":"shape","id":"sh/zi5gnu1k","slide":1,"name":"section-rule-bottom","bbox":[300,1405,987,3]}
+{"kind":"textbox","id":"sh/8nyh0ji1","slide":1,"name":"contact","text":"상담문의  PuBaO","textPreview":"상담문의  PuBaO","textChars":11,"textLines":1,"bbox":[260,1460,1067,72]}
+{"kind":"shape","id":"sh/9o7ytojm","slide":1,"name":"qr-frame","bbox":[641.5,1550,304,304]}
+{"kind":"textbox","id":"sh/wrapof6t","slide":1,"name":"qr-caption","text":"GitHub에서 프로젝트 보기","textPreview":"GitHub에서 프로젝트 보기","textChars":16,"textLines":1,"bbox":[250,1876,1087,48]}
+{"kind":"textbox","id":"sh/v61ovapo","slide":1,"name":"qr-url","text":"github.com/mgusdn/chatbot","textPreview":"github.com/mgusdn/chatbot","textChars":25,"textLines":1,"bbox":[260,1922,1067,42]}
+{"kind":"image","id":"im/v290rm5w","slide":1,"name":"","alt":"Minimal black poster background with a thin antique-gold celestial frame","bbox":[0,0,1587,2245]}
+{"kind":"image","id":"im/6d0ze54f","slide":1,"name":"","alt":"QR code linking to https://github.com/mgusdn/chatbot","bbox":[658.5,1567,270,270]}
+{"kind":"notes","id":"nt/x0686h","slide":1,"text":"[Sources]\n- User-provided style reference: /var/folders/z3/3k1qp3m90d38sv0jjk5wsw1w0000gn/T/codex-clipboard-29c3efb4-72a0-4959-8f87-520cdb57d392.png\n- OpenAI-generated background asset: assets/black-gold-background.png\n- Project content source: /Users/chan/Developer/workspace/pume-llm-ab/backend/counsel/prompts.py\n- QR destination: https://github.com/mgusdn/chatbot\n[/Sources]\n\nA clean black-and-gold standing-banner concept with a single red attention hook."}
+{"kind":"slide","id":"sl/4v1pzf","slide":2,"title":"SATIR ICEBERG MODEL × AI","textShapes":14}
+{"kind":"textbox","id":"sh/kf6ts3qd","slide":2,"name":"eyebrow","text":"SATIR ICEBERG MODEL × AI","textPreview":"SATIR ICEBERG MODEL × AI","textChars":24,"textLines":1,"bbox":[260,785,1067,54]}
+{"kind":"textbox","id":"sh/50fu187y","slide":2,"name":"headline","text":"AI 타로 & 사주","textPreview":"AI 타로 & 사주","textChars":10,"textLines":1,"bbox":[120,850,1347,165]}
+{"kind":"textbox","id":"sh/a94bmt8b","slide":2,"name":"hook","text":"잡으러 왔습니다","textPreview":"잡으러 왔습니다","textChars":8,"textLines":1,"bbox":[180,1015,1227,120]}
+{"kind":"textbox","id":"sh/vadsvepw","slide":2,"name":"descriptor","text":"사티어 빙산 모델로 마음속 패턴을 천천히 살펴봐요","textPreview":"사티어 빙산 모델로 마음속 패턴을 천천히 살펴봐요","textChars":27,"textLines":1,"bbox":[225,1145,1137,62]}
+{"kind":"shape","id":"sh/wbmtojqh","slide":2,"name":"section-rule-top","bbox":[305,1235,977,3]}
+{"kind":"textbox","id":"sh/xcvaxo72","slide":2,"name":"analysis-label","text":"6가지 내면 분석","textPreview":"6가지 내면 분석","textChars":9,"textLines":1,"bbox":[450,1262,687,54]}
+{"kind":"textbox","id":"sh/u58byd8f","slide":2,"name":"analysis-0-left","text":"감정 · 상처 분석","textPreview":"감정 · 상처 분석","textChars":10,"textLines":1,"bbox":[230,1344,541.5,64]}
+{"kind":"textbox","id":"sh/f6hc7ip0","slide":2,"name":"analysis-0-right","text":"생각 · 지각 분석","textPreview":"생각 · 지각 분석","textChars":10,"textLines":1,"bbox":[815.5,1344,541.5,64]}
+{"kind":"shape","id":"sh/zq1wr6t4","slide":2,"name":"analysis-row-1","bbox":[230,1422,1127,2]}
+{"kind":"textbox","id":"sh/e5svy1sj","slide":2,"name":"analysis-1-left","text":"행동 · 대처 패턴","textPreview":"행동 · 대처 패턴","textChars":10,"textLines":1,"bbox":[230,1436,541.5,64]}
+{"kind":"textbox","id":"sh/1sjetgba","slide":2,"name":"analysis-1-right","text":"내면의 기대","textPreview":"내면의 기대","textChars":6,"textLines":1,"bbox":[815.5,1436,541.5,64]}
+{"kind":"shape","id":"sh/0rax0bap","slide":2,"name":"analysis-row-2","bbox":[230,1514,1127,2]}
+{"kind":"textbox","id":"sh/nulwvqt0","slide":2,"name":"analysis-2-left","text":"숨은 열망","textPreview":"숨은 열망","textChars":5,"textLines":1,"bbox":[230,1528,541.5,64]}
+{"kind":"textbox","id":"sh/mtcf2lsf","slide":2,"name":"analysis-2-right","text":"가치 · 자아 탐색","textPreview":"가치 · 자아 탐색","textChars":10,"textLines":1,"bbox":[815.5,1528,541.5,64]}
+{"kind":"shape","id":"sh/9w3exgb6","slide":2,"name":"analysis-center-rule","bbox":[792.5,1352,2,232]}
+{"kind":"shape","id":"sh/ovux4bal","slide":2,"name":"section-rule-bottom","bbox":[305,1640,977,3]}
+{"kind":"textbox","id":"sh/bylwzqtc","slide":2,"name":"contact","text":"상담문의  PuBaO","textPreview":"상담문의  PuBaO","textChars":11,"textLines":1,"bbox":[260,1665,1067,72]}
+{"kind":"shape","id":"sh/axcf6lsr","slide":2,"name":"qr-frame","bbox":[654,1755,279,279]}
+{"kind":"textbox","id":"sh/r698nehg","slide":2,"name":"qr-caption","text":"GitHub에서 프로젝트 보기","textPreview":"GitHub에서 프로젝트 보기","textChars":16,"textLines":1,"bbox":[250,2056,1087,48]}
+{"kind":"textbox","id":"sh/sri9gjy1","slide":2,"name":"qr-url","text":"github.com/mgusdn/chatbot","textPreview":"github.com/mgusdn/chatbot","textChars":25,"textLines":1,"bbox":[260,2102,1067,42]}
+{"kind":"image","id":"im/mx8nuhwf","slide":2,"name":"","alt":"Sky-blue illustrated poster background featuring PuBaO, a friendly panda counselor","bbox":[0,0,1587,2245]}
+{"kind":"image","id":"im/5kfa5gbi","slide":2,"name":"","alt":"QR code linking to https://github.com/mgusdn/chatbot","bbox":[671,1772,245,245]}
+{"kind":"notes","id":"nt/4v1pzf","slide":2,"text":"[Sources]\n- User-provided style reference: /var/folders/z3/3k1qp3m90d38sv0jjk5wsw1w0000gn/T/codex-clipboard-94eaefa5-151e-4dae-aac9-c758328dc192.png\n- OpenAI-generated background asset: assets/sky-panda-background.png\n- Project content source: /Users/chan/Developer/workspace/pume-llm-ab/backend/counsel/prompts.py\n- QR destination: https://github.com/mgusdn/chatbot\n[/Sources]\n\nA friendly character-led version that keeps the same information hierarchy as the clean black concept."}
+{"kind":"slide","id":"sl/krp0iy","slide":3,"title":"SATIR ICEBERG MODEL × AI","textShapes":14}
+{"kind":"textbox","id":"sh/g7mpsbi9","slide":3,"name":"eyebrow","text":"SATIR ICEBERG MODEL × AI","textPreview":"SATIR ICEBERG MODEL × AI","textChars":24,"textLines":1,"bbox":[260,785,1067,54]}
+{"kind":"textbox","id":"sh/18fqlgzu","slide":3,"name":"headline","text":"AI 타로 & 사주","textPreview":"AI 타로 & 사주","textChars":10,"textLines":1,"bbox":[120,850,1347,165]}
+{"kind":"textbox","id":"sh/6147mh07","slide":3,"name":"hook","text":"잡으러 왔습니다","textPreview":"잡으러 왔습니다","textChars":8,"textLines":1,"bbox":[180,1015,1227,120]}
+{"kind":"textbox","id":"sh/r2d8fmhs","slide":3,"name":"descriptor","text":"사티어 빙산 모델로 마음속 패턴을 천천히 살펴봐요","textPreview":"사티어 빙산 모델로 마음속 패턴을 천천히 살펴봐요","textChars":27,"textLines":1,"bbox":[225,1145,1137,62]}
+{"kind":"shape","id":"sh/s3mporid","slide":3,"name":"section-rule-top","bbox":[305,1235,977,3]}
+{"kind":"textbox","id":"sh/t4vqhwzy","slide":3,"name":"analysis-label","text":"6가지 내면 분석","textPreview":"6가지 내면 분석","textChars":9,"textLines":1,"bbox":[450,1262,687,54]}
+{"kind":"textbox","id":"sh/idk7ih0v","slide":3,"name":"analysis-0-left","text":"감정 · 상처 분석","textPreview":"감정 · 상처 분석","textChars":10,"textLines":1,"bbox":[230,1344,541.5,64]}
+{"kind":"textbox","id":"sh/jet8bmhg","slide":3,"name":"analysis-0-right","text":"생각 · 지각 분석","textPreview":"생각 · 지각 분석","textChars":10,"textLines":1,"bbox":[815.5,1344,541.5,64]}
+{"kind":"shape","id":"sh/nitkrq1k","slide":3,"name":"analysis-row-1","bbox":[230,1422,1127,2]}
+{"kind":"textbox","id":"sh/2hk3ilkz","slide":3,"name":"analysis-1-left","text":"행동 · 대처 패턴","textPreview":"행동 · 대처 패턴","textChars":10,"textLines":1,"bbox":[230,1436,541.5,64]}
+{"kind":"textbox","id":"sh/pkvmt0ja","slide":3,"name":"analysis-1-right","text":"내면의 기대","textPreview":"내면의 기대","textChars":6,"textLines":1,"bbox":[815.5,1436,541.5,64]}
+{"kind":"shape","id":"sh/oj2lkv25","slide":3,"name":"analysis-row-2","bbox":[230,1514,1127,2]}
+{"kind":"textbox","id":"sh/bmd4vq1g","slide":3,"name":"analysis-2-left","text":"숨은 열망","textPreview":"숨은 열망","textChars":5,"textLines":1,"bbox":[230,1528,541.5,64]}
+{"kind":"textbox","id":"sh/al43m5kv","slide":3,"name":"analysis-2-right","text":"가치 · 자아 탐색","textPreview":"가치 · 자아 탐색","textChars":10,"textLines":1,"bbox":[815.5,1528,541.5,64]}
+{"kind":"shape","id":"sh/xovmx0jm","slide":3,"name":"analysis-center-rule","bbox":[792.5,1352,2,232]}
+{"kind":"shape","id":"sh/cnmlov21","slide":3,"name":"section-rule-bottom","bbox":[305,1640,977,3]}
+{"kind":"textbox","id":"sh/rq9kj61c","slide":3,"name":"contact","text":"상담문의  PuBaO","textPreview":"상담문의  PuBaO","textChars":11,"textLines":1,"bbox":[260,1665,1067,72]}
+{"kind":"shape","id":"sh/qp03a1kr","slide":3,"name":"qr-frame","bbox":[654,1755,279,279]}
+{"kind":"textbox","id":"sh/v6horel0","slide":3,"name":"qr-caption","text":"GitHub에서 프로젝트 보기","textPreview":"GitHub에서 프로젝트 보기","textChars":16,"textLines":1,"bbox":[250,2056,1087,48]}
+{"kind":"textbox","id":"sh/w7qp0jm5","slide":3,"name":"qr-url","text":"github.com/mgusdn/chatbot","textPreview":"github.com/mgusdn/chatbot","textChars":25,"textLines":1,"bbox":[260,2102,1067,42]}
+{"kind":"image","id":"im/it0zqp8b","slide":3,"name":"","alt":"Low-saturation 2D poster background featuring an original woman reading a saju chart","bbox":[0,0,1587,2245]}
+{"kind":"image","id":"im/tojy1cj2","slide":3,"name":"","alt":"QR code linking to https://github.com/mgusdn/chatbot","bbox":[671,1772,245,245]}
+{"kind":"notes","id":"nt/krp0iy","slide":3,"text":"[Sources]\n- User-provided style reference: /var/folders/z3/3k1qp3m90d38sv0jjk5wsw1w0000gn/T/codex-clipboard-94eaefa5-151e-4dae-aac9-c758328dc192.png\n- OpenAI-generated background asset: assets/sky-woman-background.png\n- Project content source: /Users/chan/Developer/workspace/pume-llm-ab/backend/counsel/prompts.py\n- QR destination: https://github.com/mgusdn/chatbot\n[/Sources]\n\nA low-saturation woman fortune-reader version using the same editable hierarchy as the panda concept."}

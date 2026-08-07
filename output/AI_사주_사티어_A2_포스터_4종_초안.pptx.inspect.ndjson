@@ -1,0 +1,54 @@
+{"kind":"deck","id":"pr/jmjxb8","name":"Deck"}
+{"kind":"layout","layoutId":"ca9461b2-1a17-4c4d-a9ef-aa86b8595d6c","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"934954e3-7a0e-4b71-abcf-5acc38264986","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/uz5t4o","slide":1,"title":"AI SELF-DISCOVERY POP-UP","textShapes":8}
+{"kind":"shape","id":"sh/k3mh4nql","slide":1,"name":"headline-wash","bbox":[90,680,1407,1130]}
+{"kind":"textbox","id":"sh/l4vidsr6","slide":1,"name":"eyebrow","text":"AI SELF-DISCOVERY POP-UP","textPreview":"AI SELF-DISCOVERY POP-UP","textChars":24,"textLines":1,"bbox":[220,650,1147,60]}
+{"kind":"textbox","id":"sh/qdkzed8j","slide":1,"name":"headline-1","text":"AI 사주 풀이","textPreview":"AI 사주 풀이","textChars":8,"textLines":1,"bbox":[130,730,1327,185]}
+{"kind":"textbox","id":"sh/betg7i94","slide":1,"name":"headline-2","text":"잡으러 왔습니다","textPreview":"잡으러 왔습니다","textChars":8,"textLines":1,"bbox":[90,915,1407,205]}
+{"kind":"textbox","id":"sh/cf2h0nqp","slide":1,"name":"bridge","text":"사주에서 시작해, 관계의 패턴까지","textPreview":"사주에서 시작해, 관계의 패턴까지","textChars":18,"textLines":1,"bbox":[200,1160,1187,76]}
+{"kind":"shape","id":"sh/d0by9sra","slide":1,"name":"section-rule","bbox":[300,1270,987,3]}
+{"kind":"textbox","id":"sh/u9ozah8n","slide":1,"name":"satir-label","text":"SATIR MODEL","textPreview":"SATIR MODEL","textChars":11,"textLines":1,"bbox":[430,1320,727,70]}
+{"kind":"textbox","id":"sh/vax0jm98","slide":1,"name":"support","text":"사티어 모델로 살펴보는\n나의 감정 · 대화 · 관계","textPreview":"사티어 모델로 살펴보는 | 나의 감정 · 대화 · 관계","textChars":28,"textLines":2,"bbox":[220,1410,1147,190]}
+{"kind":"textbox","id":"sh/n6pg3a94","slide":1,"name":"cta","text":"내 안의 반복되는 패턴,\n오늘 한번 잡아볼까요?","textPreview":"내 안의 반복되는 패턴, | 오늘 한번 잡아볼까요?","textChars":26,"textLines":2,"bbox":[260,1715,1067,150]}
+{"kind":"shape","id":"sh/m5wza5sj","slide":1,"name":"footer-rule","bbox":[145,2078,1297,3]}
+{"kind":"textbox","id":"sh/9s7y5kru","slide":1,"name":"footer-disclaimer","text":"AI 기반 자기이해 체험 · 결과는 참고용입니다.","textPreview":"AI 기반 자기이해 체험 · 결과는 참고용입니다.","textChars":27,"textLines":1,"bbox":[150,2110,1287,54]}
+{"kind":"image","id":"im/qtgz6loz","slide":1,"name":"","alt":"Deep cobalt celestial AI saju poster background","bbox":[0,0,1587,2245]}
+{"kind":"notes","id":"nt/uz5t4o","slide":1,"text":"[Sources]\n- User-provided four vertical saju/tarot banner references (style and hierarchy reference only)\n- OpenAI-generated project asset: assets/cobalt-saju.png\n[/Sources]\n\nDraft concept: Direct-response headline with celestial cobalt visual language."}
+{"kind":"slide","id":"sl/h3wqy5","slide":2,"title":"내 사주가 궁금해서 왔다가","textShapes":8}
+{"kind":"textbox","id":"sh/gr2twfel","slide":2,"name":"opening","text":"내 사주가 궁금해서 왔다가","textPreview":"내 사주가 궁금해서 왔다가","textChars":14,"textLines":1,"bbox":[240,370,1107,72]}
+{"kind":"textbox","id":"sh/hcva5kf6","slide":2,"name":"opening-2","text":"나를 만나고 갑니다","textPreview":"나를 만나고 갑니다","textChars":10,"textLines":1,"bbox":[240,445,1107,88]}
+{"kind":"textbox","id":"sh/id4bypwr","slide":2,"name":"stacked-headline","text":"AI 사주\n잡으러\n왔습니다","textPreview":"AI 사주 | 잡으러 | 왔습니다","textChars":14,"textLines":3,"bbox":[220,570,1147,790]}
+{"kind":"shape","id":"sh/3edc7uxc","slide":2,"name":"center-rule","bbox":[330,1420,927,3]}
+{"kind":"textbox","id":"sh/4fmt0zex","slide":2,"name":"satir","text":"사티어 모델 × AI 풀이","textPreview":"사티어 모델 × AI 풀이","textChars":14,"textLines":1,"bbox":[250,1470,1087,80]}
+{"kind":"textbox","id":"sh/5gvu9kv2","slide":2,"name":"keywords","text":"감정의 온도 · 대화의 습관 · 관계의 거리","textPreview":"감정의 온도 · 대화의 습관 · 관계의 거리","textChars":24,"textLines":1,"bbox":[170,1580,1247,74]}
+{"kind":"textbox","id":"sh/qh4b2pwn","slide":2,"name":"question","text":"지금의 나를 만드는 패턴은 무엇일까요?","textPreview":"지금의 나를 만드는 패턴은 무엇일까요?","textChars":21,"textLines":1,"bbox":[200,1740,1187,96]}
+{"kind":"textbox","id":"sh/ridcbud8","slide":2,"name":"cta","text":"궁금하면, 잡으러 오세요.","textPreview":"궁금하면, 잡으러 오세요.","textChars":14,"textLines":1,"bbox":[260,1900,1067,80]}
+{"kind":"shape","id":"sh/3ut0zadw","slide":2,"name":"footer-rule","bbox":[145,2078,1297,3]}
+{"kind":"textbox","id":"sh/2tkzq5wb","slide":2,"name":"footer-disclaimer","text":"AI 기반 자기이해 체험 · 결과는 참고용입니다.","textPreview":"AI 기반 자기이해 체험 · 결과는 참고용입니다.","textChars":27,"textLines":1,"bbox":[150,2110,1287,54]}
+{"kind":"image","id":"im/6d8zihg3","slide":2,"name":"","alt":"Royal-purple oracle hand and ornamental poster background","bbox":[0,0,1587,2245]}
+{"kind":"notes","id":"nt/h3wqy5","slide":2,"text":"[Sources]\n- User-provided four vertical saju/tarot banner references (style and hierarchy reference only)\n- OpenAI-generated project asset: assets/purple-oracle.png\n[/Sources]\n\nDraft concept: Stacked-type street banner concept with a playful curiosity hook."}
+{"kind":"slide","id":"sl/1vaoen","slide":3,"title":"AI 사주 × 사티어 모델","textShapes":7}
+{"kind":"shape","id":"sh/dsruds7y","slide":3,"name":"text-vignette","bbox":[150,430,1287,1370]}
+{"kind":"textbox","id":"sh/critknqt","slide":3,"name":"eyebrow","text":"AI 사주 × 사티어 모델","textPreview":"AI 사주 × 사티어 모델","textChars":14,"textLines":1,"bbox":[230,450,1127,68]}
+{"kind":"textbox","id":"sh/zu9cf2p4","slide":3,"name":"headline","text":"운명 말고,\n패턴을 봅니다","textPreview":"운명 말고, | 패턴을 봅니다","textChars":14,"textLines":2,"bbox":[160,600,1267,390]}
+{"kind":"textbox","id":"sh/yt0bmx8j","slide":3,"name":"support","text":"사주가 던지는 질문에\n사티어 모델로 나를 읽어봅니다","textPreview":"사주가 던지는 질문에 | 사티어 모델로 나를 읽어봅니다","textChars":28,"textLines":2,"bbox":[240,1050,1107,180]}
+{"kind":"shape","id":"sh/lwbuhc7a","slide":3,"name":"keyword-rule","bbox":[360,1300,867,3]}
+{"kind":"textbox","id":"sh/0v2to7qp","slide":3,"name":"keywords","text":"감정   ·   대화   ·   관계   ·   자존감","textPreview":"감정   ·   대화   ·   관계   ·   자존감","textChars":30,"textLines":1,"bbox":[180,1350,1227,80]}
+{"kind":"textbox","id":"sh/fyps3yp0","slide":3,"name":"manifesto","text":"정답을 주는 풀이보다\n나를 이해하는 한 장면","textPreview":"정답을 주는 풀이보다 | 나를 이해하는 한 장면","textChars":24,"textLines":2,"bbox":[250,1525,1087,190]}
+{"kind":"textbox","id":"sh/exgbad8f","slide":3,"name":"cta","text":"AI 사주 풀이, 잡으러 왔습니다","textPreview":"AI 사주 풀이, 잡으러 왔습니다","textChars":18,"textLines":1,"bbox":[210,1875,1167,90]}
+{"kind":"shape","id":"sh/87uh43e5","slide":3,"name":"footer-rule","bbox":[145,2078,1297,3]}
+{"kind":"textbox","id":"sh/983ix8fq","slide":3,"name":"footer-disclaimer","text":"AI 기반 자기이해 체험 · 결과는 참고용입니다.","textPreview":"AI 기반 자기이해 체험 · 결과는 참고용입니다.","textChars":27,"textLines":1,"bbox":[150,2110,1287,54]}
+{"kind":"image","id":"im/f61c7yl4","slide":3,"name":"","alt":"Black folk-art botanical mystical poster background","bbox":[0,0,1587,2245]}
+{"kind":"notes","id":"nt/1vaoen","slide":3,"text":"[Sources]\n- User-provided four vertical saju/tarot banner references (style and hierarchy reference only)\n- OpenAI-generated project asset: assets/black-folk.png\n[/Sources]\n\nDraft concept: Folk-art mysticism reframed around self-understanding rather than fate claims."}
+{"kind":"slide","id":"sl/6nhb6o","slide":4,"title":"SATIR MODEL × AI SAJU","textShapes":6}
+{"kind":"shape","id":"sh/6lkr25gb","slide":4,"name":"lower-wash","bbox":[70,1020,1447,1070]}
+{"kind":"textbox","id":"sh/rmt8vaxw","slide":4,"name":"satir-label","text":"SATIR MODEL × AI SAJU","textPreview":"SATIR MODEL × AI SAJU","textChars":21,"textLines":1,"bbox":[250,1055,1087,62]}
+{"kind":"textbox","id":"sh/4j290fy5","slide":4,"name":"headline","text":"당신의 이야기를\nAI로 풀이합니다","textPreview":"당신의 이야기를 | AI로 풀이합니다","textChars":18,"textLines":2,"bbox":[155,1150,1277,320]}
+{"kind":"textbox","id":"sh/5kbqt0fq","slide":4,"name":"support","text":"사주로 질문하고,\n관계의 패턴으로 답을 찾아보세요.","textPreview":"사주로 질문하고, | 관계의 패턴으로 답을 찾아보세요.","textChars":28,"textLines":2,"bbox":[250,1510,1087,180]}
+{"kind":"textbox","id":"sh/ihkry5gz","slide":4,"name":"keywords","text":"나의 감정 · 대화 방식 · 관계의 거리","textPreview":"나의 감정 · 대화 방식 · 관계의 거리","textChars":22,"textLines":1,"bbox":[200,1725,1187,70]}
+{"kind":"textbox","id":"sh/jit8raxk","slide":4,"name":"cta","text":"AI 사주 풀이\n잡으러 왔습니다","textPreview":"AI 사주 풀이 | 잡으러 왔습니다","textChars":17,"textLines":2,"bbox":[250,1840,1087,170]}
+{"kind":"shape","id":"sh/wf29wvyt","slide":4,"name":"footer-rule","bbox":[145,2078,1297,3]}
+{"kind":"textbox","id":"sh/xgbqp0fe","slide":4,"name":"footer-disclaimer","text":"AI 기반 자기이해 체험 · 결과는 참고용입니다.","textPreview":"AI 기반 자기이해 체험 · 결과는 참고용입니다.","textChars":27,"textLines":1,"bbox":[150,2110,1287,54]}
+{"kind":"image","id":"im/w7ihc7u9","slide":4,"name":"","alt":"Friendly illustrated facilitator with tablet and relationship orbits","bbox":[0,0,1587,2245]}
+{"kind":"notes","id":"nt/6nhb6o","slide":4,"text":"[Sources]\n- User-provided four vertical saju/tarot banner references (style and hierarchy reference only)\n- OpenAI-generated project asset: assets/periwinkle-guide.png\n[/Sources]\n\nDraft concept: Approachable guide-led poster that makes the Satir framing feel warm and accessible."}

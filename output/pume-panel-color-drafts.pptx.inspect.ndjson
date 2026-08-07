@@ -1,0 +1,132 @@
+{"kind":"deck","id":"pr/ih7zk1","name":"Deck"}
+{"kind":"layout","layoutId":"3089a356-de1e-4bae-a41c-d3989cc49cbf","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"7ced8672-213d-43c3-997c-6f5d90d527d3","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/qb23vs","slide":1,"title":"COLOR DRAFT 01","textShapes":14}
+{"kind":"shape","id":"sh/bmxwbm5g","slide":1,"name":"header-zone","bbox":[0,0,1280,184]}
+{"kind":"shape","id":"sh/wn6dkr61","slide":1,"name":"technology-zone","bbox":[0,184,1280,362]}
+{"kind":"shape","id":"sh/xofedwnm","slide":1,"name":"result-zone","bbox":[0,546,1280,174]}
+{"kind":"textbox","id":"sh/mx4vehoz","slide":1,"text":"COLOR DRAFT 01","textPreview":"COLOR DRAFT 01","textChars":14,"textLines":1,"bbox":[78,48,215,24]}
+{"kind":"textbox","id":"sh/nyxw725k","slide":1,"text":"Forest Research","textPreview":"Forest Research","textChars":15,"textLines":1,"bbox":[78,80,760,57]}
+{"kind":"textbox","id":"sh/oz6dg765","slide":1,"text":"현재 서비스의 숲·크림 톤을 정제한, 가장 균형 잡힌 기술 패널","textPreview":"현재 서비스의 숲·크림 톤을 정제한, 가장 균형 잡힌 기술 패널","textChars":35,"textLines":1,"bbox":[80,137,846,24]}
+{"kind":"shape","id":"sh/90fe9cna","slide":1,"name":"card-LLM","bbox":[78,225,537,124]}
+{"kind":"shape","id":"sh/6t8fq1o3","slide":1,"name":"tab-LLM","bbox":[100,207,190,38]}
+{"kind":"textbox","id":"sh/7uhwj65o","slide":1,"text":"LLM","textPreview":"LLM","textChars":3,"textLines":1,"bbox":[117,215,164,21]}
+{"kind":"textbox","id":"sh/v6dsr2pg","slide":1,"text":"공감 선출력 · 구조화 판단","textPreview":"공감 선출력 · 구조화 판단","textChars":15,"textLines":1,"bbox":[110,265,450,25]}
+{"kind":"shape","id":"sh/u54rix8v","slide":1,"name":"signal-a-LLM","bbox":[112,307,88,10]}
+{"kind":"shape","id":"sh/h8vatc7m","slide":1,"name":"signal-b-LLM","bbox":[213,307,178,10]}
+{"kind":"shape","id":"sh/w7m9k7q1","slide":1,"name":"signal-c-LLM","bbox":[404,307,74,10]}
+{"kind":"shape","id":"sh/judsvmpc","slide":1,"name":"card-TTS","bbox":[665,225,537,124]}
+{"kind":"shape","id":"sh/i94rmh8r","slide":1,"name":"tab-TTS","bbox":[687,207,190,38]}
+{"kind":"textbox","id":"sh/5wfaxc7i","slide":1,"text":"TTS","textPreview":"TTS","textChars":3,"textLines":1,"bbox":[704,215,164,21]}
+{"kind":"textbox","id":"sh/4v6torqx","slide":1,"text":"GPT-SoVITS · 연속 음성 재생","textPreview":"GPT-SoVITS · 연속 음성 재생","textChars":21,"textLines":1,"bbox":[697,265,450,25]}
+{"kind":"shape","id":"sh/ryxszmpo","slide":1,"name":"signal-a-TTS","bbox":[699,307,88,10]}
+{"kind":"shape","id":"sh/6xobqh83","slide":1,"name":"signal-b-TTS","bbox":[800,307,178,10]}
+{"kind":"shape","id":"sh/2t8vilsb","slide":1,"name":"signal-c-TTS","bbox":[991,307,74,10]}
+{"kind":"shape","id":"sh/3u1crq9w","slide":1,"name":"card-STT + VAD","bbox":[78,385,537,124]}
+{"kind":"shape","id":"sh/ovadkvah","slide":1,"name":"tab-STT + VAD","bbox":[100,367,190,38]}
+{"kind":"textbox","id":"sh/pwjut0r2","slide":1,"text":"STT + VAD","textPreview":"STT + VAD","textChars":9,"textLines":1,"bbox":[117,375,164,21]}
+{"kind":"textbox","id":"sh/ep8velsz","slide":1,"text":"자동 발화 종료 · 턴테이킹","textPreview":"자동 발화 종료 · 턴테이킹","textChars":15,"textLines":1,"bbox":[110,425,450,25]}
+{"kind":"shape","id":"sh/fqhcnq9k","slide":1,"name":"signal-a-STT + VAD","bbox":[112,467,88,10]}
+{"kind":"shape","id":"sh/grqdgva5","slide":1,"name":"signal-b-STT + VAD","bbox":[213,467,178,10]}
+{"kind":"shape","id":"sh/1szupgrq","slide":1,"name":"signal-c-STT + VAD","bbox":[404,467,74,10]}
+{"kind":"shape","id":"sh/ylsvq5sj","slide":1,"name":"card-SERVICE FLOW","bbox":[665,385,537,124]}
+{"kind":"shape","id":"sh/zmlwza94","slide":1,"name":"tab-SERVICE FLOW","bbox":[687,367,190,38]}
+{"kind":"textbox","id":"sh/ts7658fi","slide":1,"text":"SERVICE FLOW","textPreview":"SERVICE FLOW","textChars":12,"textLines":1,"bbox":[704,375,164,21]}
+{"kind":"textbox","id":"sh/8rypc3yx","slide":1,"text":"편안한 자기 탐색 경험","textPreview":"편안한 자기 탐색 경험","textChars":12,"textLines":1,"bbox":[697,425,450,25]}
+{"kind":"shape","id":"sh/7q5o3yxc","slide":1,"name":"signal-a-SERVICE FLOW","bbox":[699,467,88,10]}
+{"kind":"shape","id":"sh/6pw7atgr","slide":1,"name":"signal-b-SERVICE FLOW","bbox":[800,467,178,10]}
+{"kind":"shape","id":"sh/l4n61of6","slide":1,"name":"signal-c-SERVICE FLOW","bbox":[991,467,74,10]}
+{"kind":"textbox","id":"sh/k3ep8jyl","slide":1,"text":"SERVICE RESULT PREVIEW","textPreview":"SERVICE RESULT PREVIEW","textChars":22,"textLines":1,"bbox":[80,582,260,20]}
+{"kind":"shape","id":"sh/j25ozyxg","slide":1,"name":"screen-preview","bbox":[80,614,515,76]}
+{"kind":"shape","id":"sh/y1w76tgv","slide":1,"name":"preview-side","bbox":[104,632,85,40]}
+{"kind":"shape","id":"sh/50rqdsfq","slide":1,"name":"preview-message","bbox":[210,631,264,15]}
+{"kind":"shape","id":"sh/4zipkny5","slide":1,"name":"preview-response","bbox":[285,654,210,15]}
+{"kind":"textbox","id":"sh/crmpo3up","slide":1,"text":"편안함과 기술 신뢰의 균형","textPreview":"편안함과 기술 신뢰의 균형","textChars":14,"textLines":1,"bbox":[638,616,490,31]}
+{"kind":"textbox","id":"sh/dsv6xobu","slide":1,"text":"상담 서비스의 자연스러운 정체성을 유지하는 기본안","textPreview":"상담 서비스의 자연스러운 정체성을 유지하는 기본안","textChars":27,"textLines":1,"bbox":[640,651,495,23]}
+{"kind":"notes","id":"nt/qb23vs","slide":1,"text":""}
+{"kind":"slide","id":"sl/oeg9g1","slide":2,"title":"COLOR DRAFT 02","textShapes":14}
+{"kind":"shape","id":"sh/61wjmx0f","slide":2,"name":"header-zone","bbox":[0,0,1280,184]}
+{"kind":"shape","id":"sh/t4nihczq","slide":2,"name":"technology-zone","bbox":[0,184,1280,362]}
+{"kind":"shape","id":"sh/s3e1o7i5","slide":2,"name":"result-zone","bbox":[0,546,1280,174]}
+{"kind":"textbox","id":"sh/f6p0jmhw","slide":2,"text":"COLOR DRAFT 02","textPreview":"COLOR DRAFT 02","textChars":14,"textLines":1,"bbox":[78,48,215,24]}
+{"kind":"textbox","id":"sh/u5wjqh0b","slide":2,"text":"Clinical Tech","textPreview":"Clinical Tech","textChars":13,"textLines":1,"bbox":[78,80,760,57]}
+{"kind":"textbox","id":"sh/h87ilcz2","slide":2,"text":"AI·음성·상담 기술의 정확성과 신뢰를 선명하게 전달하는 연구 발표형","textPreview":"AI·음성·상담 기술의 정확성과 신뢰를 선명하게 전달하는 연구 발표형","textChars":38,"textLines":1,"bbox":[80,137,846,24]}
+{"kind":"shape","id":"sh/g7y1srih","slide":2,"name":"card-LLM","bbox":[78,225,537,124]}
+{"kind":"shape","id":"sh/val07ihs","slide":2,"name":"tab-LLM","bbox":[100,207,190,38]}
+{"kind":"textbox","id":"sh/a9czed07","slide":2,"text":"LLM","textPreview":"LLM","textChars":3,"textLines":1,"bbox":[117,215,164,21]}
+{"kind":"textbox","id":"sh/8r6l0z2d","slide":2,"text":"공감 선출력 · 구조화 판단","textPreview":"공감 선출력 · 구조화 판단","textChars":15,"textLines":1,"bbox":[110,265,450,25]}
+{"kind":"shape","id":"sh/tsfmt4jy","slide":2,"name":"signal-a-LLM","bbox":[112,307,88,10]}
+{"kind":"shape","id":"sh/mpo3y9k7","slide":2,"name":"signal-b-LLM","bbox":[213,307,178,10]}
+{"kind":"shape","id":"sh/7qx4re1s","slide":2,"name":"signal-c-LLM","bbox":[404,307,74,10]}
+{"kind":"shape","id":"sh/gvq54j29","slide":2,"name":"card-TTS","bbox":[665,225,537,124]}
+{"kind":"shape","id":"sh/hgzmxoju","slide":2,"name":"tab-TTS","bbox":[687,207,190,38]}
+{"kind":"textbox","id":"sh/ut8329k3","slide":2,"text":"TTS","textPreview":"TTS","textChars":3,"textLines":1,"bbox":[704,215,164,21]}
+{"kind":"textbox","id":"sh/vuh4ve1o","slide":2,"text":"GPT-SoVITS · 연속 음성 재생","textPreview":"GPT-SoVITS · 연속 음성 재생","textChars":21,"textLines":1,"bbox":[697,265,450,25]}
+{"kind":"shape","id":"sh/czmlsf25","slide":2,"name":"signal-a-TTS","bbox":[699,307,88,10]}
+{"kind":"shape","id":"sh/xkvmlkjq","slide":2,"name":"signal-b-TTS","bbox":[800,307,178,10]}
+{"kind":"shape","id":"sh/d4na9cr2","slide":2,"name":"signal-c-TTS","bbox":[991,307,74,10]}
+{"kind":"shape","id":"sh/s3ut0rqh","slide":2,"name":"card-STT + VAD","bbox":[78,385,537,124]}
+{"kind":"shape","id":"sh/r2ls7m9w","slide":2,"name":"tab-STT + VAD","bbox":[100,367,190,38]}
+{"kind":"textbox","id":"sh/qhcbyh8r","slide":2,"text":"STT + VAD","textPreview":"STT + VAD","textChars":9,"textLines":1,"bbox":[117,375,164,21]}
+{"kind":"textbox","id":"sh/18nadwre","slide":2,"text":"자동 발화 종료 · 턴테이킹","textPreview":"자동 발화 종료 · 턴테이킹","textChars":15,"textLines":1,"bbox":[110,425,450,25]}
+{"kind":"shape","id":"sh/07et4rqt","slide":2,"name":"signal-a-STT + VAD","bbox":[112,467,88,10]}
+{"kind":"shape","id":"sh/f65sbm98","slide":2,"name":"signal-b-STT + VAD","bbox":[213,467,178,10]}
+{"kind":"shape","id":"sh/e5wb2h8n","slide":2,"name":"signal-c-STT + VAD","bbox":[404,467,74,10]}
+{"kind":"shape","id":"sh/pc7uhw7a","slide":2,"name":"card-SERVICE FLOW","bbox":[665,385,537,124]}
+{"kind":"shape","id":"sh/obet8bqp","slide":2,"name":"tab-SERVICE FLOW","bbox":[687,367,190,38]}
+{"kind":"textbox","id":"sh/6h872to7","slide":2,"text":"SERVICE FLOW","textPreview":"SERVICE FLOW","textChars":12,"textLines":1,"bbox":[704,375,164,21]}
+{"kind":"textbox","id":"sh/7ih8byps","slide":2,"text":"편안한 자기 탐색 경험","textPreview":"편안한 자기 탐색 경험","textChars":12,"textLines":1,"bbox":[697,425,450,25]}
+{"kind":"shape","id":"sh/8jqp436d","slide":2,"name":"signal-a-SERVICE FLOW","bbox":[699,467,88,10]}
+{"kind":"shape","id":"sh/tkzqd87y","slide":2,"name":"signal-b-SERVICE FLOW","bbox":[800,467,178,10]}
+{"kind":"shape","id":"sh/uls76doj","slide":2,"name":"signal-c-SERVICE FLOW","bbox":[991,467,74,10]}
+{"kind":"textbox","id":"sh/vm18fipo","slide":2,"text":"SERVICE RESULT PREVIEW","textPreview":"SERVICE RESULT PREVIEW","textChars":22,"textLines":1,"bbox":[80,582,260,20]}
+{"kind":"shape","id":"sh/gnap8n69","slide":2,"name":"screen-preview","bbox":[80,614,515,76]}
+{"kind":"shape","id":"sh/h8jqhs7u","slide":2,"name":"preview-side","bbox":[104,632,85,40]}
+{"kind":"shape","id":"sh/i9sradof","slide":2,"name":"preview-message","bbox":[210,631,264,15]}
+{"kind":"shape","id":"sh/3a18ji50","slide":2,"name":"preview-response","bbox":[285,654,210,15]}
+{"kind":"textbox","id":"sh/r6x83ix4","slide":2,"text":"가장 강한 기술 전문성","textPreview":"가장 강한 기술 전문성","textChars":12,"textLines":1,"bbox":[638,616,490,31]}
+{"kind":"textbox","id":"sh/q5o7udgj","slide":2,"text":"공모전·연구 발표에서 AI 파이프라인을 전면에 둘 때 적합","textPreview":"공모전·연구 발표에서 AI 파이프라인을 전면에 둘 때 적합","textChars":32,"textLines":1,"bbox":[640,651,495,23]}
+{"kind":"notes","id":"nt/oeg9g1","slide":2,"text":""}
+{"kind":"slide","id":"sl/u7llsi","slide":3,"title":"COLOR DRAFT 03","textShapes":14}
+{"kind":"shape","id":"sh/qpcvy9of","slide":3,"name":"header-zone","bbox":[0,0,1280,184]}
+{"kind":"shape","id":"sh/ds3e9on6","slide":3,"name":"technology-zone","bbox":[0,184,1280,362]}
+{"kind":"shape","id":"sh/crud0j6l","slide":3,"name":"result-zone","bbox":[0,546,1280,174]}
+{"kind":"textbox","id":"sh/zu5wby5w","slide":3,"text":"COLOR DRAFT 03","textPreview":"COLOR DRAFT 03","textChars":14,"textLines":1,"bbox":[78,48,215,24]}
+{"kind":"textbox","id":"sh/etcv2tob","slide":3,"text":"Warm Care Lab","textPreview":"Warm Care Lab","textChars":13,"textLines":1,"bbox":[78,80,760,57]}
+{"kind":"textbox","id":"sh/1wnedon2","slide":3,"text":"정서적 안전감과 상담 경험을 강조하는, 다정하지만 절제된 서비스형","textPreview":"정서적 안전감과 상담 경험을 강조하는, 다정하지만 절제된 서비스형","textChars":36,"textLines":1,"bbox":[80,137,846,24]}
+{"kind":"shape","id":"sh/0ved436h","slide":3,"name":"card-LLM","bbox":[78,225,537,124]}
+{"kind":"shape","id":"sh/vy1czu5s","slide":3,"name":"tab-LLM","bbox":[100,207,190,38]}
+{"kind":"textbox","id":"sh/uxsvqpo7","slide":3,"text":"LLM","textPreview":"LLM","textChars":3,"textLines":1,"bbox":[117,215,164,21]}
+{"kind":"textbox","id":"sh/knilobml","slide":3,"text":"공감 선출력 · 구조화 판단","textPreview":"공감 선출력 · 구조화 판단","textChars":15,"textLines":1,"bbox":[110,265,450,25]}
+{"kind":"shape","id":"sh/l8rmhg36","slide":3,"name":"signal-a-LLM","bbox":[112,307,88,10]}
+{"kind":"shape","id":"sh/yl03m14v","slide":3,"name":"signal-b-LLM","bbox":[213,307,178,10]}
+{"kind":"shape","id":"sh/zm9kf6lg","slide":3,"name":"signal-c-LLM","bbox":[404,307,74,10]}
+{"kind":"shape","id":"sh/8bilsbmx","slide":3,"name":"card-TTS","bbox":[665,225,537,124]}
+{"kind":"shape","id":"sh/9cbmlg3i","slide":3,"name":"tab-TTS","bbox":[687,207,190,38]}
+{"kind":"textbox","id":"sh/m903ql4r","slide":3,"text":"TTS","textPreview":"TTS","textChars":3,"textLines":1,"bbox":[704,215,164,21]}
+{"kind":"textbox","id":"sh/7a94j6lc","slide":3,"text":"GPT-SoVITS · 연속 음성 재생","textPreview":"GPT-SoVITS · 연속 음성 재생","textChars":21,"textLines":1,"bbox":[697,265,450,25]}
+{"kind":"shape","id":"sh/ofylgrmt","slide":3,"name":"signal-a-TTS","bbox":[699,307,88,10]}
+{"kind":"shape","id":"sh/pg729w3y","slide":3,"name":"signal-b-TTS","bbox":[800,307,178,10]}
+{"kind":"shape","id":"sh/50faxorq","slide":3,"name":"signal-c-TTS","bbox":[991,307,74,10]}
+{"kind":"shape","id":"sh/4z69oja5","slide":3,"name":"card-STT + VAD","bbox":[78,385,537,124]}
+{"kind":"shape","id":"sh/3yxsve9k","slide":3,"name":"tab-STT + VAD","bbox":[100,367,190,38]}
+{"kind":"textbox","id":"sh/ixorm9sz","slide":3,"text":"STT + VAD","textPreview":"STT + VAD","textChars":9,"textLines":1,"bbox":[117,375,164,21]}
+{"kind":"textbox","id":"sh/d4za1orm","slide":3,"text":"자동 발화 종료 · 턴테이킹","textPreview":"자동 발화 종료 · 턴테이킹","textChars":15,"textLines":1,"bbox":[110,425,450,25]}
+{"kind":"shape","id":"sh/s3q9s3ah","slide":3,"name":"signal-a-STT + VAD","bbox":[112,467,88,10]}
+{"kind":"shape","id":"sh/r2xszy9w","slide":3,"name":"signal-b-STT + VAD","bbox":[213,467,178,10]}
+{"kind":"shape","id":"sh/q1orqtsb","slide":3,"name":"signal-c-STT + VAD","bbox":[404,467,74,10]}
+{"kind":"shape","id":"sh/1sza58ry","slide":3,"name":"card-SERVICE FLOW","bbox":[665,385,537,124]}
+{"kind":"shape","id":"sh/0rqtw3ad","slide":3,"name":"tab-SERVICE FLOW","bbox":[687,367,190,38]}
+{"kind":"textbox","id":"sh/ydk7q58v","slide":3,"text":"SERVICE FLOW","textPreview":"SERVICE FLOW","textChars":12,"textLines":1,"bbox":[704,375,164,21]}
+{"kind":"textbox","id":"sh/zetozapg","slide":3,"text":"편안한 자기 탐색 경험","textPreview":"편안한 자기 탐색 경험","textChars":12,"textLines":1,"bbox":[697,425,450,25]}
+{"kind":"shape","id":"sh/kf2psfq1","slide":3,"name":"signal-a-SERVICE FLOW","bbox":[699,467,88,10]}
+{"kind":"shape","id":"sh/l0b6107m","slide":3,"name":"signal-b-SERVICE FLOW","bbox":[800,467,178,10]}
+{"kind":"shape","id":"sh/m1k7u58r","slide":3,"name":"signal-c-SERVICE FLOW","bbox":[991,467,74,10]}
+{"kind":"textbox","id":"sh/72t83apc","slide":3,"text":"SERVICE RESULT PREVIEW","textPreview":"SERVICE RESULT PREVIEW","textChars":22,"textLines":1,"bbox":[80,582,260,20]}
+{"kind":"shape","id":"sh/832pwfqx","slide":3,"name":"screen-preview","bbox":[80,614,515,76]}
+{"kind":"shape","id":"sh/t4vq5k7i","slide":3,"name":"preview-side","bbox":[104,632,85,40]}
+{"kind":"shape","id":"sh/u547yp83","slide":3,"name":"preview-message","bbox":[210,631,264,15]}
+{"kind":"shape","id":"sh/v6d87upo","slide":3,"name":"preview-response","bbox":[285,654,210,15]}
+{"kind":"textbox","id":"sh/3m9obuhs","slide":3,"text":"가장 따뜻한 서비스 인상","textPreview":"가장 따뜻한 서비스 인상","textChars":13,"textLines":1,"bbox":[638,616,490,31]}
+{"kind":"textbox","id":"sh/2l07ip07","slide":3,"text":"음성 상담의 안정감과 사용자 경험을 중심에 둘 때 적합","textPreview":"음성 상담의 안정감과 사용자 경험을 중심에 둘 때 적합","textChars":30,"textLines":1,"bbox":[640,651,495,23]}
+{"kind":"notes","id":"nt/u7llsi","slide":3,"text":""}

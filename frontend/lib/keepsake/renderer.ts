@@ -1,90 +1,151 @@
 import type { KeepsakeLetter } from "@/types/counseling";
 
-export const KEEPSAKE_CANVAS_WIDTH = 1500;
-export const KEEPSAKE_CANVAS_HEIGHT = 1000;
-export const KEEPSAKE_ASPECT = KEEPSAKE_CANVAS_WIDTH / KEEPSAKE_CANVAS_HEIGHT;
+// Each template is a finished artwork. The background, the body phrase, the
+// "From. 프바오" signature AND the "To." / "p.s" labels are all printed on the
+// PNG in the exhibition's own typefaces. The only things drawn at runtime are
+// the two variable values: the nickname and the three hashtags. They are laid
+// down immediately after the baked label, on the label's own baseline.
+//
+// Every coordinate is a ratio of the artwork it belongs to, measured by scanning
+// the PNG for the ink of the baked label (its right edge gives the join point,
+// its rightmost glyph gives the baseline), so the canvas can be any size.
+// Canvases are sized for the 2x3in photo printer at 300dpi.
 
-const BODY_FONT = 'Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif';
-const SIGNATURE_FONT = '"Pume Hand Script", "Apple SD Gothic Neo", "Noto Sans KR", cursive';
+const PORTRAIT = { width: 600, height: 900 } as const;
+const LANDSCAPE = { width: 900, height: 600 } as const;
 
-type TextAlign = "left" | "center" | "right";
+// Only the variable text is drawn, so these stacks cover the nickname and the
+// hashtags. Swapping in 온트 8비트체 / 티티달팽이체 is a one-line change each.
+const PIXEL_FONT = 'Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif';
+const HAND_FONT = '"Pume Hand Script", "Apple SD Gothic Neo", "Noto Sans KR", cursive';
+const HAND_FONT_FAMILY = "Pume Hand Script";
+
+type TextBox = {
+  /** left edge of the variable text — just past the baked label, ratio of width */
+  x: number;
+  /** baseline of the baked label, ratio of height */
+  baseline: number;
+  /** font size, ratio of height */
+  size: number;
+  /** widest the first line may run, ratio of width */
+  maxWidth: number;
+  /** left edge of wrapped lines — the artwork's own text margin, ratio of width */
+  continueX?: number;
+  /** widest a wrapped line may run, ratio of width */
+  continueMaxWidth?: number;
+  /** distance between wrapped lines, ratio of height */
+  lineGap?: number;
+  /** how many lines the reference artwork uses */
+  lines?: number;
+};
 
 type TemplateLayout = {
+  width: number;
+  height: number;
   asset: string;
   fallback: string;
-  titleColor: string;
-  bodyColor: string;
-  metaColor: string;
-  shadowColor?: string;
-  title: { x: number; y: number; maxWidth: number; align: TextAlign };
-  body: {
-    x: number;
-    y: number;
-    maxWidth: number;
-    align: TextAlign;
-    maxSize: number;
-    minSize: number;
-    lineHeight: number;
-  };
+  color: string;
+  font: string;
+  fontFamily?: string;
+  weight: number;
+  to: TextBox;
+  ps: TextBox;
 };
 
 const TEMPLATE_LAYOUTS: Record<string, TemplateLayout> = {
-  cream_rest_v1: {
-    asset: "/images/keepsake/cream-paper.png",
-    fallback: "#f4ead1",
-    titleColor: "#403a34",
-    bodyColor: "#292724",
-    metaColor: "#49423a",
-    title: { x: 70, y: 92, maxWidth: 980, align: "left" },
-    body: { x: 150, y: 286, maxWidth: 1160, align: "left", maxSize: 52, minSize: 38, lineHeight: 1.7 },
+  // 피처폰 "메시지 작성". Artwork 353x528; baked "To." ends x=87 baseline y=176,
+  // baked "p.s" ends x=86 baseline y=390, text margin x=61.
+  featurephone_v1: {
+    ...PORTRAIT,
+    asset: "/images/keepsake/featurephone-v2.png",
+    fallback: "#f2eef2",
+    color: "#CB6CE6",
+    font: PIXEL_FONT,
+    weight: 700,
+    to: { x: 0.2635, baseline: 0.3333, size: 0.0316, maxWidth: 0.6431 },
+    ps: {
+      x: 0.2606,
+      baseline: 0.7386,
+      size: 0.0316,
+      maxWidth: 0.6459,
+      continueX: 0.1728,
+      continueMaxWidth: 0.7337,
+      lineGap: 0.0436,
+      lines: 2,
+    },
   },
-  purple_growth_v1: {
-    asset: "/images/keepsake/purple-rose.png",
-    fallback: "#9d75a9",
-    titleColor: "#fff0ad",
-    bodyColor: "#fff1b6",
-    metaColor: "#ffe69b",
-    shadowColor: "rgba(66, 35, 77, 0.3)",
-    title: { x: 70, y: 92, maxWidth: 950, align: "left" },
-    body: { x: 330, y: 278, maxWidth: 820, align: "left", maxSize: 51, minSize: 37, lineHeight: 1.7 },
+  // 버디버디 메신저. Artwork 353x528; baked "To." ends x=106 baseline y=188,
+  // baked "p.s" ends x=106 baseline y=397, text margin x=80.
+  buddybuddy_v1: {
+    ...PORTRAIT,
+    asset: "/images/keepsake/buddybuddy-v3.png",
+    fallback: "#eef4e8",
+    color: "#149005",
+    font: PIXEL_FONT,
+    weight: 700,
+    to: { x: 0.3176, baseline: 0.3561, size: 0.0319, maxWidth: 0.5949 },
+    ps: {
+      x: 0.3176,
+      baseline: 0.7519,
+      size: 0.0319,
+      maxWidth: 0.5949,
+      continueX: 0.2266,
+      continueMaxWidth: 0.6856,
+      lineGap: 0.0436,
+      lines: 2,
+    },
   },
-  starry_wish_v1: {
-    asset: "/images/keepsake/starry-night.png",
-    fallback: "#06174f",
-    titleColor: "#f7f6e9",
-    bodyColor: "#f8f7ea",
-    metaColor: "#c6e5ff",
-    shadowColor: "rgba(0, 9, 45, 0.75)",
-    title: { x: 72, y: 92, maxWidth: 940, align: "left" },
-    body: { x: 750, y: 274, maxWidth: 980, align: "center", maxSize: 52, minSize: 38, lineHeight: 1.68 },
+  // 분홍 낙서 편지지. Artwork 528x353 (already landscape); baked "To." ends
+  // x=113 baseline y=101, baked "p.s" ends x=106 baseline y=260, margin x=84.
+  pink_doodle_v1: {
+    ...LANDSCAPE,
+    asset: "/images/keepsake/pink-doodle-v2.png",
+    fallback: "#fdeaf0",
+    color: "#FE3636",
+    font: HAND_FONT,
+    fontFamily: HAND_FONT_FAMILY,
+    weight: 400,
+    to: { x: 0.2310, baseline: 0.2861, size: 0.0703, maxWidth: 0.6591 },
+    ps: {
+      x: 0.2150,
+      baseline: 0.7365,
+      size: 0.0586,
+      maxWidth: 0.6752,
+      continueX: 0.1591,
+      continueMaxWidth: 0.7311,
+      lineGap: 0.0906,
+      lines: 1,
+    },
   },
-  black_effort_v1: {
-    asset: "/images/keepsake/black-checker.png",
-    fallback: "#171717",
-    titleColor: "#f2f2ed",
-    bodyColor: "#f5f5ef",
-    metaColor: "#deded7",
-    shadowColor: "rgba(0, 0, 0, 0.72)",
-    title: { x: 72, y: 92, maxWidth: 980, align: "left" },
-    body: { x: 150, y: 280, maxWidth: 1120, align: "left", maxSize: 50, minSize: 36, lineHeight: 1.72 },
-  },
-  red_release_v1: {
-    asset: "/images/keepsake/red-floral.png",
-    fallback: "#d7482f",
-    titleColor: "#ffe69b",
-    bodyColor: "#fff2d4",
-    metaColor: "#ffe095",
-    shadowColor: "rgba(91, 19, 12, 0.28)",
-    title: { x: 72, y: 92, maxWidth: 980, align: "left" },
-    body: { x: 750, y: 282, maxWidth: 930, align: "center", maxSize: 51, minSize: 37, lineHeight: 1.7 },
+  // 노랑 낙서 편지지. Artwork 528x353 (already landscape); baked "To." ends
+  // x=114 baseline y=99, baked "p.s" ends x=107 baseline y=256, margin x=85.
+  yellow_doodle_v1: {
+    ...LANDSCAPE,
+    asset: "/images/keepsake/yellow-doodle-v2.png",
+    fallback: "#fdf6d8",
+    color: "#FE3636",
+    font: HAND_FONT,
+    fontFamily: HAND_FONT_FAMILY,
+    weight: 400,
+    to: { x: 0.2332, baseline: 0.2805, size: 0.0714, maxWidth: 0.6572 },
+    ps: {
+      x: 0.2199,
+      baseline: 0.7252,
+      size: 0.0714,
+      maxWidth: 0.6705,
+      continueX: 0.1610,
+      continueMaxWidth: 0.7292,
+      lineGap: 0.0878,
+      lines: 1,
+    },
   },
 };
 
-const DEFAULT_LAYOUT = TEMPLATE_LAYOUTS.purple_growth_v1;
+const DEFAULT_LAYOUT = TEMPLATE_LAYOUTS.featurephone_v1;
 const loadedImages = new Map<string, HTMLImageElement>();
 const pendingImages = new Map<string, Promise<HTMLImageElement>>();
 
-function getLayout(templateId: string) {
+export function getLayout(templateId: string) {
   return TEMPLATE_LAYOUTS[templateId] ?? DEFAULT_LAYOUT;
 }
 
@@ -97,7 +158,6 @@ function loadImage(source: string) {
 
   const promise = new Promise<HTMLImageElement>((resolve, reject) => {
     const image = new Image();
-    image.decoding = "async";
     image.onload = () => {
       loadedImages.set(source, image);
       pendingImages.delete(source);
@@ -113,92 +173,144 @@ function loadImage(source: string) {
   return promise;
 }
 
-function fitTextSize(
+/**
+ * Greedy space wrap. The first line is short because it starts after the baked
+ * label; wrapped lines fall back to the artwork's own text margin, so each line
+ * gets its own width budget.
+ */
+function wrapText(
   context: CanvasRenderingContext2D,
   text: string,
-  maximum: number,
-  minimum: number,
-  maxWidth: number,
-  fontWeight = 800,
+  widthOfLine: (index: number) => number,
 ) {
-  let size = maximum;
-  while (size > minimum) {
-    context.font = `${fontWeight} ${size}px ${BODY_FONT}`;
-    if (context.measureText(text).width <= maxWidth) break;
-    size -= 2;
+  const words = text.split(" ").filter(Boolean);
+  const lines: string[] = [];
+  let current = "";
+  for (const word of words) {
+    const candidate = current ? `${current} ${word}` : word;
+    if (current && context.measureText(candidate).width > widthOfLine(lines.length)) {
+      lines.push(current);
+      current = word;
+    } else {
+      current = candidate;
+    }
   }
-  return size;
+  if (current) lines.push(current);
+  return lines;
+}
+
+/**
+ * Shrink until the text fits the reference line count, so a long nickname or a
+ * long hashtag set stays inside the artwork instead of spilling over a doodle.
+ */
+function fitText(
+  context: CanvasRenderingContext2D,
+  text: string,
+  widthOfLine: (index: number) => number,
+  baseSize: number,
+  targetLines: number,
+  font: string,
+  weight: number,
+) {
+  const minimum = baseSize * 0.68;
+  let size = baseSize;
+  let lines: string[] = [];
+  while (size > minimum) {
+    context.font = `${weight} ${size}px ${font}`;
+    lines = wrapText(context, text, widthOfLine);
+    if (lines.length <= targetLines) break;
+    size -= 1;
+  }
+  if (!lines.length) {
+    context.font = `${weight} ${size}px ${font}`;
+    lines = wrapText(context, text, widthOfLine);
+  }
+  // One extra line is tolerable at the floor size; beyond that we would run into
+  // the artwork below, so fold the tail back into the last kept line.
+  const allowed = targetLines + 1;
+  if (lines.length > allowed) {
+    lines = [...lines.slice(0, allowed - 1), lines.slice(allowed - 1).join(" ")];
+  }
+  return { size, lines };
+}
+
+/** Variable part of the "To." line — the label itself is printed on the artwork. */
+export function recipientText(letter: KeepsakeLetter) {
+  const name = (letter.recipient_name || "").trim() || "너";
+  return `${name}에게`;
+}
+
+/** Variable part of the "p.s" line — the label itself is printed on the artwork. */
+export function hashtagText(letter: KeepsakeLetter) {
+  return (letter.hashtags || [])
+    .slice(0, 3)
+    .map((tag) => String(tag).replace(/^#+/, "").trim())
+    .filter(Boolean)
+    .join(", ");
 }
 
 export async function ensureKeepsakeAssetsReady(letter: KeepsakeLetter) {
   const layout = getLayout(letter.template_id);
   const tasks: Promise<unknown>[] = [loadImage(layout.asset)];
   if (typeof document !== "undefined" && document.fonts) {
-    tasks.push(document.fonts.load(`700 48px ${BODY_FONT}`));
-    tasks.push(document.fonts.load(`52px "Pume Hand Script"`));
+    if (layout.fontFamily) {
+      tasks.push(document.fonts.load(`32px "${layout.fontFamily}"`));
+    }
+    tasks.push(document.fonts.ready);
   }
-  await Promise.allSettled(tasks);
+  await Promise.race([
+    Promise.allSettled(tasks),
+    new Promise((resolve) => setTimeout(resolve, 2000)),
+  ]);
 }
 
 export function renderKeepsakeLetter(
   context: CanvasRenderingContext2D,
   letter: KeepsakeLetter,
 ) {
+  const layout = getLayout(letter.template_id);
   const width = context.canvas.width;
   const height = context.canvas.height;
-  const scaleX = width / KEEPSAKE_CANVAS_WIDTH;
-  const scaleY = height / KEEPSAKE_CANVAS_HEIGHT;
-  const layout = getLayout(letter.template_id);
 
   context.save();
-  context.scale(scaleX, scaleY);
   context.fillStyle = layout.fallback;
-  context.fillRect(0, 0, KEEPSAKE_CANVAS_WIDTH, KEEPSAKE_CANVAS_HEIGHT);
+  context.fillRect(0, 0, width, height);
   const background = loadedImages.get(layout.asset);
   if (background) {
-    context.drawImage(background, 0, 0, KEEPSAKE_CANVAS_WIDTH, KEEPSAKE_CANVAS_HEIGHT);
+    context.drawImage(background, 0, 0, width, height);
   }
 
   context.textBaseline = "alphabetic";
-  context.shadowColor = layout.shadowColor ?? "transparent";
-  context.shadowBlur = layout.shadowColor ? 5 : 0;
-  context.shadowOffsetY = layout.shadowColor ? 2 : 0;
-
-  const titleSize = fitTextSize(context, letter.recipient_label, 43, 28, layout.title.maxWidth, 800);
-  context.font = `800 ${titleSize}px ${BODY_FONT}`;
-  context.fillStyle = layout.titleColor;
-  context.textAlign = layout.title.align;
-  context.fillText(letter.recipient_label, layout.title.x, layout.title.y);
-
-  const lines = letter.phrase_text.split("\n").map((line) => line.trim()).filter(Boolean).slice(0, 5);
-  const longest = lines.reduce((current, line) => line.length > current.length ? line : current, "");
-  const bodySize = fitTextSize(
-    context,
-    longest,
-    layout.body.maxSize,
-    layout.body.minSize,
-    layout.body.maxWidth,
-    800,
-  );
-  const lineHeight = bodySize * layout.body.lineHeight;
-  context.font = `800 ${bodySize}px ${BODY_FONT}`;
-  context.fillStyle = layout.bodyColor;
-  context.textAlign = layout.body.align;
-  lines.forEach((line, index) => {
-    context.fillText(line, layout.body.x, layout.body.y + index * lineHeight);
-  });
-
-  const hashtagText = letter.hashtags.slice(0, 3).map((tag) => `#${tag.replace(/^#+/, "")}`).join("  ");
-  const hashtagSize = fitTextSize(context, hashtagText, 28, 20, 900, 700);
-  context.font = `700 ${hashtagSize}px ${BODY_FONT}`;
-  context.fillStyle = layout.metaColor;
   context.textAlign = "left";
-  context.fillText(hashtagText, 68, 928);
+  context.fillStyle = layout.color;
 
-  context.font = `52px ${SIGNATURE_FONT}`;
-  context.fillStyle = layout.metaColor;
-  context.textAlign = "right";
-  context.fillText(letter.sender_label, 1432, 928);
+  const draw = (text: string, box: TextBox) => {
+    if (!text) return;
+    const firstWidth = box.maxWidth * width;
+    const restWidth = (box.continueMaxWidth ?? box.maxWidth) * width;
+    const fitted = fitText(
+      context,
+      text,
+      (index) => (index === 0 ? firstWidth : restWidth),
+      box.size * height,
+      box.lines ?? 1,
+      layout.font,
+      layout.weight,
+    );
+    context.font = `${layout.weight} ${fitted.size}px ${layout.font}`;
+    const gap = (box.lineGap ?? box.size * 1.35) * height;
+    const restX = (box.continueX ?? box.x) * width;
+    fitted.lines.forEach((line, index) => {
+      context.fillText(
+        line,
+        index === 0 ? box.x * width : restX,
+        box.baseline * height + index * gap,
+      );
+    });
+  };
+
+  draw(recipientText(letter), layout.to);
+  draw(hashtagText(letter), layout.ps);
 
   context.restore();
 }
@@ -206,9 +318,10 @@ export function renderKeepsakeLetter(
 export async function createKeepsakeCanvas(letter: KeepsakeLetter) {
   if (typeof document === "undefined") return null;
   await ensureKeepsakeAssetsReady(letter);
+  const layout = getLayout(letter.template_id);
   const canvas = document.createElement("canvas");
-  canvas.width = KEEPSAKE_CANVAS_WIDTH;
-  canvas.height = KEEPSAKE_CANVAS_HEIGHT;
+  canvas.width = layout.width;
+  canvas.height = layout.height;
   const context = canvas.getContext("2d");
   if (!context) return null;
   renderKeepsakeLetter(context, letter);
