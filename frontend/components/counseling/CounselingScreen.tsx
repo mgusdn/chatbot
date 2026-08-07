@@ -271,7 +271,7 @@ export function CounselingScreen({
           </section>
 
           <aside className="mind-card" aria-labelledby="mindMapTitle">
-            <MindMap state={session.runState} />
+            <MindMap state={session.runState} isBusy={session.busy} />
             <details className="transcript-panel">
               <summary>대화 기록 보기 <span>{session.transcript.length}</span></summary>
               <div className="transcript-list" ref={transcriptRef}>

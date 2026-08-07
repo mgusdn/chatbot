@@ -352,7 +352,7 @@ export function CounselReportOverlay({ report, onDismiss }: CounselReportOverlay
               </div>
               {localOnlyUrl ? (
                 <p className={styles.qrWarning} role="status">
-                  현재 QR 주소가 이 컴퓨터 전용 주소예요. 휴대폰에서 열려면 NEXT_PUBLIC_APP_URL을 LAN 또는 배포 주소로 설정해 주세요.
+                  ⚠️ 이 QR은 현재 컴퓨터에서만 열 수 있어요. 휴대폰으로 열려면 브라우저 주소창의 주소를 LAN IP(예: 192.168.x.x:3000)로 바꿔서 다시 접속해 주세요.
                 </p>
               ) : null}
               <div className={styles.qrActions}>

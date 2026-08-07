@@ -24,8 +24,11 @@ function joinedValues(values: string[] | undefined) {
   return (values || []).filter(substantive).join(", ");
 }
 
-export function MindMap({ state }: { state: PublicCounselState }) {
+export function MindMap({ state, isBusy }: { state: PublicCounselState; isBusy?: boolean }) {
   const filled = new Set(state.filled_slots || []);
+  if (isBusy && state.pending_slot) {
+    filled.add(state.pending_slot);
+  }
   const entries = CORE_SLOTS.map((slot) => {
     const value = joinedValues(state.slot_values?.[slot]);
     return { slot, value, isFilled: Boolean(value) || filled.has(slot) };
