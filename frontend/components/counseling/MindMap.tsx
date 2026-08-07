@@ -20,14 +20,14 @@ function substantive(value: unknown): value is string {
   return typeof value === "string" && value.replace(/\s+/g, "").length >= 2 && /[0-9A-Za-z가-힣]/.test(value);
 }
 
-function latest(values: string[] | undefined) {
-  return [...(values || [])].reverse().find(substantive) || "";
+function joinedValues(values: string[] | undefined) {
+  return (values || []).filter(substantive).join(", ");
 }
 
 export function MindMap({ state }: { state: PublicCounselState }) {
   const filled = new Set(state.filled_slots || []);
   const entries = CORE_SLOTS.map((slot) => {
-    const value = latest(state.slot_values?.[slot]);
+    const value = joinedValues(state.slot_values?.[slot]);
     return { slot, value, isFilled: Boolean(value) || filled.has(slot) };
   });
   const count = entries.filter((entry) => entry.isFilled).length;
