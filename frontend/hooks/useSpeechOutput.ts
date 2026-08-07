@@ -7,6 +7,7 @@ export type SpeechSegment = {
   id: string;
   text: string;
   turnId?: string;
+  isFinal?: boolean;
 };
 
 type QueuedSegment = SpeechSegment & { generation: number };
@@ -141,7 +142,7 @@ export function useSpeechOutput({ available }: { available: boolean }) {
         abortRef.current = controller;
         const ticket = await speechApi.createSynthesis(
           segment.text,
-          { turnId: segment.turnId, segmentId: segment.id },
+          { turnId: segment.turnId, segmentId: segment.id, padEnd: segment.isFinal !== false },
           controller.signal,
         );
         if (segment.generation !== generationRef.current) continue;

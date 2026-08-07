@@ -172,6 +172,7 @@ class SynthesisTicket:
     turn_id: str | None
     segment_id: str | None
     expires_at: float
+    pad_end: bool
 
 
 class SynthesisTicketStore:
@@ -187,6 +188,7 @@ class SynthesisTicketStore:
         *,
         turn_id: str | None = None,
         segment_id: str | None = None,
+        pad_end: bool = True,
     ) -> SynthesisTicket:
         now = time.monotonic()
         ticket = SynthesisTicket(
@@ -195,6 +197,7 @@ class SynthesisTicketStore:
             turn_id=turn_id,
             segment_id=segment_id,
             expires_at=now + float(os.getenv("TTS_TICKET_TTL_SECONDS", "90")),
+            pad_end=pad_end,
         )
         with self._lock:
             self._items = {
@@ -259,12 +262,16 @@ class GptSoVitsService:
             "reason": reason,
         }
 
-    def request_params(self, text: str) -> dict[str, Any]:
+    def request_params(self, ticket: SynthesisTicket) -> dict[str, Any]:
         configured, reason = self.configuration()
         if not configured:
             raise SpeechUnavailable(reason or "TTS가 설정되지 않았습니다.")
+        fragment_interval = float(os.getenv("TTS_FRAGMENT_INTERVAL_SECONDS", "0"))
+        if not ticket.pad_end:
+            fragment_interval = 0.0
+
         return {
-            "text": _normalize_text(text),
+            "text": ticket.text,
             "text_lang": "ko",
             "ref_audio_path": self.reference_audio_path,
             "prompt_text": self.reference_text,
@@ -276,7 +283,7 @@ class GptSoVitsService:
             # 60 ms is short enough to keep pre-buffered sentences flowing,
             # but gives the final syllable a natural release instead of
             # cutting directly from an active waveform to digital zero.
-            "fragment_interval": float(os.getenv("TTS_FRAGMENT_INTERVAL_SECONDS", "0")),
+            "fragment_interval": fragment_interval,
             "text_split_method": os.getenv("TTS_TEXT_SPLIT_METHOD", "cut0"),
             # Match chatbot-voice: fastest streaming profile. Never combine it
             # with batch_size; GPT-SoVITS currently errors on that combination.

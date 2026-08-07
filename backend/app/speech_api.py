@@ -26,6 +26,7 @@ class SynthesisRequest(BaseModel):
     text: str = Field(min_length=1, max_length=1200)
     turn_id: str | None = Field(default=None, max_length=100)
     segment_id: str | None = Field(default=None, max_length=100)
+    pad_end: bool = Field(default=True)
 
     @field_validator("text")
     @classmethod
@@ -86,6 +87,7 @@ async def create_synthesis_ticket(request: SynthesisRequest) -> dict:
         request.text,
         turn_id=request.turn_id,
         segment_id=request.segment_id,
+        pad_end=request.pad_end,
     )
     return {
         "ticket_id": ticket.ticket_id,
@@ -112,7 +114,7 @@ async def stream_synthesis(ticket_id: str) -> StreamingResponse:
         upstream_request = client.build_request(
             "GET",
             f"{tts_service.server_url}/tts",
-            params=tts_service.request_params(ticket.text),
+            params=tts_service.request_params(ticket),
         )
         upstream = await client.send(upstream_request, stream=True)
         if upstream.status_code >= 400:

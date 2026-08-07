@@ -43,7 +43,7 @@ export const speechApi = {
 
   createSynthesis: (
     text: string,
-    ids: { turnId?: string; segmentId?: string },
+    ids: { turnId?: string; segmentId?: string; padEnd?: boolean },
     signal?: AbortSignal,
   ) => fetch("/api/speech/synthesis", {
     method: "POST",
@@ -52,6 +52,7 @@ export const speechApi = {
       text,
       turn_id: ids.turnId,
       segment_id: ids.segmentId,
+      pad_end: ids.padEnd,
     }),
     signal,
   }).then((response) => json<{

@@ -83,6 +83,7 @@ export type CounselingSpeechSegment = {
   id: string;
   text: string;
   turnId?: string;
+  isFinal?: boolean;
 };
 
 export function useCounselingSession(
@@ -242,6 +243,7 @@ export function useCounselingSession(
                   id: `${event.turn_id || `baseline-${event.sequence}`}:continuation`,
                   turnId: event.turn_id,
                   text: tail,
+                  isFinal: true,
                 });
               }
               return;
@@ -259,6 +261,7 @@ export function useCounselingSession(
                 id: `${event.turn_id}:${event.sequence}`,
                 turnId: event.turn_id,
                 text: event.text,
+                isFinal: false,
               });
             } else {
               // Hold short asides until the analyzer supplies the final
@@ -300,6 +303,7 @@ export function useCounselingSession(
           id: `${result.run_id || data.comparison_id}:complete`,
           turnId: result.run_id,
           text: result.message,
+          isFinal: true,
         });
       }
 
