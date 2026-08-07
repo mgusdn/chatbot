@@ -10,12 +10,5 @@ def compute_gate(state: SessionState) -> GateState:
     # Check coverage only for the 6 core visual slots
     CORE_SLOTS = ["situation", "emotion", "thought", "behavior", "coping", "goal"]
 
-    coverage_ok = all(
-        slots[s]
-        and (
-            switches.get(s) in {"on", "unknown"}
-            or (state.get("pipeline_arm") == "baseline" and s in asked_slots)
-        )
-        for s in CORE_SLOTS
-    )
+    coverage_ok = all(bool(slots[s]) for s in CORE_SLOTS)
     return GateState(coverage_ok=coverage_ok)
