@@ -89,7 +89,7 @@ export function useSpeechOutput({ available }: { available: boolean }) {
     setIsSpeaking(false);
   }, []);
 
-  const streamTicket = useCallback(async (url: string, generation: number, signal: AbortSignal) => {
+  const streamTicket = useCallback(async (url: string, generation: number, signal: AbortSignal, padEnd: boolean) => {
     const node = await prime();
     const response = await fetch(url, { signal });
     if (!response.ok || !response.body) {
@@ -127,6 +127,15 @@ export function useSpeechOutput({ available }: { available: boolean }) {
       const samples = pcm16leToFloat32(bytes);
       push(samples);
     }
+    
+    // Manually append trailing silence (0.3s) if this is a final segment.
+    // This ensures OS-level audio buffers fully drain the actual speech
+    // before the worklet signals "drained" and UI transitions occur.
+    if (padEnd && generation === generationRef.current) {
+      const silenceDuration = 0.3;
+      const silenceSamples = new Float32Array(Math.floor(TTS_SAMPLE_RATE * silenceDuration));
+      push(silenceSamples);
+    }
   }, [prime]);
 
   const pump = useCallback(async () => {
@@ -140,14 +149,37 @@ export function useSpeechOutput({ available }: { available: boolean }) {
         if (!segment || segment.generation !== generationRef.current) continue;
         const controller = new AbortController();
         abortRef.current = controller;
+        const isFinal = segment.isFinal !== false;
         const ticket = await speechApi.createSynthesis(
           segment.text,
-          { turnId: segment.turnId, segmentId: segment.id, padEnd: segment.isFinal !== false },
+          { turnId: segment.turnId, segmentId: segment.id, padEnd: isFinal },
           controller.signal,
         );
         if (segment.generation !== generationRef.current) continue;
-        await streamTicket(ticket.audio_url, segment.generation, controller.signal);
+        await streamTicket(ticket.audio_url, segment.generation, controller.signal, isFinal);
         abortRef.current = null;
+      }
+      // Wait for the AudioWorklet to finish playing every buffered sample
+      // before releasing the pump lock. Without this, the last ~300ms of
+      // speech (e.g. "있나요?" → "있ㄴ…") gets silently discarded.
+      if (workletRef.current) {
+        await new Promise<void>((resolve) => {
+          const node = workletRef.current!;
+          const gen = generationRef.current;
+          const onDrain = (event: MessageEvent<{ type?: string }>) => {
+            if (event.data?.type === "drained") {
+              node.port.removeEventListener("message", onDrain);
+              resolve();
+            }
+          };
+          node.port.addEventListener("message", onDrain);
+          node.port.postMessage({ type: "check-drain" });
+          // Safety timeout: don't block forever if the worklet never drains
+          setTimeout(() => {
+            node.port.removeEventListener("message", onDrain);
+            resolve();
+          }, 5000);
+        });
       }
     } catch (caught) {
       if (!(caught instanceof DOMException && caught.name === "AbortError")) {
@@ -157,8 +189,7 @@ export function useSpeechOutput({ available }: { available: boolean }) {
     } finally {
       abortRef.current = null;
       pumpingRef.current = false;
-      if (workletRef.current) workletRef.current.port.postMessage({ type: "check-drain" });
-      else setIsSpeaking(false);
+      setIsSpeaking(false);
       // A segment can arrive between the loop condition and finally.
       if (queueRef.current.length && enabledRef.current && availableRef.current) void pump();
     }
