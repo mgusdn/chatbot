@@ -52,3 +52,4 @@ tmp/
 
 # Local GPT-SoVITS development checkout and model workspace
 testVoice/
+voice_weight/
