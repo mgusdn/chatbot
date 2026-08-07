@@ -236,7 +236,7 @@ def test_baseline_saves_at_most_two_incidental_slots(monkeypatch):
     assert result["slots"]["behavior"] == []
     assert result["last_analysis"]["incidental_slots"] == ["emotion", "duration"]
     assert result["slot_switches"]["emotion"] == "on"
-    assert result["slot_switches"]["duration"] == "off"
+    assert result["slot_switches"]["duration"] == "on"
     assert result["pending"]["target_slot"] == "thought"
 
 

@@ -662,11 +662,10 @@ def _save_incidental_updates(
         seen.add(slot)
         if value not in slots[slot]:
             slots[slot].append(value)
-        if raw.get("sufficient") is True:
-            slots[slot] = [
-                item for item in slots[slot] if item != EXPLICIT_UNKNOWN_VALUE
-            ]
-            switches[slot] = "on"
+        slots[slot] = [
+            item for item in slots[slot] if item != EXPLICIT_UNKNOWN_VALUE
+        ]
+        switches[slot] = "on"
         saved.append(slot)
     return saved
 
