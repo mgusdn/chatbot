@@ -25,6 +25,14 @@ export function KeepsakeLetterView({ shareToken }: { shareToken: string }) {
 
   useEffect(() => {
     let active = true;
+    // A visitor holds the phone waiting, so never leave the spinner running: if
+    // the request has not answered by now something is wrong with the booth, and
+    // saying so beats an animation that never resolves.
+    const timeout = window.setTimeout(() => {
+      if (!active) return;
+      setError("편지를 불러오지 못했어요. 부스 담당자에게 알려주세요.");
+    }, 15_000);
+
     void counselingApi.getKeepsake(shareToken)
       .then(({ letter: nextLetter }) => {
         if (!active) return;
@@ -34,8 +42,13 @@ export function KeepsakeLetterView({ shareToken }: { shareToken: string }) {
       .catch(() => {
         if (!active) return;
         setError("편지 링크가 만료되었거나 편지를 찾을 수 없어요.");
-      });
-    return () => { active = false; };
+      })
+      .finally(() => window.clearTimeout(timeout));
+
+    return () => {
+      active = false;
+      window.clearTimeout(timeout);
+    };
   }, [shareToken]);
 
   useEffect(() => {
