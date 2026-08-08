@@ -2,6 +2,9 @@ import { NextRequest } from "next/server";
 
 const API_BASE = (process.env.PUME_API_BASE_URL || "http://127.0.0.1:8000").replace(/\/$/, "");
 
+// Statuses the fetch spec forbids a body on.
+const NULL_BODY_STATUSES = new Set([204, 205, 304]);
+
 const ALLOWED_PATHS = [
   /^health$/,
   /^speech\/health$/,
@@ -70,7 +73,12 @@ async function proxy(request: NextRequest, context: { params: Promise<{ path: st
     }
     const body = await response.arrayBuffer();
     const retryAfter = response.headers.get("retry-after");
-    return new Response(body, {
+    // 204/205/304 may not carry a body: handing Response even a zero-length
+    // buffer throws, and the catch below would report that as "server
+    // unreachable" for a call that in fact succeeded. Deleting a guestbook
+    // trace answers 204, so it looked like a failure while the row was gone.
+    const bodyless = NULL_BODY_STATUSES.has(response.status);
+    return new Response(bodyless ? null : body, {
       status: response.status,
       headers: {
         "Content-Type": contentType,
