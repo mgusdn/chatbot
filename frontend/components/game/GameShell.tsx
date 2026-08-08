@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { AudioDirector } from "@/components/audio/AudioDirector";
+import { AudioDirector, requestBackgroundAudioPlayback } from "@/components/audio/AudioDirector";
 import { CounselReportOverlay } from "@/components/counseling/CounselReportOverlay";
 import { CounselingScreen } from "@/components/counseling/CounselingScreen";
 import { CommonsPanel } from "@/components/commons";
@@ -147,6 +147,7 @@ export function GameShell() {
   }, [phase, finishCounselReturn, reducedMotion]);
 
   const handleConfirm = (nextNickname: string) => {
+    requestBackgroundAudioPlayback();
     const characterId = confirmCharacter();
     if (characterId) {
       const profile = writePlayerProfile(window.localStorage, characterId, nextNickname);
