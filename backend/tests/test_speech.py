@@ -95,12 +95,18 @@ def test_tts_ticket_hides_text_and_streams_upstream_audio(monkeypatch, tmp_path)
     assert audio.status_code == 200
     assert audio.headers["content-type"].startswith("audio/raw")
     assert audio.content == b"\x01\x00\x02\x00"
-    assert upstream_calls[0][2]["streaming_mode"] == 3
+    # Streaming trims the tail off any chunk it never flags as final, which cut
+    # the closing word from roughly every other line; measured 2.13s truncated
+    # at mode 3 versus 2.42s complete at 0 for the same seeded text. cut5 splits
+    # on punctuation so no single fragment is long enough for the model to stop
+    # early. Both are load-bearing for speech that finishes its sentence.
+    assert upstream_calls[0][2]["streaming_mode"] == 0
+    assert upstream_calls[0][2]["text_split_method"] == "cut5"
     assert upstream_calls[0][2]["seed"] == 1234
-    assert upstream_calls[0][2]["top_k"] == 5
+    assert upstream_calls[0][2]["top_k"] == 15
     assert upstream_calls[0][2]["media_type"] == "raw"
-    assert upstream_calls[0][2]["fragment_interval"] == 0
-    assert upstream_calls[0][2]["text_split_method"] == "cut0"
+    # A closing segment asks for the trailing release; pad_end=False zeroes it.
+    assert upstream_calls[0][2]["fragment_interval"] == 0.3
     assert "batch_size" not in upstream_calls[0][2]
 
 

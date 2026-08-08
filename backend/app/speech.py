@@ -266,7 +266,10 @@ class GptSoVitsService:
         configured, reason = self.configuration()
         if not configured:
             raise SpeechUnavailable(reason or "TTS가 설정되지 않았습니다.")
-        fragment_interval = float(os.getenv("TTS_FRAGMENT_INTERVAL_SECONDS", "0"))
+        # Matches .env.example. The default was left at 0 when the shipped
+        # config moved to 0.3, so a run without an env file silently dropped the
+        # release at the end of a turn.
+        fragment_interval = float(os.getenv("TTS_FRAGMENT_INTERVAL_SECONDS", "0.3"))
         if not ticket.pad_end:
             fragment_interval = 0.0
 
